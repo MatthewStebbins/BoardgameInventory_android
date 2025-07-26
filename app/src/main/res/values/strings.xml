@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Boardgame Inventory</string>
+    
+    <!-- Main Activity -->
+    <string name="main_title">Board Game Tracker</string>
+    <string name="add_game">Add Game by Barcode</string>
+    <string name="bulk_upload">Bulk Upload</string>
+    <string name="loan_game">Loan Game</string>
+    <string name="return_game">Return Game</string>
+    <string name="list_games">List Games</string>
+    <string name="delete_game">Delete Game</string>
+    <string name="export_games">Export CSV/Excel</string>
+    <string name="import_games">Import CSV/Excel</string>
+    
+    <!-- Add Game -->
+    <string name="add_game_title">Add Game by Barcode</string>
+    <string name="barcode_hint">Enter or scan barcode</string>
+    <string name="location_barcode_hint">Location Barcode (xx-xx)</string>
+    <string name="bookcase_hint">Bookcase</string>
+    <string name="shelf_hint">Shelf</string>
+    <string name="scan_barcode">Scan Barcode</string>
+    <string name="submit">Submit</string>
+    <string name="cancel">Cancel</string>
+    
+    <!-- Game List -->
+    <string name="game_list_title">Game List</string>
+    <string name="available_games">Available Games</string>
+    <string name="loaned_games">Loaned Games</string>
+    <string name="no_games">No games found</string>
+    <string name="game_details">Game Details</string>
+    
+    <!-- Game Details -->
+    <string name="game_detail_title">Game Details</string>
+    <string name="loaned_to">Loaned to: %s</string>
+    <string name="location" formatted="false">Location: %s, Shelf %s</string>
+    <string name="date_added">Added: %s</string>
+    <string name="date_loaned">Loaned: %s</string>
+    <string name="no_description">No description available</string>
+    <string name="no_image">No image available</string>
+    
+    <!-- Loan Game -->
+    <string name="loan_game_title">Loan Game</string>
+    <string name="select_game">Select Game</string>
+    <string name="person_name_hint">Person\'s name</string>
+    <string name="loan">Loan</string>
+    
+    <!-- Return Game -->
+    <string name="return_game_title">Return Game</string>
+    <string name="return_btn">Return</string>
+    <string name="update_location">Update Location</string>
+    
+    <!-- Bulk Upload -->
+    <string name="bulk_upload_title">Bulk Upload Games</string>
+    <string name="scanned_barcodes">Scanned Barcodes:</string>
+    <string name="scan_each_game">Scan each game barcode below:</string>
+    <string name="done">Done</string>
+    
+    <!-- Export/Import -->
+    <string name="export_title">Export Games</string>
+    <string name="import_title">Import Games</string>
+    <string name="export_csv">Export as CSV</string>
+    <string name="export_excel">Export as Excel</string>
+    <string name="import_csv">Import from CSV</string>
+    <string name="import_excel">Import from Excel</string>
+    <string name="overwrite_database">Overwrite Database?</string>
+    <string name="overwrite_message">Do you want to overwrite the entire database with this import? (Yes = Overwrite, No = Add)</string>
+    
+    <!-- Messages -->
+    <string name="success">Success</string>
+    <string name="error">Error</string>
+    <string name="warning">Warning</string>
+    <string name="confirm">Confirm</string>
+    <string name="barcode_required">Barcode is required</string>
+    <string name="location_required">Bookcase and Shelf are required</string>
+    <string name="person_name_required">Person\'s name is required</string>
+    <string name="no_data_found">No data found for that barcode</string>
+    <string name="game_added">Game \'%s\' added successfully</string>
+    <string name="game_loaned">Game loaned to %s</string>
+    <string name="game_returned">Game returned successfully</string>
+    <string name="game_deleted">Game deleted successfully</string>
+    <string name="delete_confirmation">Are you sure you want to delete \'%s\'?</string>
+    <string name="invalid_location_format">Invalid location barcode format. Use xx-xx</string>
+    <string name="export_success">Games exported successfully</string>
+    <string name="import_success">Imported %d games successfully</string>
+    <string name="import_error">Failed to import games</string>
+    <string name="camera_permission_required">Camera permission is required for barcode scanning</string>
+    
+    <!-- Stats -->
+    <string name="total_games">Total Games: %d</string>
+    <string name="loaned_count">Loaned: %d</string>
+    <string name="available_count">Available: %d</string>
+</resources>

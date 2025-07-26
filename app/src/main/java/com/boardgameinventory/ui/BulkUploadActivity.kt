@@ -1,0 +1,214 @@
+package com.boardgameinventory.ui
+
+import android.content.Intent
+import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
+import android.widget.EditText
+import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.boardgameinventory.databinding.ActivityBulkUploadBinding
+import com.boardgameinventory.viewmodel.BulkUploadViewModel
+import com.google.zxing.integration.android.IntentIntegrator
+import kotlinx.coroutines.launch
+
+class BulkUploadActivity : AppCompatActivity() {
+    private lateinit var binding: ActivityBulkUploadBinding
+    private lateinit var viewModel: BulkUploadViewModel
+    private lateinit var adapter: ScannedBarcodesAdapter
+
+    private val scanLocationBarcodeLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+        if (result.resultCode == RESULT_OK) {
+            val data = result.data
+            val barcode = IntentIntegrator.parseActivityResult(result.resultCode, data)?.contents
+            if (barcode != null) {
+                binding.etLocationBarcode.setText(barcode)
+                parseLocationBarcode(barcode)
+            }
+        }
+    }
+
+    private val scanGameBarcodeLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+        if (result.resultCode == RESULT_OK) {
+            val data = result.data
+            val barcode = IntentIntegrator.parseActivityResult(result.resultCode, data)?.contents
+            if (barcode != null) {
+                addGameBarcode(barcode)
+            }
+        }
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        binding = ActivityBulkUploadBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+
+        viewModel = ViewModelProvider(this)[BulkUploadViewModel::class.java]
+        setupUI()
+        observeViewModel()
+    }
+
+    private fun setupUI() {
+        // Remove the setSupportActionBar call since we're using the default action bar
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        supportActionBar?.title = "Bulk Upload Games"
+
+        // Setup recycler view for scanned barcodes
+        adapter = ScannedBarcodesAdapter { barcode ->
+            // Remove barcode when clicked
+            viewModel.removeGameBarcode(barcode)
+        }
+        binding.rvScannedBarcodes.layoutManager = LinearLayoutManager(this)
+        binding.rvScannedBarcodes.adapter = adapter
+
+        // Location barcode text watcher
+        binding.etLocationBarcode.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+            override fun afterTextChanged(s: Editable?) {
+                parseLocationBarcode(s?.toString() ?: "")
+            }
+        })
+
+        // Button listeners
+        binding.btnScanLocationBarcode.setOnClickListener {
+            scanLocationBarcode()
+        }
+
+        binding.btnScanGameBarcode.setOnClickListener {
+            scanGameBarcode()
+        }
+
+        binding.btnAddManually.setOnClickListener {
+            showManualBarcodeDialog()
+        }
+
+        binding.btnFinishUpload.setOnClickListener {
+            finishBulkUpload()
+        }
+
+        binding.btnCancel.setOnClickListener {
+            finish()
+        }
+    }
+
+    private fun observeViewModel() {
+        viewModel.scannedBarcodes.observe(this) { barcodes ->
+            adapter.updateBarcodes(barcodes)
+            binding.tvBarcodeCount.text = "Scanned: ${barcodes.size} barcodes"
+        }
+
+        viewModel.uploadResult.observe(this) { result ->
+            result?.let {
+                showUploadResultDialog(it)
+                viewModel.clearUploadResult()
+            }
+        }
+
+        viewModel.isLoading.observe(this) { isLoading ->
+            binding.btnFinishUpload.isEnabled = !isLoading
+            binding.btnFinishUpload.text = if (isLoading) "Processing..." else "Finish Upload"
+        }
+    }
+
+    private fun parseLocationBarcode(locationBarcode: String) {
+        if (locationBarcode.contains("-")) {
+            val parts = locationBarcode.split("-")
+            if (parts.size == 2) {
+                binding.etBookcase.setText(parts[0].trim())
+                binding.etShelf.setText(parts[1].trim())
+            }
+        }
+    }
+
+    private fun scanLocationBarcode() {
+        val integrator = IntentIntegrator(this)
+        integrator.setDesiredBarcodeFormats(IntentIntegrator.ALL_CODE_TYPES)
+        integrator.setPrompt("Scan Location Barcode (e.g., A-1)")
+        integrator.setCameraId(0)
+        integrator.setBeepEnabled(true)
+        integrator.setBarcodeImageEnabled(false)
+        integrator.setOrientationLocked(false)
+        scanLocationBarcodeLauncher.launch(integrator.createScanIntent())
+    }
+
+    private fun scanGameBarcode() {
+        val integrator = IntentIntegrator(this)
+        integrator.setDesiredBarcodeFormats(IntentIntegrator.ALL_CODE_TYPES)
+        integrator.setPrompt("Scan Game Barcode")
+        integrator.setCameraId(0)
+        integrator.setBeepEnabled(true)
+        integrator.setBarcodeImageEnabled(false)
+        integrator.setOrientationLocked(false)
+        scanGameBarcodeLauncher.launch(integrator.createScanIntent())
+    }
+
+    private fun showManualBarcodeDialog() {
+        val editText = EditText(this)
+        editText.hint = "Enter barcode manually"
+
+        AlertDialog.Builder(this)
+            .setTitle("Add Barcode")
+            .setView(editText)
+            .setPositiveButton("Add") { _, _ ->
+                val barcode = editText.text.toString().trim()
+                if (barcode.isNotEmpty()) {
+                    addGameBarcode(barcode)
+                }
+            }
+            .setNegativeButton("Cancel", null)
+            .show()
+    }
+
+    private fun addGameBarcode(barcode: String) {
+        if (barcode.isNotEmpty()) {
+            viewModel.addGameBarcode(barcode)
+        }
+    }
+
+    private fun finishBulkUpload() {
+        val bookcase = binding.etBookcase.text.toString().trim()
+        val shelf = binding.etShelf.text.toString().trim()
+
+        if (bookcase.isEmpty() || shelf.isEmpty()) {
+            Toast.makeText(this, "Please enter both bookcase and shelf", Toast.LENGTH_SHORT).show()
+            return
+        }
+
+        lifecycleScope.launch {
+            viewModel.processBulkUpload(bookcase, shelf)
+        }
+    }
+
+    private fun showUploadResultDialog(result: BulkUploadViewModel.UploadResult) {
+        val message = buildString {
+            append("Added ${result.successful} games successfully")
+            if (result.failed.isNotEmpty()) {
+                append("\n\nFailed to add ${result.failed.size} games:")
+                result.failed.forEach { barcode ->
+                    append("\n• $barcode")
+                }
+            }
+        }
+
+        AlertDialog.Builder(this)
+            .setTitle("Bulk Upload Complete")
+            .setMessage(message)
+            .setPositiveButton("OK") { _, _ ->
+                if (result.failed.isEmpty()) {
+                    finish()
+                }
+            }
+            .show()
+    }
+
+    override fun onSupportNavigateUp(): Boolean {
+        onBackPressed()
+        return true
+    }
+}

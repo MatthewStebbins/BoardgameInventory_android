@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout 
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/background"
+    tools:context=".MainActivity">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fillViewport="true">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="16dp">
+
+            <TextView
+                android:id="@+id/tvTitle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/main_title"
+                android:textAlignment="center"
+                style="@style/TitleTextStyle"
+                android:layout_marginBottom="24dp" />
+
+            <!-- Stats Card -->
+            <com.google.android.material.card.MaterialCardView
+                style="@style/CardStyle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:padding="16dp">
+
+                    <TextView
+                        android:id="@+id/tvTotalGames"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="@string/total_games"
+                        style="@style/BodyTextStyle"
+                        android:textAlignment="center" />
+
+                    <TextView
+                        android:id="@+id/tvLoanedGames"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="@string/loaned_count"
+                        style="@style/BodyTextStyle"
+                        android:textAlignment="center" />
+
+                    <TextView
+                        android:id="@+id/tvAvailableGames"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="@string/available_count"
+                        style="@style/BodyTextStyle"
+                        android:textAlignment="center" />
+
+                </LinearLayout>
+
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- Main Action Buttons -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_marginTop="16dp">
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnAddGame"
+                    style="@style/ButtonStyle.Primary"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/add_game" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnBulkUpload"
+                    style="@style/ButtonStyle.Primary"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/bulk_upload" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnListGames"
+                    style="@style/ButtonStyle.Primary"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/list_games" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnLoanGame"
+                    style="@style/ButtonStyle.Primary"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/loan_game" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnReturnGame"
+                    style="@style/ButtonStyle.Primary"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/return_game" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnDeleteGame"
+                    style="@style/ButtonStyle.Danger"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/delete_game" />
+
+                <!-- Import/Export section -->
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/divider"
+                    android:layout_marginVertical="16dp" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnExportGames"
+                    style="@style/ButtonStyle.Accent"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/export_games" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnImportGames"
+                    style="@style/ButtonStyle.Accent"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/import_games" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </ScrollView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
