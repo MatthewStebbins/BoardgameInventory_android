@@ -1,0 +1,227 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fillViewport="true">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <!-- Game Image -->
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:layout_marginBottom="16dp"
+            app:cardCornerRadius="12dp"
+            app:cardElevation="4dp">
+
+            <ImageView
+                android:id="@+id/iv_game_image"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/material_dynamic_neutral90"
+                android:contentDescription="@string/game_image"
+                android:scaleType="centerCrop"
+                android:src="@drawable/ic_game_placeholder" />
+
+        </com.google.android.material.card.MaterialCardView>
+
+        <!-- Game Name -->
+        <TextView
+            android:id="@+id/tv_game_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:textAppearance="@style/TextAppearance.Material3.HeadlineMedium"
+            android:textStyle="bold"
+            tools:text="Sample Game Name" />
+
+        <!-- Barcode -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="12dp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/barcode_label"
+                android:textAppearance="@style/TextAppearance.Material3.LabelLarge"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/tv_barcode"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_weight="1"
+                android:textAppearance="@style/TextAppearance.Material3.BodyLarge"
+                tools:text="123456789012" />
+
+        </LinearLayout>
+
+        <!-- Location -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="12dp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/location_label"
+                android:textAppearance="@style/TextAppearance.Material3.LabelLarge"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/tv_location"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_weight="1"
+                android:textAppearance="@style/TextAppearance.Material3.BodyLarge"
+                tools:text="Bookcase A, Shelf 1" />
+
+        </LinearLayout>
+
+        <!-- Loan Status -->
+        <LinearLayout
+            android:id="@+id/layout_loan_status"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="12dp"
+            android:orientation="horizontal"
+            android:visibility="gone">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/loaned_to_label"
+                android:textAppearance="@style/TextAppearance.Material3.LabelLarge"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/tv_loaned_to"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_weight="1"
+                android:textAppearance="@style/TextAppearance.Material3.BodyLarge"
+                android:textColor="@android:color/holo_orange_dark"
+                tools:text="John Doe" />
+
+        </LinearLayout>
+
+        <!-- Date Added -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/date_added_label"
+                android:textAppearance="@style/TextAppearance.Material3.LabelLarge"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/tv_date_added"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_weight="1"
+                android:textAppearance="@style/TextAppearance.Material3.BodyLarge"
+                tools:text="January 15, 2025" />
+
+        </LinearLayout>
+
+        <!-- Description Section -->
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            app:cardCornerRadius="8dp"
+            app:cardElevation="2dp"
+            app:strokeColor="@color/material_dynamic_primary40"
+            app:strokeWidth="1dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="16dp">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="8dp"
+                    android:text="@string/description_label"
+                    android:textAppearance="@style/TextAppearance.Material3.TitleMedium"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/tv_description"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:minHeight="60dp"
+                    android:textAppearance="@style/TextAppearance.Material3.BodyLarge"
+                    android:textIsSelectable="true"
+                    tools:text="This is a sample game description that explains what the game is about, how to play it, and other interesting details about the game." />
+
+                <TextView
+                    android:id="@+id/tv_no_description"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:minHeight="60dp"
+                    android:gravity="center"
+                    android:text="@string/no_description_available"
+                    android:textAppearance="@style/TextAppearance.Material3.BodyMedium"
+                    android:textColor="@color/material_dynamic_neutral60"
+                    android:textStyle="italic"
+                    android:visibility="gone" />
+
+            </LinearLayout>
+
+        </com.google.android.material.card.MaterialCardView>
+
+        <!-- Action Buttons -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center"
+            android:layout_marginTop="16dp">
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_edit_game"
+                style="@style/Widget.Material3.Button.OutlinedButton"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
+                android:layout_weight="1"
+                android:text="@string/edit_game"
+                app:icon="@drawable/ic_edit" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_loan_return"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_weight="1"
+                android:text="@string/loan_game"
+                app:icon="@drawable/ic_loan" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</ScrollView>

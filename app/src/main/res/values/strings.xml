@@ -32,6 +32,14 @@
     
     <!-- Game Details -->
     <string name="game_detail_title">Game Details</string>
+    <string name="game_image">Game Image</string>
+    <string name="barcode_label">Barcode:</string>
+    <string name="location_label">Location:</string>
+    <string name="loaned_to_label">Loaned to:</string>
+    <string name="date_added_label">Date Added:</string>
+    <string name="description_label">Description</string>
+    <string name="no_description_available">No description available</string>
+    <string name="edit_game">Edit Game</string>
     <string name="loaned_to">Loaned to: %s</string>
     <string name="location" formatted="false">Location: %s, Shelf %s</string>
     <string name="date_added">Added: %s</string>
