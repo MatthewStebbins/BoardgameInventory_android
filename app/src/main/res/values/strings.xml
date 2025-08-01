@@ -49,6 +49,18 @@
     
     <!-- Loan Game -->
     <string name="loan_game_title">Loan Game</string>
+    <string name="loan_game_instructions">Select a game from the list below and enter the borrower\'s name</string>
+    <string name="no_games_available_to_loan">No games available to loan</string>
+    <string name="selected_game_format" formatted="false">Selected: %s (%s)</string>
+    <string name="borrower_name">Borrower\'s Name</string>
+    <string name="no_game_selected">No game selected</string>
+    <string name="error_borrower_name_required">Borrower\'s name is required</string>
+    <string name="error_no_game_selected">Please select a game to loan</string>
+    <string name="game_loaned_success" formatted="false">Game \'%s\' loaned to %s successfully</string>
+    <string name="error_loan_game">Failed to loan game: %s</string>
+    <string name="error_game_already_loaned">Game is already loaned to %s</string>
+    <string name="error_game_not_found_barcode">Game with barcode %s not found</string>
+    <string name="error_finding_game">Error finding game: %s</string>
     <string name="select_game">Select Game</string>
     <string name="person_name_hint">Person\'s name</string>
     <string name="loan">Loan</string>

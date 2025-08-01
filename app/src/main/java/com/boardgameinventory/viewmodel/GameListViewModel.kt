@@ -2,6 +2,8 @@ package com.boardgameinventory.viewmodel
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
 import com.boardgameinventory.data.AppDatabase
 import com.boardgameinventory.data.Game
@@ -13,15 +15,15 @@ class GameListViewModel(application: Application) : AndroidViewModel(application
     
     private val repository: GameRepository
     
-    val availableGames: Flow<List<Game>>
-    val loanedGames: Flow<List<Game>>
+    val availableGames: LiveData<List<Game>>
+    val loanedGames: LiveData<List<Game>>
     
     init {
         val database = AppDatabase.getDatabase(application)
         repository = GameRepository(database.gameDao())
         
-        availableGames = repository.getAvailableGames()
-        loanedGames = repository.getLoanedGames()
+        availableGames = repository.getAvailableGames().asLiveData()
+        loanedGames = repository.getLoanedGames().asLiveData()
     }
     
     suspend fun loanGame(gameId: Long, person: String) {

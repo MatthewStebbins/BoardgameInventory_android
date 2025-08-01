@@ -94,15 +94,13 @@ class GameListFragment : Fragment() {
     }
     
     private fun observeGames() {
-        lifecycleScope.launch {
-            if (listType == TYPE_AVAILABLE) {
-                viewModel.availableGames.collect { games ->
-                    updateGamesList(games)
-                }
-            } else {
-                viewModel.loanedGames.collect { games ->
-                    updateGamesList(games)
-                }
+        if (listType == TYPE_AVAILABLE) {
+            viewModel.availableGames.observe(viewLifecycleOwner) { games ->
+                updateGamesList(games)
+            }
+        } else {
+            viewModel.loanedGames.observe(viewLifecycleOwner) { games ->
+                updateGamesList(games)
             }
         }
     }
