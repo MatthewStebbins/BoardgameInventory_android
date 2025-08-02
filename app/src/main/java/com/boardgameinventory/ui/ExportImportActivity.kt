@@ -21,7 +21,6 @@ class ExportImportActivity : AppCompatActivity() {
     
     private lateinit var binding: ActivityExportImportBinding
     private val viewModel: ExportImportViewModel by viewModels()
-    private var currentMode = ""
     private var pendingImportUri: Uri? = null
     
     private val exportCSVLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
@@ -63,43 +62,35 @@ class ExportImportActivity : AppCompatActivity() {
         binding = ActivityExportImportBinding.inflate(layoutInflater)
         setContentView(binding.root)
         
-        currentMode = intent.getStringExtra("mode") ?: "export"
-        
         setupToolbar()
         setupUI()
         observeViewModel()
-        
-        // Show the appropriate dialog based on mode after a short delay
-        // to ensure the activity is fully created
-        binding.root.post {
-            if (currentMode == "export") {
-                showExportDialog()
-            } else {
-                showImportDialog()
-            }
-        }
+        setupButtonClickListeners()
     }
     
     private fun setupToolbar() {
         supportActionBar?.apply {
             setDisplayHomeAsUpEnabled(true)
-            title = if (currentMode == "export") getString(R.string.export_title) else getString(R.string.import_title)
+            title = getString(R.string.export_import_title)
         }
     }
     
     private fun setupUI() {
         binding.apply {
-            if (currentMode == "export") {
-                tvTitle.text = getString(R.string.export_title)
-                tvDescription.text = "Choose export format and location for your games database."
-            } else {
-                tvTitle.text = getString(R.string.import_title)
-                tvDescription.text = "Choose the file to import games from."
-            }
+            tvTitle.text = getString(R.string.export_import_title)
             
             btnClose.setOnClickListener {
                 finish()
             }
+        }
+    }
+    
+    private fun setupButtonClickListeners() {
+        binding.apply {
+            btnExportCsv.setOnClickListener { exportAsCSV() }
+            btnExportExcel.setOnClickListener { exportAsExcel() }
+            btnImportCsv.setOnClickListener { importFromCSV() }
+            btnImportExcel.setOnClickListener { importFromExcel() }
         }
     }
     
@@ -136,46 +127,6 @@ class ExportImportActivity : AppCompatActivity() {
                 }
             }
         }
-    }
-    
-    private fun showExportDialog() {
-        val options = arrayOf(
-            getString(R.string.export_csv_option),
-            getString(R.string.export_excel_option)
-        )
-        
-        AlertDialog.Builder(this)
-            .setTitle(getString(R.string.export_dialog_title))
-            .setMessage(getString(R.string.select_export_format))
-            .setItems(options) { _, which ->
-                when (which) {
-                    0 -> exportAsCSV()
-                    1 -> exportAsExcel()
-                }
-            }
-            .setCancelable(true)
-            .setOnCancelListener { finish() }
-            .show()
-    }
-    
-    private fun showImportDialog() {
-        val options = arrayOf(
-            getString(R.string.import_csv_option),
-            getString(R.string.import_excel_option)
-        )
-        
-        AlertDialog.Builder(this)
-            .setTitle(getString(R.string.import_dialog_title))
-            .setMessage(getString(R.string.select_import_format))
-            .setItems(options) { _, which ->
-                when (which) {
-                    0 -> importFromCSV()
-                    1 -> importFromExcel()
-                }
-            }
-            .setCancelable(true)
-            .setOnCancelListener { finish() }
-            .show()
     }
     
     private fun showImportOptionsDialog(isCSV: Boolean) {

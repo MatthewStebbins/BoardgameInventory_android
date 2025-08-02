@@ -12,6 +12,7 @@
     <string name="delete_game">Delete Game</string>
     <string name="export_games">Export CSV/Excel</string>
     <string name="import_games">Import CSV/Excel</string>
+    <string name="export_import_games">Export/Import Games</string>
     
     <!-- Add Game -->
     <string name="add_game_title">Add Game by Barcode</string>
@@ -158,6 +159,7 @@
     <string name="bulk_upload_failed_item">• %s</string>
     
     <!-- Export/Import Dialog Messages -->
+    <string name="export_import_title">Export/Import Games</string>
     <string name="export_dialog_title">Export Options</string>
     <string name="import_dialog_title">Import Options</string>
     <string name="select_export_format">Select export format:</string>

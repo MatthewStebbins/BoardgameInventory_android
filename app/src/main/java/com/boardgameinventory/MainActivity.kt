@@ -58,12 +58,8 @@ class MainActivity : AppCompatActivity() {
             startActivity(intent)
         }
         
-        binding.btnExportGames.setOnClickListener {
-            showExportDialog()
-        }
-        
-        binding.btnImportGames.setOnClickListener {
-            showImportDialog()
+        binding.btnExportImportGames.setOnClickListener {
+            showExportImportScreen()
         }
     }
     
@@ -77,15 +73,8 @@ class MainActivity : AppCompatActivity() {
         }
     }
     
-    private fun showExportDialog() {
+    private fun showExportImportScreen() {
         val intent = Intent(this, ExportImportActivity::class.java)
-        intent.putExtra("mode", "export")
-        startActivity(intent)
-    }
-    
-    private fun showImportDialog() {
-        val intent = Intent(this, ExportImportActivity::class.java)
-        intent.putExtra("mode", "import")
         startActivity(intent)
     }
 }
