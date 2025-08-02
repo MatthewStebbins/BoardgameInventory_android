@@ -76,6 +76,17 @@
             android:name=".ui.ExportImportActivity"
             android:exported="false"
             android:parentActivityName=".MainActivity" />
+            
+        <activity
+            android:name=".ui.DatabaseManagementActivity"
+            android:exported="false"
+            android:parentActivityName=".MainActivity" />
+
+        <!-- Database maintenance service -->
+        <service
+            android:name=".service.DatabaseMaintenanceService"
+            android:exported="false"
+            android:enabled="true" />
 
     </application>
 

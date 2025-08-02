@@ -101,4 +101,11 @@ interface GameDao {
     
     @Query("SELECT DISTINCT (bookcase || ' - ' || shelf) as location FROM games WHERE bookcase IS NOT NULL AND shelf IS NOT NULL ORDER BY location ASC")
     suspend fun getDistinctLocations(): List<String>
+    
+    // Health check queries
+    @Query("SELECT COUNT(*) FROM games WHERE name IS NULL OR name = ''")
+    suspend fun getGamesWithEmptyNames(): Int
+    
+    @Query("SELECT COUNT(*) FROM games WHERE barcode IS NULL OR barcode = ''")
+    suspend fun getGamesWithEmptyBarcodes(): Int
 }
