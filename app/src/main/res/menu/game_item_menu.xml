@@ -11,10 +11,10 @@
     
     <item
         android:id="@+id/action_edit"
-        android:title="Edit" />
+        android:title="@string/edit" />
     
     <item
         android:id="@+id/action_delete"
-        android:title="Delete" />
+        android:title="@string/delete" />
 
 </menu>

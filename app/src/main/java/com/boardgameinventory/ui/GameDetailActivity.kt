@@ -29,7 +29,7 @@ class GameDetailActivity : AppCompatActivity() {
         game = intent.getParcelableExtra("game")
         
         if (game == null) {
-            Utils.showToast(this, "Error: Game data not found")
+            Utils.showToast(this, getString(R.string.error_game_data_not_found))
             finish()
             return
         }
@@ -102,7 +102,7 @@ class GameDetailActivity : AppCompatActivity() {
         binding.apply {
             btnEditGame.setOnClickListener {
                 // TODO: Implement edit functionality
-                Utils.showToast(this@GameDetailActivity, "Edit functionality coming soon")
+                Utils.showToast(this@GameDetailActivity, getString(R.string.edit_functionality_coming_soon))
             }
             
             btnLoanReturn.setOnClickListener {
@@ -131,7 +131,7 @@ class GameDetailActivity : AppCompatActivity() {
                     setResult(RESULT_OK)
                     finish()
                 } catch (e: Exception) {
-                    Utils.showToast(this@GameDetailActivity, "Error returning game: ${e.message}")
+                    Utils.showToast(this@GameDetailActivity, getString(R.string.error_returning_game, e.message ?: "Unknown error"))
                 }
             }
         }

@@ -120,4 +120,42 @@
     <string name="total_games">Total Games: %d</string>
     <string name="loaned_count">Loaned: %d</string>
     <string name="available_count">Available: %d</string>
+    
+    <!-- Dialog and Popup Text -->
+    <string name="add_barcode_title">Add Barcode</string>
+    <string name="add">Add</string>
+    <string name="ok">OK</string>
+    <string name="edit">Edit</string>
+    <string name="delete">Delete</string>
+    <string name="bulk_upload_complete_title">Bulk Upload Complete</string>
+    <string name="error_bookcase_shelf_required">Please enter both bookcase and shelf</string>
+    <string name="error_game_data_not_found">Error: Game data not found</string>
+    <string name="edit_functionality_coming_soon">Edit functionality coming soon</string>
+    <string name="error_returning_game">Error returning game: %s</string>
+    
+    <!-- Scan Prompts -->
+    <string name="scan_barcode_prompt">Scan a barcode</string>
+    <string name="scan_game_barcode_prompt">Scan a game barcode</string>
+    <string name="scan_game_barcode_return_prompt">Scan a game barcode to return</string>
+    <string name="scan_location_barcode_prompt">Scan Location Barcode (e.g., A-1)</string>
+    <string name="scan_game_barcode_bulk_prompt">Scan Game Barcode</string>
+    
+    <!-- Additional Dialog and Input Text -->
+    <string name="enter_barcode_manually_hint">Enter barcode manually</string>
+    <string name="bulk_upload_complete">Bulk Upload Complete</string>
+    <string name="bulk_upload_results_message">Added %1$d games successfully</string>
+    <string name="bulk_upload_results_with_failures">Added %1$d games successfully\n\nFailed to add %2$d games:</string>
+    <string name="bulk_upload_failed_item">• %s</string>
+    
+    <!-- Export/Import Dialog Messages -->
+    <string name="export_dialog_title">Export Options</string>
+    <string name="import_dialog_title">Import Options</string>
+    <string name="select_export_format">Select export format:</string>
+    <string name="select_import_format">Select import format:</string>
+    <string name="export_csv_option">Export as CSV file</string>
+    <string name="export_excel_option">Export as Excel file</string>
+    <string name="import_csv_option">Import from CSV file</string>
+    <string name="import_excel_option">Import from Excel file</string>
+    <string name="feature_coming_soon">This feature is coming soon!</string>
+    <string name="export_import_placeholder">Export/Import functionality will be available in a future update.</string>
 </resources>

@@ -12,6 +12,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.boardgameinventory.R
 import com.boardgameinventory.databinding.ActivityBulkUploadBinding
 import com.boardgameinventory.viewmodel.BulkUploadViewModel
 import com.google.zxing.integration.android.IntentIntegrator
@@ -150,18 +151,18 @@ class BulkUploadActivity : AppCompatActivity() {
 
     private fun showManualBarcodeDialog() {
         val editText = EditText(this)
-        editText.hint = "Enter barcode manually"
+        editText.hint = getString(R.string.enter_barcode_manually_hint)
 
         AlertDialog.Builder(this)
-            .setTitle("Add Barcode")
+            .setTitle(getString(R.string.add_barcode_title))
             .setView(editText)
-            .setPositiveButton("Add") { _, _ ->
+            .setPositiveButton(getString(R.string.add)) { _, _ ->
                 val barcode = editText.text.toString().trim()
                 if (barcode.isNotEmpty()) {
                     addGameBarcode(barcode)
                 }
             }
-            .setNegativeButton("Cancel", null)
+            .setNegativeButton(getString(R.string.cancel), null)
             .show()
     }
 
@@ -176,7 +177,7 @@ class BulkUploadActivity : AppCompatActivity() {
         val shelf = binding.etShelf.text.toString().trim()
 
         if (bookcase.isEmpty() || shelf.isEmpty()) {
-            Toast.makeText(this, "Please enter both bookcase and shelf", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, getString(R.string.error_bookcase_shelf_required), Toast.LENGTH_SHORT).show()
             return
         }
 
@@ -187,19 +188,21 @@ class BulkUploadActivity : AppCompatActivity() {
 
     private fun showUploadResultDialog(result: BulkUploadViewModel.UploadResult) {
         val message = buildString {
-            append("Added ${result.successful} games successfully")
+            append(getString(R.string.bulk_upload_results_message, result.successful))
             if (result.failed.isNotEmpty()) {
-                append("\n\nFailed to add ${result.failed.size} games:")
+                append("\n\n")
+                append(getString(R.string.bulk_upload_results_with_failures, result.successful, result.failed.size))
                 result.failed.forEach { barcode ->
-                    append("\n• $barcode")
+                    append("\n")
+                    append(getString(R.string.bulk_upload_failed_item, barcode))
                 }
             }
         }
 
         AlertDialog.Builder(this)
-            .setTitle("Bulk Upload Complete")
+            .setTitle(getString(R.string.bulk_upload_complete))
             .setMessage(message)
-            .setPositiveButton("OK") { _, _ ->
+            .setPositiveButton(getString(R.string.ok)) { _, _ ->
                 if (result.failed.isEmpty()) {
                     finish()
                 }

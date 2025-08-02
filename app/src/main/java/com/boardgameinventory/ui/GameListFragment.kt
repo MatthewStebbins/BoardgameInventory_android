@@ -131,7 +131,7 @@ class GameListFragment : Fragment() {
     
     private fun editGame(game: Game) {
         // TODO: Implement edit functionality
-        Utils.showToast(requireContext(), "Edit functionality coming soon")
+        Utils.showToast(requireContext(), getString(R.string.edit_functionality_coming_soon))
     }
     
     private fun showDeleteConfirmation(game: Game) {
