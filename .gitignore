@@ -24,6 +24,9 @@ jdk-17.0.12/
 jdk17.zip
 build-with-java17.bat
 
+# Development scripts
+run_app.ps1
+
 # Android Studio
 .idea/
 *.iws

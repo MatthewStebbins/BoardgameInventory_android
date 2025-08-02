@@ -16,7 +16,7 @@
     <!-- Add Game -->
     <string name="add_game_title">Add Game by Barcode</string>
     <string name="barcode_hint">Enter or scan barcode</string>
-    <string name="location_barcode_hint">Location Barcode (xx-xx)</string>
+    <string name="location_barcode_hint">Location Barcode (e.g., A-1)</string>
     <string name="bookcase_hint">Bookcase</string>
     <string name="shelf_hint">Shelf</string>
     <string name="scan_barcode">Scan Barcode</string>
@@ -69,6 +69,16 @@
     <string name="return_game_title">Return Game</string>
     <string name="return_btn">Return</string>
     <string name="update_location">Update Location</string>
+    <string name="return_game_instructions">Select a loaned game from the list below to return it</string>
+    <string name="no_games_loaned_out">No games are currently loaned out</string>
+    <string name="update_location_optional">Update Location (Optional)</string>
+    <string name="location_barcode_format">Format: XX-XX (Bookcase-Shelf)</string>
+    <string name="bookcase">Bookcase</string>
+    <string name="shelf">Shelf</string>
+    <string name="game_returned_success">Game \'%1$s\' returned successfully to %2$s, Shelf %3$s</string>
+    <string name="error_return_game">Failed to return game: %s</string>
+    <string name="error_game_not_loaned">Game is not currently loaned out</string>
+    <string name="error_invalid_location_format">Invalid location barcode format. Use XX-XX</string>
     
     <!-- Bulk Upload -->
     <string name="bulk_upload_title">Bulk Upload Games</string>
