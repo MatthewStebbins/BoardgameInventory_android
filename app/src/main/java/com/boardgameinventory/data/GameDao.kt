@@ -59,4 +59,10 @@ interface GameDao {
     
     @Query("SELECT COUNT(*) FROM games WHERE loanedTo IS NOT NULL")
     suspend fun getLoanedGameCount(): Int
+    
+    @Query("SELECT * FROM games ORDER BY name ASC")
+    suspend fun getAllGamesOneTime(): List<Game>
+    
+    @Query("SELECT barcode FROM games")
+    suspend fun getAllBarcodes(): List<String>
 }

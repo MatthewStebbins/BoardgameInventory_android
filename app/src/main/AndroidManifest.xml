@@ -53,6 +53,11 @@
             android:parentActivityName=".ui.GameListActivity" />
             
         <activity
+            android:name=".ui.EditGameActivity"
+            android:exported="false"
+            android:parentActivityName=".ui.GameDetailActivity" />
+            
+        <activity
             android:name=".ui.BulkUploadActivity"
             android:exported="false"
             android:parentActivityName=".MainActivity" />
@@ -64,6 +69,11 @@
             
         <activity
             android:name=".ui.ReturnGameActivity"
+            android:exported="false"
+            android:parentActivityName=".MainActivity" />
+            
+        <activity
+            android:name=".ui.ExportImportActivity"
             android:exported="false"
             android:parentActivityName=".MainActivity" />
 

@@ -133,6 +133,16 @@
     <string name="edit_functionality_coming_soon">Edit functionality coming soon</string>
     <string name="error_returning_game">Error returning game: %s</string>
     
+    <!-- Edit Game -->
+    <string name="edit_game_title">Edit Game</string>
+    <string name="game_name_hint">Game Name</string>
+    <string name="description_hint">Description (Optional)</string>
+    <string name="save">Save</string>
+    <string name="game_name_required">Game name is required</string>
+    <string name="barcode_already_exists">A game with this barcode already exists</string>
+    <string name="game_updated_successfully">Game \'%s\' updated successfully</string>
+    <string name="error_updating_game">Error updating game: %s</string>
+    
     <!-- Scan Prompts -->
     <string name="scan_barcode_prompt">Scan a barcode</string>
     <string name="scan_game_barcode_prompt">Scan a game barcode</string>
@@ -158,4 +168,21 @@
     <string name="import_excel_option">Import from Excel file</string>
     <string name="feature_coming_soon">This feature is coming soon!</string>
     <string name="export_import_placeholder">Export/Import functionality will be available in a future update.</string>
+    
+    <!-- Export/Import Messages -->
+    <string name="export_success_csv">Successfully exported %d games to CSV file</string>
+    <string name="export_success_excel">Successfully exported %d games to Excel file</string>
+    <string name="export_error">Failed to export games</string>
+    <string name="export_error_detailed">Export failed: %s</string>
+    <string name="import_success_csv">Successfully imported %d games from CSV file</string>
+    <string name="import_success_excel">Successfully imported %d games from Excel file</string>
+    <string name="import_error_detailed">Import failed: %s</string>
+    <string name="import_no_data">No valid game data found in the file</string>
+    <string name="import_duplicates_found">Found %d games with duplicate barcodes. Choose \"Overwrite Database\" to replace existing games.</string>
+    <string name="overwrite_database_title">Import Options</string>
+    <string name="overwrite_database_message">How would you like to handle the import?</string>
+    <string name="overwrite_database_yes">Overwrite Database</string>
+    <string name="overwrite_database_no">Skip Duplicates</string>
+    <string name="import_results_title">Import Complete</string>
+    <string name="import_results_message">Import completed. %1$d games imported, %2$d skipped.</string>
 </resources>

@@ -130,8 +130,9 @@ class GameListFragment : Fragment() {
     }
     
     private fun editGame(game: Game) {
-        // TODO: Implement edit functionality
-        Utils.showToast(requireContext(), getString(R.string.edit_functionality_coming_soon))
+        val intent = Intent(context, EditGameActivity::class.java)
+        intent.putExtra("game", game)
+        startActivity(intent)
     }
     
     private fun showDeleteConfirmation(game: Game) {

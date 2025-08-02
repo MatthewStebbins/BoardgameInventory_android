@@ -47,6 +47,10 @@ class GameRepository(private val gameDao: GameDao) {
     
     suspend fun getLoanedGameCount(): Int = gameDao.getLoanedGameCount()
     
+    suspend fun getAllGamesOneTime(): List<Game> = gameDao.getAllGamesOneTime()
+    
+    suspend fun getAllBarcodes(): List<String> = gameDao.getAllBarcodes()
+    
     suspend fun lookupBarcodeInfo(barcode: String): ProductInfo? = ApiClient.lookupBarcode(barcode)
     
     suspend fun addGameByBarcode(

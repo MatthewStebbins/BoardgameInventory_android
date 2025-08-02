@@ -101,8 +101,7 @@ class GameDetailActivity : AppCompatActivity() {
     private fun setupClickListeners() {
         binding.apply {
             btnEditGame.setOnClickListener {
-                // TODO: Implement edit functionality
-                Utils.showToast(this@GameDetailActivity, getString(R.string.edit_functionality_coming_soon))
+                editGame()
             }
             
             btnLoanReturn.setOnClickListener {
@@ -118,6 +117,14 @@ class GameDetailActivity : AppCompatActivity() {
                     }
                 }
             }
+        }
+    }
+    
+    private fun editGame() {
+        game?.let { game ->
+            val intent = Intent(this@GameDetailActivity, EditGameActivity::class.java)
+            intent.putExtra("game", game)
+            startActivityForResult(intent, REQUEST_EDIT_GAME)
         }
     }
     
@@ -139,10 +146,21 @@ class GameDetailActivity : AppCompatActivity() {
     
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == REQUEST_LOAN_GAME && resultCode == RESULT_OK) {
-            // Game was loaned, refresh the activity
-            setResult(RESULT_OK)
-            finish()
+        when (requestCode) {
+            REQUEST_LOAN_GAME -> {
+                if (resultCode == RESULT_OK) {
+                    // Game was loaned, refresh the activity
+                    setResult(RESULT_OK)
+                    finish()
+                }
+            }
+            REQUEST_EDIT_GAME -> {
+                if (resultCode == RESULT_OK) {
+                    // Game was edited, refresh the activity
+                    setResult(RESULT_OK)
+                    finish()
+                }
+            }
         }
     }
     
@@ -153,5 +171,6 @@ class GameDetailActivity : AppCompatActivity() {
     
     companion object {
         private const val REQUEST_LOAN_GAME = 1001
+        private const val REQUEST_EDIT_GAME = 1002
     }
 }
