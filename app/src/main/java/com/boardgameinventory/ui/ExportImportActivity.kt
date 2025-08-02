@@ -28,13 +28,13 @@ class ExportImportActivity : AppCompatActivity() {
     
     private fun showExportDialog() {
         val options = arrayOf(
-            getString(R.string.export_csv_option),
-            getString(R.string.export_excel_option)
+            "Export as CSV file",
+            "Export as Excel file"
         )
         
         AlertDialog.Builder(this)
-            .setTitle(getString(R.string.export_dialog_title))
-            .setMessage(getString(R.string.select_export_format))
+            .setTitle("Export Options")
+            .setMessage("Select export format:")
             .setItems(options) { _, which ->
                 when (which) {
                     0 -> exportAsCSV()
@@ -52,13 +52,13 @@ class ExportImportActivity : AppCompatActivity() {
     
     private fun showImportDialog() {
         val options = arrayOf(
-            getString(R.string.import_csv_option),
-            getString(R.string.import_excel_option)
+            "Import from CSV file",
+            "Import from Excel file"
         )
         
         AlertDialog.Builder(this)
-            .setTitle(getString(R.string.import_dialog_title))
-            .setMessage(getString(R.string.select_import_format))
+            .setTitle("Import Options")
+            .setMessage("Select import format:")
             .setItems(options) { _, which ->
                 when (which) {
                     0 -> importFromCSV()
@@ -96,8 +96,8 @@ class ExportImportActivity : AppCompatActivity() {
     
     private fun showFeatureComingSoonDialog() {
         AlertDialog.Builder(this)
-            .setTitle(getString(R.string.feature_coming_soon))
-            .setMessage(getString(R.string.export_import_placeholder))
+            .setTitle("Feature Coming Soon")
+            .setMessage("Export/Import functionality will be available in a future update.")
             .setPositiveButton(getString(R.string.ok)) { _, _ ->
                 finish()
             }
