@@ -15,7 +15,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.boardgameinventory.R
 import com.boardgameinventory.databinding.ActivityBulkUploadBinding
 import com.boardgameinventory.viewmodel.BulkUploadViewModel
-import com.google.zxing.integration.android.IntentIntegrator
+import com.journeyapps.barcodescanner.ScanContract
+import com.journeyapps.barcodescanner.ScanOptions
 import kotlinx.coroutines.launch
 
 class BulkUploadActivity : AppCompatActivity() {
@@ -23,24 +24,16 @@ class BulkUploadActivity : AppCompatActivity() {
     private lateinit var viewModel: BulkUploadViewModel
     private lateinit var adapter: ScannedBarcodesAdapter
 
-    private val scanLocationBarcodeLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-        if (result.resultCode == RESULT_OK) {
-            val data = result.data
-            val barcode = IntentIntegrator.parseActivityResult(result.resultCode, data)?.contents
-            if (barcode != null) {
-                binding.etLocationBarcode.setText(barcode)
-                parseLocationBarcode(barcode)
-            }
+    private val scanLocationBarcodeLauncher = registerForActivityResult(ScanContract()) { result ->
+        if (result.contents != null) {
+            binding.etLocationBarcode.setText(result.contents)
+            parseLocationBarcode(result.contents)
         }
     }
 
-    private val scanGameBarcodeLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-        if (result.resultCode == RESULT_OK) {
-            val data = result.data
-            val barcode = IntentIntegrator.parseActivityResult(result.resultCode, data)?.contents
-            if (barcode != null) {
-                addGameBarcode(barcode)
-            }
+    private val scanGameBarcodeLauncher = registerForActivityResult(ScanContract()) { result ->
+        if (result.contents != null) {
+            addGameBarcode(result.contents)
         }
     }
 
@@ -128,25 +121,25 @@ class BulkUploadActivity : AppCompatActivity() {
     }
 
     private fun scanLocationBarcode() {
-        val integrator = IntentIntegrator(this)
-        integrator.setDesiredBarcodeFormats(IntentIntegrator.ALL_CODE_TYPES)
-        integrator.setPrompt("Scan Location Barcode (e.g., A-1)")
-        integrator.setCameraId(0)
-        integrator.setBeepEnabled(true)
-        integrator.setBarcodeImageEnabled(false)
-        integrator.setOrientationLocked(false)
-        scanLocationBarcodeLauncher.launch(integrator.createScanIntent())
+        val options = ScanOptions()
+        options.setDesiredBarcodeFormats(ScanOptions.ALL_CODE_TYPES)
+        options.setPrompt("Scan Location Barcode (e.g., A-1)")
+        options.setCameraId(0)
+        options.setBeepEnabled(true)
+        options.setBarcodeImageEnabled(false)
+        options.setOrientationLocked(false)
+        scanLocationBarcodeLauncher.launch(options)
     }
 
     private fun scanGameBarcode() {
-        val integrator = IntentIntegrator(this)
-        integrator.setDesiredBarcodeFormats(IntentIntegrator.ALL_CODE_TYPES)
-        integrator.setPrompt("Scan Game Barcode")
-        integrator.setCameraId(0)
-        integrator.setBeepEnabled(true)
-        integrator.setBarcodeImageEnabled(false)
-        integrator.setOrientationLocked(false)
-        scanGameBarcodeLauncher.launch(integrator.createScanIntent())
+        val options = ScanOptions()
+        options.setDesiredBarcodeFormats(ScanOptions.ALL_CODE_TYPES)
+        options.setPrompt("Scan Game Barcode")
+        options.setCameraId(0)
+        options.setBeepEnabled(true)
+        options.setBarcodeImageEnabled(false)
+        options.setOrientationLocked(false)
+        scanGameBarcodeLauncher.launch(options)
     }
 
     private fun showManualBarcodeDialog() {
@@ -211,7 +204,7 @@ class BulkUploadActivity : AppCompatActivity() {
     }
 
     override fun onSupportNavigateUp(): Boolean {
-        onBackPressed()
+        onBackPressedDispatcher.onBackPressed()
         return true
     }
 }

@@ -8,6 +8,7 @@ import androidx.lifecycle.viewModelScope
 import com.boardgameinventory.data.AppDatabase
 import com.boardgameinventory.data.Game
 import com.boardgameinventory.data.SearchAndFilterCriteria
+import com.boardgameinventory.data.SortCriteria
 import com.boardgameinventory.repository.GameRepository
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
@@ -79,6 +80,12 @@ class GameListViewModel(application: Application) : AndroidViewModel(application
         _searchAndFilterCriteria.value = _searchAndFilterCriteria.value.copy(
             dateFromFilter = fromDate,
             dateToFilter = toDate
+        )
+    }
+    
+    fun updateSortCriteria(sortCriteria: SortCriteria) {
+        _searchAndFilterCriteria.value = _searchAndFilterCriteria.value.copy(
+            sortBy = sortCriteria
         )
     }
     

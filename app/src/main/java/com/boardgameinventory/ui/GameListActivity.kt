@@ -170,6 +170,19 @@ class GameListActivity : AppCompatActivity() {
     private fun setupSortChips(dialogBinding: DialogFilterBinding) {
         // Set up single selection for sort chips
         dialogBinding.sortChipGroup.isSingleSelection = true
+        
+        // Setup click listeners for sort chips
+        dialogBinding.sortByNameChip.setOnClickListener {
+            viewModel.updateSortCriteria(SortCriteria.NAME_ASC)
+        }
+        
+        dialogBinding.sortByDateAddedChip.setOnClickListener {
+            viewModel.updateSortCriteria(SortCriteria.DATE_ADDED_ASC)
+        }
+        
+        dialogBinding.sortByBookcaseChip.setOnClickListener {
+            viewModel.updateSortCriteria(SortCriteria.LOCATION_ASC)
+        }
     }
     
     private fun populateCurrentFilters(dialogBinding: DialogFilterBinding) {

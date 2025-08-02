@@ -2,6 +2,7 @@ package com.boardgameinventory.ui
 
 import android.Manifest
 import android.content.pm.PackageManager
+import android.os.Build
 import android.os.Bundle
 import android.view.View
 import androidx.activity.result.contract.ActivityResultContracts
@@ -49,7 +50,12 @@ class EditGameActivity : AppCompatActivity() {
         setContentView(binding.root)
         
         // Get the game from intent
-        originalGame = intent.getParcelableExtra("game")
+        originalGame = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            intent.getParcelableExtra("game", Game::class.java)
+        } else {
+            @Suppress("DEPRECATION")
+            intent.getParcelableExtra("game")
+        }
         
         if (originalGame == null) {
             Utils.showToast(this, getString(R.string.error_game_data_not_found))

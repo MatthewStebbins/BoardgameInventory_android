@@ -1,8 +1,10 @@
 package com.boardgameinventory.ui
 
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
 import android.view.View
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import com.bumptech.glide.Glide
@@ -20,13 +22,39 @@ class GameDetailActivity : AppCompatActivity() {
     private lateinit var binding: ActivityGameDetailBinding
     private var game: Game? = null
     
+    // Modern ActivityResult launchers
+    private val loanGameLauncher = registerForActivityResult(
+        ActivityResultContracts.StartActivityForResult()
+    ) { result ->
+        if (result.resultCode == RESULT_OK) {
+            // Game was loaned, refresh the activity
+            setResult(RESULT_OK)
+            finish()
+        }
+    }
+    
+    private val editGameLauncher = registerForActivityResult(
+        ActivityResultContracts.StartActivityForResult()
+    ) { result ->
+        if (result.resultCode == RESULT_OK) {
+            // Game was edited, refresh the activity
+            setResult(RESULT_OK)
+            finish()
+        }
+    }
+    
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityGameDetailBinding.inflate(layoutInflater)
         setContentView(binding.root)
         
         // Get the game from intent
-        game = intent.getParcelableExtra("game")
+        game = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            intent.getParcelableExtra("game", Game::class.java)
+        } else {
+            @Suppress("DEPRECATION")
+            intent.getParcelableExtra("game")
+        }
         
         if (game == null) {
             Utils.showToast(this, getString(R.string.error_game_data_not_found))
@@ -110,7 +138,7 @@ class GameDetailActivity : AppCompatActivity() {
                         // Loan the game
                         val intent = Intent(this@GameDetailActivity, LoanGameActivity::class.java)
                         intent.putExtra("gameId", game.id)
-                        startActivityForResult(intent, REQUEST_LOAN_GAME)
+                        loanGameLauncher.launch(intent)
                     } else {
                         // Return the game
                         returnGame()
@@ -124,12 +152,12 @@ class GameDetailActivity : AppCompatActivity() {
         game?.let { game ->
             val intent = Intent(this@GameDetailActivity, EditGameActivity::class.java)
             intent.putExtra("game", game)
-            startActivityForResult(intent, REQUEST_EDIT_GAME)
+            editGameLauncher.launch(intent)
         }
     }
     
     private fun returnGame() {
-        game?.let { game ->
+        game?.let { _ ->
             lifecycleScope.launch {
                 try {
                     // TODO: Add return game functionality to repository/viewmodel
@@ -144,33 +172,8 @@ class GameDetailActivity : AppCompatActivity() {
         }
     }
     
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        when (requestCode) {
-            REQUEST_LOAN_GAME -> {
-                if (resultCode == RESULT_OK) {
-                    // Game was loaned, refresh the activity
-                    setResult(RESULT_OK)
-                    finish()
-                }
-            }
-            REQUEST_EDIT_GAME -> {
-                if (resultCode == RESULT_OK) {
-                    // Game was edited, refresh the activity
-                    setResult(RESULT_OK)
-                    finish()
-                }
-            }
-        }
-    }
-    
     override fun onSupportNavigateUp(): Boolean {
         finish()
         return true
-    }
-    
-    companion object {
-        private const val REQUEST_LOAN_GAME = 1001
-        private const val REQUEST_EDIT_GAME = 1002
     }
 }
