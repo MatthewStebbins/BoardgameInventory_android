@@ -3,6 +3,7 @@ package com.boardgameinventory.repository
 import kotlinx.coroutines.flow.Flow
 import com.boardgameinventory.data.Game
 import com.boardgameinventory.data.GameDao
+import com.boardgameinventory.data.SearchAndFilterCriteria
 import com.boardgameinventory.api.ApiClient
 import com.boardgameinventory.api.ProductInfo
 
@@ -82,4 +83,53 @@ class GameRepository(private val gameDao: GameDao) {
         val id = insertGame(game)
         return game.copy(id = id)
     }
+    
+    // Search and Filter methods
+    fun searchAndFilterGames(criteria: SearchAndFilterCriteria): Flow<List<Game>> {
+        val searchQuery = if (criteria.searchQuery.isBlank()) null else criteria.searchQuery
+        val isLoaned = when {
+            criteria.searchQuery.contains("available", ignoreCase = true) -> 0
+            criteria.searchQuery.contains("loaned", ignoreCase = true) -> 1
+            else -> null
+        }
+        
+        return gameDao.searchAndFilterGames(
+            searchQuery = searchQuery,
+            bookcase = criteria.bookcaseFilter,
+            isLoaned = isLoaned,
+            dateFrom = criteria.dateFromFilter,
+            dateTo = criteria.dateToFilter,
+            sortBy = criteria.sortBy.name
+        )
+    }
+    
+    fun searchAndFilterAvailableGames(criteria: SearchAndFilterCriteria): Flow<List<Game>> {
+        val searchQuery = if (criteria.searchQuery.isBlank()) null else criteria.searchQuery
+        
+        return gameDao.searchAndFilterGames(
+            searchQuery = searchQuery,
+            bookcase = criteria.bookcaseFilter,
+            isLoaned = 0, // Only available games
+            dateFrom = criteria.dateFromFilter,
+            dateTo = criteria.dateToFilter,
+            sortBy = criteria.sortBy.name
+        )
+    }
+    
+    fun searchAndFilterLoanedGames(criteria: SearchAndFilterCriteria): Flow<List<Game>> {
+        val searchQuery = if (criteria.searchQuery.isBlank()) null else criteria.searchQuery
+        
+        return gameDao.searchAndFilterGames(
+            searchQuery = searchQuery,
+            bookcase = criteria.bookcaseFilter,
+            isLoaned = 1, // Only loaned games
+            dateFrom = criteria.dateFromFilter,
+            dateTo = criteria.dateToFilter,
+            sortBy = criteria.sortBy.name
+        )
+    }
+    
+    suspend fun getDistinctBookcases(): List<String> = gameDao.getDistinctBookcases()
+    
+    suspend fun getDistinctLocations(): List<String> = gameDao.getDistinctLocations()
 }

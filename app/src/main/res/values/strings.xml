@@ -30,6 +30,27 @@
     <string name="loaned_games">Loaned Games</string>
     <string name="no_games">No games found</string>
     <string name="game_details">Game Details</string>
+    <string name="search_games">Search games...</string>
+    <string name="filter_games">Filter games</string>
+    <string name="clear_search">Clear search</string>
+    <string name="filter_by_location">Location</string>
+    <string name="filter_by_bookcase">Bookcase</string>
+    <string name="filter_by_date">Date Added</string>
+    <string name="filter_by_date_range">Filter by Date Range</string>
+    <string name="clear_filters">Clear Filters</string>
+    <string name="filter_options">Filter Options</string>
+    <string name="select_bookcase">Select Bookcase</string>
+    <string name="select_date_range">Select Date Range</string>
+    <string name="from_date">From Date</string>
+    <string name="to_date">To Date</string>
+    <string name="apply_filters">Apply Filters</string>
+    <string name="sort_by">Sort By</string>
+    <string name="sort_by_name">Name</string>
+    <string name="sort_by_year">Year</string>
+    <string name="sort_by_date_added">Date Added</string>
+    <string name="sort_by_bookcase">Bookcase</string>
+    <string name="all_bookcases">All Bookcases</string>
+    <string name="all_locations">All Locations</string>
     
     <!-- Game Details -->
     <string name="game_detail_title">Game Details</string>

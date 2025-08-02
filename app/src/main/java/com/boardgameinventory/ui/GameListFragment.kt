@@ -94,12 +94,13 @@ class GameListFragment : Fragment() {
     }
     
     private fun observeGames() {
+        // Observe filtered games instead of original games
         if (listType == TYPE_AVAILABLE) {
-            viewModel.availableGames.observe(viewLifecycleOwner) { games ->
+            viewModel.filteredAvailableGames.observe(viewLifecycleOwner) { games ->
                 updateGamesList(games)
             }
         } else {
-            viewModel.loanedGames.observe(viewLifecycleOwner) { games ->
+            viewModel.filteredLoanedGames.observe(viewLifecycleOwner) { games ->
                 updateGamesList(games)
             }
         }
