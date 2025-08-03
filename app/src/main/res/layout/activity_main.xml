@@ -10,8 +10,12 @@
 
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:fillViewport="true">
+        android:layout_height="0dp"
+        android:fillViewport="true"
+        app:layout_constraintBottom_toTopOf="@+id/adContainer"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -135,9 +139,32 @@
                     android:text="@string/export_import_games" />
 
             </LinearLayout>
+            
+            <!-- Version Info for Developer Mode Access -->
+            <TextView
+                android:id="@+id/tvVersionInfo"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:text="@string/version_info"
+                android:textAlignment="center"
+                android:textSize="12sp"
+                android:textColor="?android:attr/textColorSecondary"
+                android:padding="8dp"
+                android:background="?android:attr/selectableItemBackground" />
 
         </LinearLayout>
 
     </ScrollView>
+    
+    <!-- Ad Banner at bottom -->
+    <include
+        android:id="@+id/adContainer"
+        layout="@layout/layout_ad_banner"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

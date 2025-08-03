@@ -4,7 +4,89 @@ import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase
 
 /**
- * Database migration strategies for the Board Game Inventory app.
+ * Datab    /**
+     * Migration from version 6 to 7
+     * Fix field nullability and constraint issues
+     */
+    val MIGRATION_6_7 = object : Migration(6, 7) {
+        override fun migrate(db: SupportSQLiteDatabase) {
+            // Create a new table with the correct schema
+            db.execSQL("""
+                CREATE TABLE games_new (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+                    name TEXT NOT NULL,
+                    barcode TEXT NOT NULL,
+                    bookcase TEXT NOT NULL,
+                    shelf TEXT NOT NULL,
+                    loanedTo TEXT,
+                    description TEXT,
+                    imageUrl TEXT,
+                    dateAdded INTEGER NOT NULL,
+                    dateLoaned INTEGER,
+                    yearPublished INTEGER,
+                    category TEXT,
+                    tags TEXT,
+                    rating REAL,
+                    notes TEXT,
+                    playCount INTEGER,
+                    lastPlayed INTEGER,
+                    condition TEXT,
+                    purchasePrice REAL,
+                    purchaseDate INTEGER,
+                    retailer TEXT,
+                    minPlayers INTEGER,
+                    maxPlayers INTEGER,
+                    playingTime INTEGER,
+                    minAge INTEGER,
+                    designer TEXT,
+                    publisher TEXT,
+                    bggId INTEGER
+                )
+            """.trimIndent())
+            
+            // Copy data from old table to new table with proper handling of nullable fields
+            db.execSQL("""
+                INSERT INTO games_new (
+                    id, name, barcode, bookcase, shelf, loanedTo, description, imageUrl,
+                    dateAdded, dateLoaned, yearPublished, category, tags, rating, notes,
+                    playCount, lastPlayed, condition, purchasePrice, purchaseDate, retailer,
+                    minPlayers, maxPlayers, playingTime, minAge, designer, publisher, bggId
+                )
+                SELECT 
+                    id, name, barcode, bookcase, shelf, loanedTo, description, imageUrl,
+                    dateAdded, dateLoaned, yearPublished, category, tags, rating, notes,
+                    playCount, lastPlayed, condition, purchasePrice, purchaseDate, retailer,
+                    minPlayers, maxPlayers, playingTime, minAge, designer, publisher, bggId
+                FROM games
+            """.trimIndent())
+            
+            // Drop the old table
+            db.execSQL("DROP TABLE games")
+            
+            // Rename the new table
+            db.execSQL("ALTER TABLE games_new RENAME TO games")
+            
+            // Recreate indexes
+            db.execSQL("CREATE INDEX IF NOT EXISTS index_games_name ON games(name)")
+            db.execSQL("CREATE INDEX IF NOT EXISTS index_games_barcode ON games(barcode)")
+            db.execSQL("CREATE INDEX IF NOT EXISTS index_games_bookcase ON games(bookcase)")
+            db.execSQL("CREATE INDEX IF NOT EXISTS index_games_loanedTo ON games(loanedTo)")
+        }
+    }
+
+    /**
+     * Get all available migrations
+     */
+    fun getAllMigrations(): Array<Migration> {
+        return arrayOf(
+            MIGRATION_1_2,
+            MIGRATION_2_3,
+            MIGRATION_3_4,
+            MIGRATION_4_5,
+            MIGRATION_5_6,
+            MIGRATION_6_7
+        )
+    }n strategies for the Board Game Inventory app.
  * 
  * Follow these guidelines when adding new migrations:
  * 1. Always test migrations with real data

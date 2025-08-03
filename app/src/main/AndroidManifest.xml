@@ -41,6 +41,11 @@
         android:requestLegacyExternalStorage="true"
         tools:targetApi="31">
         
+        <!-- AdMob App ID -->
+        <meta-data
+            android:name="com.google.android.gms.ads.APPLICATION_ID"
+            android:value="ca-app-pub-3940256099942544~3347511713" />
+        
         <activity
             android:name=".MainActivity"
             android:exported="true"
@@ -94,7 +99,21 @@
         <activity
             android:name=".ui.DatabaseManagementActivity"
             android:exported="false"
-            android:parentActivityName=".MainActivity" />
+            android:enabled="true"
+            android:excludeFromRecents="true"
+            android:noHistory="true"
+            android:theme="@style/Theme.BoardgameInventory"
+            android:parentActivityName=".MainActivity"
+            android:label="Database Management (Developer Mode)" />
+            
+        <activity
+            android:name=".ui.DeveloperSettingsActivity"
+            android:exported="false"
+            android:enabled="true"
+            android:excludeFromRecents="true"
+            android:theme="@style/Theme.BoardgameInventory"
+            android:parentActivityName=".MainActivity"
+            android:label="Developer Settings" />
 
         <!-- Database maintenance service -->
         <service

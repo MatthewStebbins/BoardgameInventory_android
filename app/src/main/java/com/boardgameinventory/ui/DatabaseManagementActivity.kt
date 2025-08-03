@@ -9,6 +9,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.boardgameinventory.R
 import com.boardgameinventory.databinding.ActivityDatabaseManagementBinding
+import com.boardgameinventory.utils.DeveloperMode
 import com.boardgameinventory.viewmodel.DatabaseManagementViewModel
 import com.boardgameinventory.viewmodel.OperationType
 import java.text.SimpleDateFormat
@@ -32,6 +33,16 @@ class DatabaseManagementActivity : AppCompatActivity() {
     
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        
+        // Security check: Verify developer mode access
+        if (!DeveloperMode.isDeveloperModeActive(this)) {
+            showUnauthorizedDialog()
+            return
+        }
+        
+        // Update last access time to extend session
+        DeveloperMode.updateLastAccess(this)
+        
         binding = ActivityDatabaseManagementBinding.inflate(layoutInflater)
         setContentView(binding.root)
         
@@ -198,6 +209,51 @@ class DatabaseManagementActivity : AppCompatActivity() {
             .setMessage(message)
             .setPositiveButton("OK", null)
             .show()
+    }
+    
+    /**
+     * Show unauthorized access dialog and close activity
+     */
+    private fun showUnauthorizedDialog() {
+        AlertDialog.Builder(this)
+            .setTitle("Access Denied")
+            .setMessage("Developer mode required to access database management.\n\nTo enable developer mode, find the app version number and tap it 7 times quickly.")
+            .setPositiveButton("OK") { _, _ ->
+                finish()
+            }
+            .setCancelable(false)
+            .show()
+    }
+    
+    /**
+     * Show developer info dialog
+     */
+    private fun showDeveloperInfo() {
+        val info = DeveloperMode.getDeveloperInfo(this)
+        
+        AlertDialog.Builder(this)
+            .setTitle("Developer Information")
+            .setMessage(info)
+            .setPositiveButton("OK", null)
+            .setNegativeButton("Disable Developer Mode") { _, _ ->
+                DeveloperMode.disableDeveloperMode(this)
+                finish()
+            }
+            .show()
+    }
+    
+    override fun onResume() {
+        super.onResume()
+        
+        // Re-check developer mode on resume
+        if (!DeveloperMode.isDeveloperModeActive(this)) {
+            Toast.makeText(this, "Developer mode expired", Toast.LENGTH_SHORT).show()
+            finish()
+            return
+        }
+        
+        // Update access time
+        DeveloperMode.updateLastAccess(this)
     }
     
     override fun onOptionsItemSelected(item: MenuItem): Boolean {

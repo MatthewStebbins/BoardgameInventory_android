@@ -27,7 +27,7 @@ import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.*
 
-class GameListActivity : AppCompatActivity() {
+class GameListActivity : BaseAdActivity() {
     
     private lateinit var binding: ActivityGameListBinding
     private val viewModel: GameListViewModel by viewModels()
