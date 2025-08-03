@@ -1,6 +1,7 @@
 package com.boardgameinventory.data
 
 import androidx.room.*
+import androidx.paging.PagingSource
 import kotlinx.coroutines.flow.Flow
 
 @Dao
@@ -102,6 +103,97 @@ interface GameDao {
     
     @Query("SELECT DISTINCT (bookcase || ' - ' || shelf) as location FROM games WHERE bookcase IS NOT NULL AND shelf IS NOT NULL ORDER BY location ASC")
     suspend fun getDistinctLocations(): List<String>
+    
+    // Pagination methods with PagingSource
+    @Query("SELECT * FROM games ORDER BY name ASC")
+    fun getAllGamesPaged(): PagingSource<Int, Game>
+    
+    @Query("SELECT * FROM games WHERE loanedTo IS NOT NULL ORDER BY dateLoaned DESC")
+    fun getLoanedGamesPaged(): PagingSource<Int, Game>
+    
+    @Query("SELECT * FROM games WHERE loanedTo IS NULL ORDER BY name ASC")
+    fun getAvailableGamesPaged(): PagingSource<Int, Game>
+    
+    @Query("""
+        SELECT * FROM games 
+        WHERE (:searchQuery IS NULL OR :searchQuery = '' OR 
+               (LOWER(name) LIKE '%' || LOWER(:searchQuery) || '%' OR 
+                barcode LIKE '%' || :searchQuery || '%' OR 
+                LOWER(description) LIKE '%' || LOWER(:searchQuery) || '%'))
+        AND (:bookcase IS NULL OR bookcase = :bookcase)
+        AND (:isLoaned IS NULL OR 
+             (:isLoaned = 1 AND loanedTo IS NOT NULL) OR 
+             (:isLoaned = 0 AND loanedTo IS NULL))
+        AND (:dateFrom IS NULL OR dateAdded >= :dateFrom)
+        AND (:dateTo IS NULL OR dateAdded <= :dateTo)
+        ORDER BY 
+            CASE WHEN :sortBy = 'NAME_ASC' THEN LOWER(name) END ASC,
+            CASE WHEN :sortBy = 'NAME_DESC' THEN LOWER(name) END DESC,
+            CASE WHEN :sortBy = 'DATE_ADDED_ASC' THEN dateAdded END ASC,
+            CASE WHEN :sortBy = 'DATE_ADDED_DESC' THEN dateAdded END DESC,
+            CASE WHEN :sortBy = 'LOCATION_ASC' THEN bookcase || shelf END ASC,
+            CASE WHEN :sortBy = 'LOCATION_DESC' THEN bookcase || shelf END DESC
+    """)
+    fun searchAndFilterGamesPaged(
+        searchQuery: String?,
+        bookcase: String?,
+        isLoaned: Int?, // 0 = available, 1 = loaned, null = all
+        dateFrom: Long?,
+        dateTo: Long?,
+        sortBy: String
+    ): PagingSource<Int, Game>
+    
+    @Query("""
+        SELECT * FROM games 
+        WHERE (:searchQuery IS NULL OR :searchQuery = '' OR 
+               (LOWER(name) LIKE '%' || LOWER(:searchQuery) || '%' OR 
+                barcode LIKE '%' || :searchQuery || '%' OR 
+                LOWER(description) LIKE '%' || LOWER(:searchQuery) || '%'))
+        AND (:bookcase IS NULL OR bookcase = :bookcase)
+        AND loanedTo IS NULL
+        AND (:dateFrom IS NULL OR dateAdded >= :dateFrom)
+        AND (:dateTo IS NULL OR dateAdded <= :dateTo)
+        ORDER BY 
+            CASE WHEN :sortBy = 'NAME_ASC' THEN LOWER(name) END ASC,
+            CASE WHEN :sortBy = 'NAME_DESC' THEN LOWER(name) END DESC,
+            CASE WHEN :sortBy = 'DATE_ADDED_ASC' THEN dateAdded END ASC,
+            CASE WHEN :sortBy = 'DATE_ADDED_DESC' THEN dateAdded END DESC,
+            CASE WHEN :sortBy = 'LOCATION_ASC' THEN bookcase || shelf END ASC,
+            CASE WHEN :sortBy = 'LOCATION_DESC' THEN bookcase || shelf END DESC
+    """)
+    fun searchAndFilterAvailableGamesPaged(
+        searchQuery: String?,
+        bookcase: String?,
+        dateFrom: Long?,
+        dateTo: Long?,
+        sortBy: String
+    ): PagingSource<Int, Game>
+    
+    @Query("""
+        SELECT * FROM games 
+        WHERE (:searchQuery IS NULL OR :searchQuery = '' OR 
+               (LOWER(name) LIKE '%' || LOWER(:searchQuery) || '%' OR 
+                barcode LIKE '%' || :searchQuery || '%' OR 
+                LOWER(description) LIKE '%' || LOWER(:searchQuery) || '%'))
+        AND (:bookcase IS NULL OR bookcase = :bookcase)
+        AND loanedTo IS NOT NULL
+        AND (:dateFrom IS NULL OR dateAdded >= :dateFrom)
+        AND (:dateTo IS NULL OR dateAdded <= :dateTo)
+        ORDER BY 
+            CASE WHEN :sortBy = 'NAME_ASC' THEN LOWER(name) END ASC,
+            CASE WHEN :sortBy = 'NAME_DESC' THEN LOWER(name) END DESC,
+            CASE WHEN :sortBy = 'DATE_ADDED_ASC' THEN dateAdded END ASC,
+            CASE WHEN :sortBy = 'DATE_ADDED_DESC' THEN dateAdded END DESC,
+            CASE WHEN :sortBy = 'LOCATION_ASC' THEN bookcase || shelf END ASC,
+            CASE WHEN :sortBy = 'LOCATION_DESC' THEN bookcase || shelf END DESC
+    """)
+    fun searchAndFilterLoanedGamesPaged(
+        searchQuery: String?,
+        bookcase: String?,
+        dateFrom: Long?,
+        dateTo: Long?,
+        sortBy: String
+    ): PagingSource<Int, Game>
     
     // Health check queries
     @Query("SELECT COUNT(*) FROM games WHERE name IS NULL OR name = ''")

@@ -69,7 +69,11 @@ dependencies {
     // Room database
     implementation 'androidx.room:room-runtime:2.6.1'
     implementation 'androidx.room:room-ktx:2.6.1'
+    implementation 'androidx.room:room-paging:2.6.1'
     ksp 'androidx.room:room-compiler:2.6.1'
+    
+    // Paging 3
+    implementation 'androidx.paging:paging-runtime-ktx:3.2.1'
     
     // Coroutines
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3'
@@ -103,6 +107,7 @@ dependencies {
     testImplementation 'androidx.test:core:1.5.0'
     testImplementation 'androidx.test.ext:junit:1.1.5'
     testImplementation 'org.robolectric:robolectric:4.11.1'
+    testImplementation 'androidx.paging:paging-testing:3.2.1'
     
     // Android Testing
     androidTestImplementation 'androidx.test.ext:junit:1.1.5'

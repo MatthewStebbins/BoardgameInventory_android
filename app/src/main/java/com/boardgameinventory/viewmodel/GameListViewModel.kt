@@ -5,6 +5,8 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
+import androidx.paging.PagingData
+import androidx.paging.cachedIn
 import com.boardgameinventory.data.AppDatabase
 import com.boardgameinventory.data.Game
 import com.boardgameinventory.data.SearchAndFilterCriteria
@@ -28,9 +30,11 @@ class GameListViewModel(application: Application) : AndroidViewModel(application
     private val _searchAndFilterCriteria = MutableStateFlow(SearchAndFilterCriteria())
     val searchAndFilterCriteria: StateFlow<SearchAndFilterCriteria> = _searchAndFilterCriteria.asStateFlow()
     
-    // Filtered games
-    val filteredAvailableGames: LiveData<List<Game>>
-    val filteredLoanedGames: LiveData<List<Game>>
+    // Paginated games
+    val pagedAvailableGames: Flow<PagingData<Game>>
+    val pagedLoanedGames: Flow<PagingData<Game>>
+    val pagedFilteredAvailableGames: Flow<PagingData<Game>>
+    val pagedFilteredLoanedGames: Flow<PagingData<Game>>
     
     // Filter options
     private val _availableBookcases = MutableStateFlow<List<String>>(emptyList())
@@ -39,19 +43,40 @@ class GameListViewModel(application: Application) : AndroidViewModel(application
     private val _availableLocations = MutableStateFlow<List<String>>(emptyList())
     val availableLocations: StateFlow<List<String>> = _availableLocations.asStateFlow()
     
-    // Original games (fallback)
+    // Legacy support - non-paginated games (for backwards compatibility)
     val availableGames: LiveData<List<Game>>
     val loanedGames: LiveData<List<Game>>
+    val filteredAvailableGames: LiveData<List<Game>>
+    val filteredLoanedGames: LiveData<List<Game>>
     
     init {
         val database = AppDatabase.getDatabase(application)
         repository = GameRepository(database.gameDao())
         
-        // Original games
+        // Paginated games
+        pagedAvailableGames = repository.getAvailableGamesPaged()
+            .cachedIn(viewModelScope)
+            
+        pagedLoanedGames = repository.getLoanedGamesPaged()
+            .cachedIn(viewModelScope)
+            
+        pagedFilteredAvailableGames = _searchAndFilterCriteria
+            .flatMapLatest { criteria ->
+                repository.searchAndFilterAvailableGamesPaged(criteria)
+            }
+            .cachedIn(viewModelScope)
+            
+        pagedFilteredLoanedGames = _searchAndFilterCriteria
+            .flatMapLatest { criteria ->
+                repository.searchAndFilterLoanedGamesPaged(criteria)
+            }
+            .cachedIn(viewModelScope)
+        
+        // Legacy - Original non-paginated games (for backwards compatibility)
         availableGames = repository.getAvailableGames().asLiveData()
         loanedGames = repository.getLoanedGames().asLiveData()
         
-        // Filtered games based on search criteria - reactive to criteria changes
+        // Legacy - Filtered games based on search criteria - reactive to criteria changes
         filteredAvailableGames = _searchAndFilterCriteria
             .flatMapLatest { criteria ->
                 repository.searchAndFilterAvailableGames(criteria)
@@ -66,6 +91,31 @@ class GameListViewModel(application: Application) : AndroidViewModel(application
         
         // Load filter options
         loadFilterOptions()
+    }
+    
+    /**
+     * Get paginated games by type
+     * @param type "available", "loaned", or "all"
+     * @param useFilter whether to apply current search/filter criteria
+     */
+    fun getPagedGames(type: String, useFilter: Boolean = false): Flow<PagingData<Game>> {
+        return if (useFilter) {
+            when (type) {
+                "available" -> pagedFilteredAvailableGames
+                "loaned" -> pagedFilteredLoanedGames
+                else -> _searchAndFilterCriteria
+                    .flatMapLatest { criteria ->
+                        repository.searchAndFilterGamesPaged(criteria)
+                    }
+                    .cachedIn(viewModelScope)
+            }
+        } else {
+            when (type) {
+                "available" -> pagedAvailableGames
+                "loaned" -> pagedLoanedGames
+                else -> repository.getAllGamesPaged().cachedIn(viewModelScope)
+            }
+        }
     }
     
     fun updateSearchQuery(query: String) {

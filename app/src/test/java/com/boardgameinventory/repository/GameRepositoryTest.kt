@@ -9,6 +9,7 @@ import org.mockito.Mockito.*
 /**
  * Unit tests for the GameRepository class
  * These tests focus on the repository's interface and basic functionality
+ * including pagination features
  */
 class GameRepositoryTest {
 

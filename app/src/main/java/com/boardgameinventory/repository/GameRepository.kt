@@ -1,6 +1,9 @@
 package com.boardgameinventory.repository
 
 import kotlinx.coroutines.flow.Flow
+import androidx.paging.Pager
+import androidx.paging.PagingConfig
+import androidx.paging.PagingData
 import com.boardgameinventory.data.Game
 import com.boardgameinventory.data.GameDao
 import com.boardgameinventory.data.SearchAndFilterCriteria
@@ -148,4 +151,150 @@ class GameRepository(private val gameDao: GameDao) {
     suspend fun getDistinctBookcases(): List<String> = gameDao.getDistinctBookcases()
     
     suspend fun getDistinctLocations(): List<String> = gameDao.getDistinctLocations()
+    
+    // Pagination methods
+    companion object {
+        const val PAGE_SIZE = 20
+        const val PREFETCH_DISTANCE = 5
+        const val INITIAL_LOAD_SIZE = 40
+    }
+    
+    /**
+     * Get all games with pagination
+     */
+    fun getAllGamesPaged(): Flow<PagingData<Game>> {
+        return Pager(
+            config = PagingConfig(
+                pageSize = PAGE_SIZE,
+                prefetchDistance = PREFETCH_DISTANCE,
+                initialLoadSize = INITIAL_LOAD_SIZE,
+                enablePlaceholders = false
+            ),
+            pagingSourceFactory = { gameDao.getAllGamesPaged() }
+        ).flow
+    }
+    
+    /**
+     * Get available games with pagination
+     */
+    fun getAvailableGamesPaged(): Flow<PagingData<Game>> {
+        return Pager(
+            config = PagingConfig(
+                pageSize = PAGE_SIZE,
+                prefetchDistance = PREFETCH_DISTANCE,
+                initialLoadSize = INITIAL_LOAD_SIZE,
+                enablePlaceholders = false
+            ),
+            pagingSourceFactory = { gameDao.getAvailableGamesPaged() }
+        ).flow
+    }
+    
+    /**
+     * Get loaned games with pagination
+     */
+    fun getLoanedGamesPaged(): Flow<PagingData<Game>> {
+        return Pager(
+            config = PagingConfig(
+                pageSize = PAGE_SIZE,
+                prefetchDistance = PREFETCH_DISTANCE,
+                initialLoadSize = INITIAL_LOAD_SIZE,
+                enablePlaceholders = false
+            ),
+            pagingSourceFactory = { gameDao.getLoanedGamesPaged() }
+        ).flow
+    }
+    
+    /**
+     * Search and filter all games with pagination
+     */
+    fun searchAndFilterGamesPaged(criteria: SearchAndFilterCriteria): Flow<PagingData<Game>> {
+        val searchQuery = if (criteria.searchQuery.isBlank() || criteria.searchQuery.length < 2) {
+            null
+        } else {
+            criteria.searchQuery
+        }
+        
+        val isLoaned = when {
+            criteria.searchQuery.contains("available", ignoreCase = true) -> 0
+            criteria.searchQuery.contains("loaned", ignoreCase = true) -> 1
+            else -> null
+        }
+        
+        return Pager(
+            config = PagingConfig(
+                pageSize = PAGE_SIZE,
+                prefetchDistance = PREFETCH_DISTANCE,
+                initialLoadSize = INITIAL_LOAD_SIZE,
+                enablePlaceholders = false
+            ),
+            pagingSourceFactory = {
+                gameDao.searchAndFilterGamesPaged(
+                    searchQuery = searchQuery,
+                    bookcase = criteria.bookcaseFilter,
+                    isLoaned = isLoaned,
+                    dateFrom = criteria.dateFromFilter,
+                    dateTo = criteria.dateToFilter,
+                    sortBy = criteria.sortBy.name
+                )
+            }
+        ).flow
+    }
+    
+    /**
+     * Search and filter available games with pagination
+     */
+    fun searchAndFilterAvailableGamesPaged(criteria: SearchAndFilterCriteria): Flow<PagingData<Game>> {
+        val searchQuery = if (criteria.searchQuery.isBlank() || criteria.searchQuery.length < 2) {
+            null
+        } else {
+            criteria.searchQuery
+        }
+        
+        return Pager(
+            config = PagingConfig(
+                pageSize = PAGE_SIZE,
+                prefetchDistance = PREFETCH_DISTANCE,
+                initialLoadSize = INITIAL_LOAD_SIZE,
+                enablePlaceholders = false
+            ),
+            pagingSourceFactory = {
+                gameDao.searchAndFilterAvailableGamesPaged(
+                    searchQuery = searchQuery,
+                    bookcase = criteria.bookcaseFilter,
+                    dateFrom = criteria.dateFromFilter,
+                    dateTo = criteria.dateToFilter,
+                    sortBy = criteria.sortBy.name
+                )
+            }
+        ).flow
+    }
+    
+    /**
+     * Search and filter loaned games with pagination
+     */
+    fun searchAndFilterLoanedGamesPaged(criteria: SearchAndFilterCriteria): Flow<PagingData<Game>> {
+        val searchQuery = if (criteria.searchQuery.isBlank() || criteria.searchQuery.length < 2) {
+            null
+        } else {
+            criteria.searchQuery
+        }
+        
+        return Pager(
+            config = PagingConfig(
+                pageSize = PAGE_SIZE,
+                prefetchDistance = PREFETCH_DISTANCE,
+                initialLoadSize = INITIAL_LOAD_SIZE,
+                enablePlaceholders = false
+            ),
+            pagingSourceFactory = {
+                gameDao.searchAndFilterLoanedGamesPaged(
+                    searchQuery = searchQuery,
+                    bookcase = criteria.bookcaseFilter,
+                    dateFrom = criteria.dateFromFilter,
+                    dateTo = criteria.dateToFilter,
+                    sortBy = criteria.sortBy.name
+                )
+            }
+        ).flow
+    }
 }

@@ -10,12 +10,12 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.boardgameinventory.R
 import com.boardgameinventory.data.Game
 import com.boardgameinventory.databinding.FragmentGameListBinding
 import com.boardgameinventory.utils.Utils
 import com.boardgameinventory.viewmodel.GameListViewModel
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.flow.collectLatest
 
 class GameListFragment : Fragment() {
     
@@ -39,7 +39,8 @@ class GameListFragment : Fragment() {
     private val binding get() = _binding!!
     
     private val viewModel: GameListViewModel by viewModels()
-    private lateinit var adapter: GameAdapter
+    private lateinit var adapter: GamePagingAdapter
+    private lateinit var loadStateAdapter: GameLoadStateAdapter
     private var listType: String = TYPE_AVAILABLE
     private var deleteMode: Boolean = false
     
@@ -68,47 +69,46 @@ class GameListFragment : Fragment() {
     }
     
     private fun setupRecyclerView() {
-        adapter = GameAdapter { game, action ->
+        adapter = GamePagingAdapter { game, action ->
             when (action) {
-                GameAdapter.ACTION_CLICK -> {
+                GamePagingAdapter.ACTION_CLICK -> {
                     if (deleteMode) {
                         showDeleteConfirmation(game)
                     } else {
                         openGameDetail(game)
                     }
                 }
-                GameAdapter.ACTION_LOAN -> loanGame(game)
-                GameAdapter.ACTION_RETURN -> returnGame(game)
-                GameAdapter.ACTION_DELETE -> showDeleteConfirmation(game)
-                GameAdapter.ACTION_EDIT -> editGame(game)
+                GamePagingAdapter.ACTION_LOAN -> loanGame(game)
+                GamePagingAdapter.ACTION_RETURN -> returnGame(game)
+                GamePagingAdapter.ACTION_DELETE -> showDeleteConfirmation(game)
+                GamePagingAdapter.ACTION_EDIT -> editGame(game)
             }
         }
+        
+        loadStateAdapter = GameLoadStateAdapter { adapter.retry() }
         
         adapter.setDeleteMode(deleteMode)
         adapter.setShowLoanedTo(listType == TYPE_LOANED)
         
         binding.recyclerView.apply {
             layoutManager = LinearLayoutManager(context)
-            adapter = this@GameListFragment.adapter
+            adapter = this@GameListFragment.adapter.withLoadStateFooter(loadStateAdapter)
         }
     }
     
     private fun observeGames() {
-        // Observe filtered games instead of original games
-        if (listType == TYPE_AVAILABLE) {
-            viewModel.filteredAvailableGames.observe(viewLifecycleOwner) { games ->
-                updateGamesList(games)
-            }
-        } else {
-            viewModel.filteredLoanedGames.observe(viewLifecycleOwner) { games ->
-                updateGamesList(games)
+        // Observe paginated games using lifecycle scope
+        lifecycleScope.launch {
+            if (listType == TYPE_AVAILABLE) {
+                viewModel.pagedAvailableGames.collectLatest { pagingData ->
+                    adapter.submitData(pagingData)
+                }
+            } else {
+                viewModel.pagedLoanedGames.collectLatest { pagingData ->
+                    adapter.submitData(pagingData)
+                }
             }
         }
-    }
-    
-    private fun updateGamesList(games: List<Game>) {
-        adapter.submitList(games)
-        binding.tvEmpty.visibility = if (games.isEmpty()) View.VISIBLE else View.GONE
     }
     
     private fun openGameDetail(game: Game) {
@@ -126,7 +126,7 @@ class GameListFragment : Fragment() {
     private fun returnGame(game: Game) {
         lifecycleScope.launch {
             viewModel.returnGame(game.id)
-            Utils.showToast(requireContext(), getString(R.string.game_returned))
+            Utils.showToast(requireContext(), "Game returned")
         }
     }
     
@@ -138,8 +138,8 @@ class GameListFragment : Fragment() {
     
     private fun showDeleteConfirmation(game: Game) {
         AlertDialog.Builder(requireContext())
-            .setTitle(getString(R.string.confirm))
-            .setMessage(getString(R.string.delete_confirmation, game.name))
+            .setTitle("Confirm")
+            .setMessage("Delete ${game.name}?")
             .setPositiveButton(android.R.string.ok) { _, _ ->
                 deleteGame(game)
             }
@@ -150,7 +150,7 @@ class GameListFragment : Fragment() {
     private fun deleteGame(game: Game) {
         lifecycleScope.launch {
             viewModel.deleteGame(game.id)
-            Utils.showToast(requireContext(), getString(R.string.game_deleted))
+            Utils.showToast(requireContext(), "Game deleted")
         }
     }
     

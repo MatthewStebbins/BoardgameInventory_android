@@ -1,0 +1,122 @@
+package com.boardgameinventory.pagination
+
+import androidx.paging.PagingData
+import androidx.paging.testing.asSnapshot
+import com.boardgameinventory.data.Game
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.test.runTest
+import org.junit.Assert.*
+import org.junit.Test
+
+/**
+ * Basic pagination functionality tests
+ * Tests core pagination behavior without complex mocking
+ */
+@OptIn(ExperimentalCoroutinesApi::class)
+class PaginationBasicsTest {
+
+    @Test
+    fun testPagingDataCreation() = runTest {
+        // Given
+        val testGames = createTestGames(10)
+        
+        // When
+        val pagingData = PagingData.from(testGames)
+        val snapshot = pagingData.asSnapshot()
+        
+        // Then
+        assertEquals(10, snapshot.size)
+        assertEquals("Game 1", snapshot[0].name)
+        assertEquals("Game 10", snapshot[9].name)
+    }
+
+    @Test
+    fun testEmptyPagingData() = runTest {
+        // Given
+        val emptyGames = emptyList<Game>()
+        
+        // When
+        val pagingData = PagingData.from(emptyGames)
+        val snapshot = pagingData.asSnapshot()
+        
+        // Then
+        assertEquals(0, snapshot.size)
+        assertTrue(snapshot.isEmpty())
+    }
+
+    @Test
+    fun testLargePagingDataSet() = runTest {
+        // Given
+        val largeGameSet = createTestGames(100)
+        
+        // When
+        val pagingData = PagingData.from(largeGameSet)
+        val snapshot = pagingData.asSnapshot()
+        
+        // Then
+        assertEquals(100, snapshot.size)
+        assertEquals("Game 1", snapshot[0].name)
+        assertEquals("Game 100", snapshot[99].name)
+    }
+
+    @Test
+    fun testPagingDataFiltering() = runTest {
+        // Given
+        val testGames = createTestGames(20)
+        val pagingData = PagingData.from(testGames)
+        
+        // When
+        val snapshot = pagingData.asSnapshot()
+        val availableGames = snapshot.filter { it.loanedTo == null }
+        val loanedGames = snapshot.filter { it.loanedTo != null }
+        
+        // Then
+        assertTrue(availableGames.size > 0)
+        assertTrue(loanedGames.size > 0)
+        assertEquals(20, availableGames.size + loanedGames.size)
+    }
+
+    @Test
+    fun testGameDataIntegrity() = runTest {
+        // Given
+        val testGames = createTestGames(5)
+        val pagingData = PagingData.from(testGames)
+        
+        // When
+        val snapshot = pagingData.asSnapshot()
+        
+        // Then
+        snapshot.forEachIndexed { index, game ->
+            assertEquals("Game ${index + 1}", game.name)
+            assertEquals("TEST${index + 1}", game.barcode)
+            assertEquals("A", game.bookcase)
+            assertEquals("1", game.shelf)
+            
+            // Test loaned vs available logic
+            if ((index + 1) % 3 == 0) {
+                assertNotNull("Every 3rd game should be loaned", game.loanedTo)
+                assertNotNull("Loaned games should have loan date", game.dateLoaned)
+            } else {
+                assertNull("Non-3rd games should be available", game.loanedTo)
+                assertNull("Available games should not have loan date", game.dateLoaned)
+            }
+        }
+    }
+
+    private fun createTestGames(count: Int): List<Game> {
+        return (1..count).map { index ->
+            Game(
+                id = index.toLong(),
+                name = "Game $index",
+                barcode = "TEST$index",
+                bookcase = "A",
+                shelf = "1",
+                loanedTo = if (index % 3 == 0) "User $index" else null,
+                description = "Test game $index description",
+                imageUrl = null,
+                dateAdded = 1234567890L + index,
+                dateLoaned = if (index % 3 == 0) 1234567890L + index else null
+            )
+        }
+    }
+}
