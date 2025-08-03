@@ -9,6 +9,8 @@ import com.boardgameinventory.repository.GameRepositoryTest
 import com.boardgameinventory.utils.ScopedStorageUtilsTest
 import com.boardgameinventory.utils.UtilsTest
 import com.boardgameinventory.validation.ValidationUtilsTest
+import com.boardgameinventory.validation.InputValidationExtensionsTest
+import com.boardgameinventory.validation.SecurityValidationTest
 import com.boardgameinventory.viewmodel.MainViewModelTest
 import com.boardgameinventory.viewmodel.GameListViewModelTest
 import org.junit.runner.RunWith
@@ -24,6 +26,8 @@ import org.junit.runners.Suite
     UtilsTest::class,
     ScopedStorageUtilsTest::class,
     ValidationUtilsTest::class,
+    InputValidationExtensionsTest::class,
+    SecurityValidationTest::class,
     GameRepositoryTest::class,
     MainViewModelTest::class,
     GameListViewModelTest::class,
