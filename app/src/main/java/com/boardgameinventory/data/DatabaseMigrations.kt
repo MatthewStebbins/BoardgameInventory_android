@@ -20,12 +20,12 @@ object DatabaseMigrations {
      * Example: Adding yearPublished field to games table
      */
     val MIGRATION_1_2 = object : Migration(1, 2) {
-        override fun migrate(database: SupportSQLiteDatabase) {
+        override fun migrate(db: SupportSQLiteDatabase) {
             // Add yearPublished column to games table
-            database.execSQL("ALTER TABLE games ADD COLUMN yearPublished INTEGER")
+            db.execSQL("ALTER TABLE games ADD COLUMN yearPublished INTEGER")
             
             // Set default value for existing records
-            database.execSQL("UPDATE games SET yearPublished = 0 WHERE yearPublished IS NULL")
+            db.execSQL("UPDATE games SET yearPublished = 0 WHERE yearPublished IS NULL")
         }
     }
     
@@ -34,14 +34,14 @@ object DatabaseMigrations {
      * Example: Adding categories and tags support
      */
     val MIGRATION_2_3 = object : Migration(2, 3) {
-        override fun migrate(database: SupportSQLiteDatabase) {
+        override fun migrate(db: SupportSQLiteDatabase) {
             // Add category and tags columns
-            database.execSQL("ALTER TABLE games ADD COLUMN category TEXT")
-            database.execSQL("ALTER TABLE games ADD COLUMN tags TEXT")
+            db.execSQL("ALTER TABLE games ADD COLUMN category TEXT")
+            db.execSQL("ALTER TABLE games ADD COLUMN tags TEXT")
             
             // Set default values
-            database.execSQL("UPDATE games SET category = 'Uncategorized' WHERE category IS NULL")
-            database.execSQL("UPDATE games SET tags = '' WHERE tags IS NULL")
+            db.execSQL("UPDATE games SET category = 'Uncategorized' WHERE category IS NULL")
+            db.execSQL("UPDATE games SET tags = '' WHERE tags IS NULL")
         }
     }
     
@@ -50,12 +50,12 @@ object DatabaseMigrations {
      * Example: Adding rating and notes fields
      */
     val MIGRATION_3_4 = object : Migration(3, 4) {
-        override fun migrate(database: SupportSQLiteDatabase) {
+        override fun migrate(db: SupportSQLiteDatabase) {
             // Add rating and notes columns
-            database.execSQL("ALTER TABLE games ADD COLUMN rating REAL DEFAULT 0.0")
-            database.execSQL("ALTER TABLE games ADD COLUMN notes TEXT")
-            database.execSQL("ALTER TABLE games ADD COLUMN playCount INTEGER DEFAULT 0")
-            database.execSQL("ALTER TABLE games ADD COLUMN lastPlayed INTEGER")
+            db.execSQL("ALTER TABLE games ADD COLUMN rating REAL DEFAULT 0.0")
+            db.execSQL("ALTER TABLE games ADD COLUMN notes TEXT")
+            db.execSQL("ALTER TABLE games ADD COLUMN playCount INTEGER DEFAULT 0")
+            db.execSQL("ALTER TABLE games ADD COLUMN lastPlayed INTEGER")
         }
     }
     
@@ -64,12 +64,12 @@ object DatabaseMigrations {
      * Example: Adding game conditions and purchase info
      */
     val MIGRATION_4_5 = object : Migration(4, 5) {
-        override fun migrate(database: SupportSQLiteDatabase) {
+        override fun migrate(db: SupportSQLiteDatabase) {
             // Add condition and purchase information
-            database.execSQL("ALTER TABLE games ADD COLUMN condition TEXT DEFAULT 'Good'")
-            database.execSQL("ALTER TABLE games ADD COLUMN purchasePrice REAL")
-            database.execSQL("ALTER TABLE games ADD COLUMN purchaseDate INTEGER")
-            database.execSQL("ALTER TABLE games ADD COLUMN retailer TEXT")
+            db.execSQL("ALTER TABLE games ADD COLUMN condition TEXT DEFAULT 'Good'")
+            db.execSQL("ALTER TABLE games ADD COLUMN purchasePrice REAL")
+            db.execSQL("ALTER TABLE games ADD COLUMN purchaseDate INTEGER")
+            db.execSQL("ALTER TABLE games ADD COLUMN retailer TEXT")
         }
     }
     
@@ -78,15 +78,15 @@ object DatabaseMigrations {
      * Example: Adding comprehensive game metadata
      */
     val MIGRATION_5_6 = object : Migration(5, 6) {
-        override fun migrate(database: SupportSQLiteDatabase) {
+        override fun migrate(db: SupportSQLiteDatabase) {
             // Add comprehensive metadata fields
-            database.execSQL("ALTER TABLE games ADD COLUMN minPlayers INTEGER")
-            database.execSQL("ALTER TABLE games ADD COLUMN maxPlayers INTEGER")
-            database.execSQL("ALTER TABLE games ADD COLUMN playingTime INTEGER")
-            database.execSQL("ALTER TABLE games ADD COLUMN minAge INTEGER")
-            database.execSQL("ALTER TABLE games ADD COLUMN designer TEXT")
-            database.execSQL("ALTER TABLE games ADD COLUMN publisher TEXT")
-            database.execSQL("ALTER TABLE games ADD COLUMN bggId INTEGER")
+            db.execSQL("ALTER TABLE games ADD COLUMN minPlayers INTEGER")
+            db.execSQL("ALTER TABLE games ADD COLUMN maxPlayers INTEGER")
+            db.execSQL("ALTER TABLE games ADD COLUMN playingTime INTEGER")
+            db.execSQL("ALTER TABLE games ADD COLUMN minAge INTEGER")
+            db.execSQL("ALTER TABLE games ADD COLUMN designer TEXT")
+            db.execSQL("ALTER TABLE games ADD COLUMN publisher TEXT")
+            db.execSQL("ALTER TABLE games ADD COLUMN bggId INTEGER")
         }
     }
     
@@ -96,12 +96,12 @@ object DatabaseMigrations {
      * Only use as a last resort during development
      */
     val DESTRUCTIVE_FALLBACK = object : Migration(1, 6) {
-        override fun migrate(database: SupportSQLiteDatabase) {
+        override fun migrate(db: SupportSQLiteDatabase) {
             // Drop existing table
-            database.execSQL("DROP TABLE IF EXISTS games")
+            db.execSQL("DROP TABLE IF EXISTS games")
             
             // Recreate table with latest schema
-            database.execSQL("""
+            db.execSQL("""
                 CREATE TABLE games (
                     id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
                     name TEXT NOT NULL,
@@ -135,11 +135,11 @@ object DatabaseMigrations {
             """)
             
             // Create indexes for better performance
-            database.execSQL("CREATE INDEX index_games_name ON games(name)")
-            database.execSQL("CREATE INDEX index_games_barcode ON games(barcode)")
-            database.execSQL("CREATE INDEX index_games_bookcase ON games(bookcase)")
-            database.execSQL("CREATE INDEX index_games_loanedTo ON games(loanedTo)")
-            database.execSQL("CREATE INDEX index_games_category ON games(category)")
+            db.execSQL("CREATE INDEX index_games_name ON games(name)")
+            db.execSQL("CREATE INDEX index_games_barcode ON games(barcode)")
+            db.execSQL("CREATE INDEX index_games_bookcase ON games(bookcase)")
+            db.execSQL("CREATE INDEX index_games_loanedTo ON games(loanedTo)")
+            db.execSQL("CREATE INDEX index_games_category ON games(category)")
         }
     }
     

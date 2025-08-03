@@ -115,8 +115,9 @@ class ScopedStorageUtilsTest {
         val hasPermissions = ScopedStorageUtils.hasFilePermissions(context)
 
         // Then
-        // Should not throw exception and return a boolean
-        assertTrue(hasPermissions is Boolean)
+        // Should not throw exception (test passes if no exception is thrown)
+        // hasPermissions is always Boolean, so this test confirms the method works
+        assertTrue("Method should return boolean", hasPermissions || !hasPermissions)
     }
 
     @Test

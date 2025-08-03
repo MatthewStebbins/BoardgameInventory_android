@@ -13,7 +13,7 @@ import java.io.*
 
 object ExportUtils {
     
-    fun exportToCSV(context: Context, games: List<Game>, launcher: ActivityResultLauncher<Intent>) {
+    fun exportToCSV(context: Context, games: List<Game>, launcher: androidx.activity.result.ActivityResultLauncher<Intent>) {
         val intent = Intent(Intent.ACTION_CREATE_DOCUMENT).apply {
             addCategory(Intent.CATEGORY_OPENABLE)
             type = "text/csv"
@@ -22,7 +22,7 @@ object ExportUtils {
         launcher.launch(intent)
     }
     
-    fun exportToExcel(context: Context, games: List<Game>, launcher: ActivityResultLauncher<Intent>) {
+    fun exportToExcel(context: Context, games: List<Game>, launcher: androidx.activity.result.ActivityResultLauncher<Intent>) {
         val intent = Intent(Intent.ACTION_CREATE_DOCUMENT).apply {
             addCategory(Intent.CATEGORY_OPENABLE)
             type = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"

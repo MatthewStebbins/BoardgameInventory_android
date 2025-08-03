@@ -171,25 +171,43 @@ class ExportImportActivity : AppCompatActivity() {
     private fun exportAsCSV() {
         binding.tvStatus.text = "Preparing CSV export..."
         binding.tvStatus.visibility = View.VISIBLE
-        ExportUtils.exportToCSV(this, emptyList(), exportCSVLauncher)
+        val intent = Intent(Intent.ACTION_CREATE_DOCUMENT).apply {
+            addCategory(Intent.CATEGORY_OPENABLE)
+            type = "text/csv"
+            putExtra(Intent.EXTRA_TITLE, "games_export_${System.currentTimeMillis()}.csv")
+        }
+        exportCSVLauncher.launch(intent)
     }
     
     private fun exportAsExcel() {
         binding.tvStatus.text = "Preparing Excel export..."
         binding.tvStatus.visibility = View.VISIBLE
-        ExportUtils.exportToExcel(this, emptyList(), exportExcelLauncher)
+        val intent = Intent(Intent.ACTION_CREATE_DOCUMENT).apply {
+            addCategory(Intent.CATEGORY_OPENABLE)
+            type = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+            putExtra(Intent.EXTRA_TITLE, "games_export_${System.currentTimeMillis()}.xlsx")
+        }
+        exportExcelLauncher.launch(intent)
     }
     
     private fun importFromCSV() {
         binding.tvStatus.text = "Select CSV file to import..."
         binding.tvStatus.visibility = View.VISIBLE
-        ImportUtils.importFromCSV(this, importCSVLauncher)
+        val intent = Intent(Intent.ACTION_OPEN_DOCUMENT).apply {
+            addCategory(Intent.CATEGORY_OPENABLE)
+            type = "text/csv"
+        }
+        importCSVLauncher.launch(intent)
     }
     
     private fun importFromExcel() {
         binding.tvStatus.text = "Select Excel file to import..."
         binding.tvStatus.visibility = View.VISIBLE
-        ImportUtils.importFromExcel(this, importExcelLauncher)
+        val intent = Intent(Intent.ACTION_OPEN_DOCUMENT).apply {
+            addCategory(Intent.CATEGORY_OPENABLE)
+            type = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+        }
+        importExcelLauncher.launch(intent)
     }
     
     override fun onSupportNavigateUp(): Boolean {

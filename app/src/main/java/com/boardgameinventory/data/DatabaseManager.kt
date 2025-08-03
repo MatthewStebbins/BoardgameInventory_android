@@ -202,7 +202,7 @@ class DatabaseManager(private val context: Context) {
      */
     private fun checkTableIntegrity(): Boolean {
         return try {
-            val database = AppDatabase.getDatabase(context)
+            AppDatabase.getDatabase(context)
             // For now, just return true as a basic check
             // In a full implementation, we would access the underlying SQLite database
             true

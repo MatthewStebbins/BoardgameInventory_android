@@ -8,8 +8,8 @@ import android.util.Log
 
 @Database(
     entities = [Game::class],
-    version = 1,
-    exportSchema = false // Simplified for now
+    version = 6,
+    exportSchema = false
 )
 abstract class AppDatabase : RoomDatabase() {
     

@@ -56,7 +56,7 @@ fun Game.sanitized(): Game {
  * Checks if this game is currently loaned out
  */
 fun Game.isLoaned(): Boolean {
-    return !loanedTo.isNullOrBlank() && dateLoaned != null && dateLoaned!! > 0
+    return !loanedTo.isNullOrBlank() && dateLoaned != null && dateLoaned > 0
 }
 
 /**

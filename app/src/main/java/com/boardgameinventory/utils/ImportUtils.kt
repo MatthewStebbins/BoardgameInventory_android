@@ -11,7 +11,7 @@ import java.io.InputStreamReader
 
 object ImportUtils {
     
-    fun importFromCSV(context: Context, launcher: ActivityResultLauncher<Intent>) {
+    fun importFromCSV(context: Context, launcher: androidx.activity.result.ActivityResultLauncher<Intent>) {
         val intent = Intent(Intent.ACTION_OPEN_DOCUMENT).apply {
             addCategory(Intent.CATEGORY_OPENABLE)
             type = "text/csv"
@@ -19,7 +19,7 @@ object ImportUtils {
         launcher.launch(intent)
     }
     
-    fun importFromExcel(context: Context, launcher: ActivityResultLauncher<Intent>) {
+    fun importFromExcel(context: Context, launcher: androidx.activity.result.ActivityResultLauncher<Intent>) {
         val intent = Intent(Intent.ACTION_OPEN_DOCUMENT).apply {
             addCategory(Intent.CATEGORY_OPENABLE)
             type = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"

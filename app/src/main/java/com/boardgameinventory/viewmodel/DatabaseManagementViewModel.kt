@@ -34,8 +34,8 @@ class DatabaseManagementViewModel(application: Application) : AndroidViewModel(a
     private val _isLoading = MutableLiveData<Boolean>()
     val isLoading: LiveData<Boolean> = _isLoading
     
-    private val _operationResult = MutableLiveData<OperationResult>()
-    val operationResult: LiveData<OperationResult> = _operationResult
+    private val _operationResult = MutableLiveData<OperationResult?>()
+    val operationResult: LiveData<OperationResult?> = _operationResult
     
     private val _databaseVersion = MutableLiveData<Int>()
     val databaseVersion: LiveData<Int> = _databaseVersion
