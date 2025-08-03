@@ -70,9 +70,9 @@ interface GameDao {
     @Query("""
         SELECT * FROM games 
         WHERE (:searchQuery IS NULL OR :searchQuery = '' OR 
-               name LIKE '%' || :searchQuery || '%' OR 
-               barcode LIKE '%' || :searchQuery || '%' OR 
-               description LIKE '%' || :searchQuery || '%')
+               (LOWER(name) LIKE '%' || LOWER(:searchQuery) || '%' OR 
+                barcode LIKE '%' || :searchQuery || '%' OR 
+                LOWER(description) LIKE '%' || LOWER(:searchQuery) || '%'))
         AND (:bookcase IS NULL OR bookcase = :bookcase)
         AND (:isLoaned IS NULL OR 
              (:isLoaned = 1 AND loanedTo IS NOT NULL) OR 
@@ -80,12 +80,13 @@ interface GameDao {
         AND (:dateFrom IS NULL OR dateAdded >= :dateFrom)
         AND (:dateTo IS NULL OR dateAdded <= :dateTo)
         ORDER BY 
-            CASE WHEN :sortBy = 'NAME_ASC' THEN name END ASC,
-            CASE WHEN :sortBy = 'NAME_DESC' THEN name END DESC,
+            CASE WHEN :sortBy = 'NAME_ASC' THEN LOWER(name) END ASC,
+            CASE WHEN :sortBy = 'NAME_DESC' THEN LOWER(name) END DESC,
             CASE WHEN :sortBy = 'DATE_ADDED_ASC' THEN dateAdded END ASC,
             CASE WHEN :sortBy = 'DATE_ADDED_DESC' THEN dateAdded END DESC,
             CASE WHEN :sortBy = 'LOCATION_ASC' THEN bookcase || shelf END ASC,
             CASE WHEN :sortBy = 'LOCATION_DESC' THEN bookcase || shelf END DESC
+        LIMIT 1000
     """)
     fun searchAndFilterGames(
         searchQuery: String?,

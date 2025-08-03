@@ -86,7 +86,13 @@ class GameRepository(private val gameDao: GameDao) {
     
     // Search and Filter methods
     fun searchAndFilterGames(criteria: SearchAndFilterCriteria): Flow<List<Game>> {
-        val searchQuery = if (criteria.searchQuery.isBlank()) null else criteria.searchQuery
+        // Only perform search if query is empty or has at least 2 characters
+        val searchQuery = if (criteria.searchQuery.isBlank() || criteria.searchQuery.length < 2) {
+            null
+        } else {
+            criteria.searchQuery
+        }
+        
         val isLoaned = when {
             criteria.searchQuery.contains("available", ignoreCase = true) -> 0
             criteria.searchQuery.contains("loaned", ignoreCase = true) -> 1
@@ -104,7 +110,12 @@ class GameRepository(private val gameDao: GameDao) {
     }
     
     fun searchAndFilterAvailableGames(criteria: SearchAndFilterCriteria): Flow<List<Game>> {
-        val searchQuery = if (criteria.searchQuery.isBlank()) null else criteria.searchQuery
+        // Only perform search if query is empty or has at least 2 characters
+        val searchQuery = if (criteria.searchQuery.isBlank() || criteria.searchQuery.length < 2) {
+            null
+        } else {
+            criteria.searchQuery
+        }
         
         return gameDao.searchAndFilterGames(
             searchQuery = searchQuery,
@@ -117,7 +128,12 @@ class GameRepository(private val gameDao: GameDao) {
     }
     
     fun searchAndFilterLoanedGames(criteria: SearchAndFilterCriteria): Flow<List<Game>> {
-        val searchQuery = if (criteria.searchQuery.isBlank()) null else criteria.searchQuery
+        // Only perform search if query is empty or has at least 2 characters
+        val searchQuery = if (criteria.searchQuery.isBlank() || criteria.searchQuery.length < 2) {
+            null
+        } else {
+            criteria.searchQuery
+        }
         
         return gameDao.searchAndFilterGames(
             searchQuery = searchQuery,

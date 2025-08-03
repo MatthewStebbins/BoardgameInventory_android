@@ -67,12 +67,20 @@ class GameListActivity : AppCompatActivity() {
     }
     
     private fun setupSearchAndFilter() {
-        // Setup search text input
+        // Setup search text input with debouncing to prevent freezing
+        var searchJob: kotlinx.coroutines.Job? = null
         binding.etSearch.addTextChangedListener(object : android.text.TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
             override fun afterTextChanged(s: android.text.Editable?) {
-                viewModel.updateSearchQuery(s?.toString() ?: "")
+                // Cancel previous search job to prevent multiple simultaneous searches
+                searchJob?.cancel()
+                
+                searchJob = lifecycleScope.launch {
+                    // Add debouncing to prevent excessive database queries
+                    kotlinx.coroutines.delay(300) // Wait 300ms after user stops typing
+                    viewModel.updateSearchQuery(s?.toString() ?: "")
+                }
             }
         })
         
