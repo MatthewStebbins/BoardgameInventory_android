@@ -19,7 +19,7 @@ import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 
-class GameDetailActivity : AppCompatActivity() {
+class GameDetailActivity : BaseAdActivity() {
     
     private lateinit var binding: ActivityGameDetailBinding
     private var game: Game? = null
@@ -67,6 +67,7 @@ class GameDetailActivity : AppCompatActivity() {
         setupActionBar()
         displayGameDetails()
         setupClickListeners()
+        setupAdsManually()
     }
     
     private fun setupActionBar() {
@@ -176,6 +177,10 @@ class GameDetailActivity : AppCompatActivity() {
                 }
             }
         }
+    }
+    
+    private fun setupAdsManually() {
+        setupAdsWithBinding(binding.adContainer, binding.adView, "GameDetailActivity")
     }
     
     override fun onSupportNavigateUp(): Boolean {

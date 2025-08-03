@@ -8,17 +8,17 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import com.boardgameinventory.databinding.ActivityMainBinding
 import com.boardgameinventory.ui.*
+import com.boardgameinventory.ui.ExportImportActivity
 import com.boardgameinventory.utils.AdManager
 import com.boardgameinventory.utils.DeveloperMode
 import com.boardgameinventory.viewmodel.MainViewModel
 import com.google.android.gms.ads.AdView
 import kotlinx.coroutines.launch
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : BaseAdActivity() {
     
     private lateinit var binding: ActivityMainBinding
     private val viewModel: MainViewModel by viewModels()
-    private var adView: AdView? = null
     
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -27,8 +27,99 @@ class MainActivity : AppCompatActivity() {
         
         setupClickListeners()
         setupVersionInfo()
-        setupAds()
         observeStats()
+        
+        // Setup ads manually since BaseAdActivity isn't finding the views
+        setupAdsManually()
+    }
+    
+    private fun setupAdsManually() {
+        try {
+            setupAdsWithBinding(binding.adContainer, binding.adView, "MainActivity")
+        } catch (e: Exception) {
+            android.util.Log.e("MainActivity", "Error in ad setup: ${e.message}", e)
+        }
+    }
+    
+    /**
+     * Override to use data binding for ad view access
+     */
+    override fun initializeAdView() {
+        try {
+            android.util.Log.d("MainActivity", "Initializing AdView using data binding...")
+            
+            // Access adContainer through binding
+            val adContainer = binding.adContainer
+            android.util.Log.d("MainActivity", "adContainer from binding found")
+            android.util.Log.d("MainActivity", "adContainer class: ${adContainer.javaClass.simpleName}")
+            android.util.Log.d("MainActivity", "adContainer visibility: ${adContainer.visibility}")
+            
+            // Set test background
+            adContainer.setBackgroundColor(android.graphics.Color.parseColor("#FF5722")) // Red background
+            adContainer.visibility = android.view.View.VISIBLE
+            android.util.Log.d("MainActivity", "Set red background on adContainer")
+            
+            // Access adView through binding
+            adView = binding.adView
+            android.util.Log.d("MainActivity", "adView from binding: ${adView != null}")
+            
+            if (adView != null) {
+                android.util.Log.d("MainActivity", "Found AdView through binding - configuring...")
+                
+                // Set yellow background for testing
+                adView!!.setBackgroundColor(android.graphics.Color.parseColor("#FFEB3B"))
+                adView!!.visibility = android.view.View.VISIBLE
+                
+                // Configure the AdView
+                configureAdView(adView!!)
+                
+                // Add timeout mechanism
+                android.os.Handler(android.os.Looper.getMainLooper()).postDelayed({
+                    if (!hasAdLoaded) {
+                        android.util.Log.w("MainActivity", "Ad loading timeout - no response after 15 seconds")
+                        adView!!.setBackgroundColor(android.graphics.Color.parseColor("#9C27B0")) // Purple for timeout
+                    }
+                }, 15000)
+                
+                // Load the ad
+                AdManager.loadAd(adView!!)
+                android.util.Log.d("MainActivity", "AdView configured and ad loading started")
+            } else {
+                android.util.Log.e("MainActivity", "adView not found in binding")
+            }
+        } catch (e: Exception) {
+            android.util.Log.e("MainActivity", "Error in initializeAdView: ${e.message}", e)
+            // Fall back to parent implementation
+            super.initializeAdView()
+        }
+    }
+    
+    private var hasAdLoaded = false
+    
+    /**
+     * Configure the AdView with proper settings and listeners
+     */
+    private fun configureAdView(adView: com.google.android.gms.ads.AdView) {
+        android.util.Log.d("MainActivity", "Configuring AdView...")
+        
+        // Set ad listener for debugging
+        adView.adListener = object : com.google.android.gms.ads.AdListener() {
+            override fun onAdFailedToLoad(adError: com.google.android.gms.ads.LoadAdError) {
+                android.util.Log.e("MainActivity", "Ad failed to load: ${adError.message}")
+                hasAdLoaded = true
+                adView.setBackgroundColor(android.graphics.Color.parseColor("#FF9800")) // Orange for error
+            }
+            
+            override fun onAdLoaded() {
+                android.util.Log.d("MainActivity", "*** AD LOADED SUCCESSFULLY! ***")
+                hasAdLoaded = true
+                adView.setBackgroundColor(android.graphics.Color.parseColor("#4CAF50")) // Green for success
+            }
+            
+            override fun onAdClicked() {
+                android.util.Log.d("MainActivity", "Ad clicked")
+            }
+        }
     }
     
     override fun onResume() {
@@ -103,34 +194,6 @@ class MainActivity : AppCompatActivity() {
         } catch (e: Exception) {
             // If the view is not found, just continue without version info
             android.util.Log.w("MainActivity", "Version TextView not found: ${e.message}")
-        }
-    }
-    
-    private fun setupAds() {
-        // Initialize AdMob
-        AdManager.initialize(this)
-        
-        // Only show ads if the feature is enabled
-        if (AdManager.shouldShowAds()) {
-            // Find the AdView in the included layout using getIdentifier
-            try {
-                val adViewId = resources.getIdentifier("adView", "id", packageName)
-                adView = findViewById(adViewId)
-                
-                if (adView != null) {
-                    AdManager.loadAd(adView!!)
-                }
-            } catch (e: Exception) {
-                android.util.Log.w("MainActivity", "AdView not found: ${e.message}")
-            }
-        } else {
-            // Hide ad container if ads are disabled
-            try {
-                val adContainerId = resources.getIdentifier("adContainer", "id", packageName)
-                findViewById<android.view.View>(adContainerId)?.visibility = android.view.View.GONE
-            } catch (e: Exception) {
-                android.util.Log.w("MainActivity", "Ad container not found: ${e.message}")
-            }
         }
     }
     

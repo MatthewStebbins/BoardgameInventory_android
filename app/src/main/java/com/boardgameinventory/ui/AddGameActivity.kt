@@ -13,6 +13,7 @@ import androidx.core.widget.addTextChangedListener
 import androidx.lifecycle.lifecycleScope
 import com.boardgameinventory.R
 import com.boardgameinventory.databinding.ActivityAddGameBinding
+import com.boardgameinventory.utils.AdManager
 import com.boardgameinventory.utils.Utils
 import com.boardgameinventory.viewmodel.AddGameViewModel
 import com.boardgameinventory.validation.GameInputValidation
@@ -23,7 +24,7 @@ import com.journeyapps.barcodescanner.ScanContract
 import com.journeyapps.barcodescanner.ScanOptions
 import kotlinx.coroutines.launch
 
-class AddGameActivity : AppCompatActivity() {
+class AddGameActivity : BaseAdActivity() {
     
     private lateinit var binding: ActivityAddGameBinding
     private val viewModel: AddGameViewModel by viewModels()
@@ -53,6 +54,15 @@ class AddGameActivity : AppCompatActivity() {
         setupClickListeners()
         setupTextWatchers()
         observeViewModel()
+        setupAdsManually()
+    }
+    
+    private fun setupAdsManually() {
+        try {
+            setupAdsWithBinding(binding.adContainer, binding.adView, "AddGameActivity")
+        } catch (e: Exception) {
+            android.util.Log.e("AddGameActivity", "Error in ad setup: ${e.message}", e)
+        }
     }
     
     private fun setupToolbar() {

@@ -20,7 +20,7 @@ import com.journeyapps.barcodescanner.ScanContract
 import com.journeyapps.barcodescanner.ScanOptions
 import kotlinx.coroutines.launch
 
-class ReturnGameActivity : AppCompatActivity() {
+class ReturnGameActivity : BaseAdActivity() {
     
     private lateinit var binding: ActivityReturnGameBinding
     private lateinit var adapter: GameAdapter
@@ -53,6 +53,7 @@ class ReturnGameActivity : AppCompatActivity() {
         setupClickListeners()
         setupLocationBarcodeHandler()
         observeGames()
+        setupAdsManually()
     }
     
     private fun setupActionBar() {
@@ -239,6 +240,10 @@ class ReturnGameActivity : AppCompatActivity() {
                     getString(R.string.error_finding_game, e.message))
             }
         }
+    }
+    
+    private fun setupAdsManually() {
+        setupAdsWithBinding(binding.adContainer, binding.adView, "ReturnGameActivity")
     }
     
     override fun onSupportNavigateUp(): Boolean {

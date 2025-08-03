@@ -44,6 +44,15 @@ class GameListActivity : BaseAdActivity() {
         setupToolbar()
         setupViewPager()
         setupSearchAndFilter()
+        setupAdsManually()
+    }
+    
+    private fun setupAdsManually() {
+        try {
+            setupAdsWithBinding(binding.adContainer, binding.adView, "GameListActivity")
+        } catch (e: Exception) {
+            android.util.Log.e("GameListActivity", "Error in ad setup: ${e.message}", e)
+        }
     }
     
     private fun setupToolbar() {

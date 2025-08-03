@@ -24,7 +24,7 @@ import com.journeyapps.barcodescanner.ScanContract
 import com.journeyapps.barcodescanner.ScanOptions
 import kotlinx.coroutines.launch
 
-class LoanGameActivity : AppCompatActivity() {
+class LoanGameActivity : BaseAdActivity() {
     
     private lateinit var binding: ActivityLoanGameBinding
     private lateinit var adapter: GameAdapter
@@ -57,6 +57,7 @@ class LoanGameActivity : AppCompatActivity() {
         setupClickListeners()
         setupValidation()
         observeGames()
+        setupAdsManually()
     }
     
     private fun setupValidation() {
@@ -209,6 +210,10 @@ class LoanGameActivity : AppCompatActivity() {
                     getString(R.string.error_finding_game, e.message))
             }
         }
+    }
+    
+    private fun setupAdsManually() {
+        setupAdsWithBinding(binding.adContainer, binding.adView, "LoanGameActivity")
     }
     
     override fun onSupportNavigateUp(): Boolean {

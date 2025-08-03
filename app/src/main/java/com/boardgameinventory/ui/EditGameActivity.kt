@@ -26,7 +26,7 @@ import com.journeyapps.barcodescanner.ScanContract
 import com.journeyapps.barcodescanner.ScanOptions
 import kotlinx.coroutines.launch
 
-class EditGameActivity : AppCompatActivity() {
+class EditGameActivity : BaseAdActivity() {
     
     private lateinit var binding: ActivityEditGameBinding
     private val viewModel: EditGameViewModel by viewModels()
@@ -72,6 +72,7 @@ class EditGameActivity : AppCompatActivity() {
         setupTextWatchers()
         populateFields()
         observeViewModel()
+        setupAdsManually()
     }
     
     private fun setupToolbar() {
@@ -227,6 +228,10 @@ class EditGameActivity : AppCompatActivity() {
             )
             viewModel.updateGame(updatedGame)
         }
+    }
+    
+    private fun setupAdsManually() {
+        setupAdsWithBinding(binding.adContainer, binding.adView, "EditGameActivity")
     }
     
     override fun onSupportNavigateUp(): Boolean {
