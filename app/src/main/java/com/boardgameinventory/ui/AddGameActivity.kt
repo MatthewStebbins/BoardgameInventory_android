@@ -15,6 +15,10 @@ import com.boardgameinventory.R
 import com.boardgameinventory.databinding.ActivityAddGameBinding
 import com.boardgameinventory.utils.Utils
 import com.boardgameinventory.viewmodel.AddGameViewModel
+import com.boardgameinventory.validation.GameInputValidation
+import com.boardgameinventory.validation.ValidationUtils
+import com.boardgameinventory.validation.validateMultipleInputs
+import com.boardgameinventory.validation.areAllInputsValid
 import com.journeyapps.barcodescanner.ScanContract
 import com.journeyapps.barcodescanner.ScanOptions
 import kotlinx.coroutines.launch
@@ -77,6 +81,12 @@ class AddGameActivity : AppCompatActivity() {
     }
     
     private fun setupTextWatchers() {
+        // Setup validation for all input fields
+        GameInputValidation.setupBarcodeValidation(binding.tilBarcode, this)
+        GameInputValidation.setupBookcaseValidation(binding.tilBookcase, this)
+        GameInputValidation.setupShelfValidation(binding.tilShelf, this)
+        
+        // Location barcode helper
         binding.etLocationBarcode.addTextChangedListener { text ->
             val barcode = text.toString()
             val (bookcase, shelf) = Utils.validateLocationBarcode(barcode)
@@ -139,24 +149,27 @@ class AddGameActivity : AppCompatActivity() {
     }
     
     private fun submitGame() {
-        val barcode = binding.etBarcode.text.toString().trim()
-        val bookcase = binding.etBookcase.text.toString().trim()
-        val shelf = binding.etShelf.text.toString().trim()
+        // Validate all inputs
+        val validationResults = validateMultipleInputs(
+            this,
+            binding.tilBarcode to ValidationUtils::validateBarcode,
+            binding.tilBookcase to ValidationUtils::validateBookcase,
+            binding.tilShelf to ValidationUtils::validateShelf
+        )
         
-        when {
-            barcode.isEmpty() -> {
-                binding.tilBarcode.error = getString(R.string.barcode_required)
-                return
-            }
-            bookcase.isEmpty() || shelf.isEmpty() -> {
-                Utils.showToast(this, getString(R.string.location_required))
-                return
-            }
-            else -> {
-                binding.tilBarcode.error = null
-                viewModel.addGame(barcode, bookcase, shelf)
-            }
+        // Check if all inputs are valid
+        if (!areAllInputsValid(validationResults)) {
+            Utils.showToast(this, getString(R.string.validation_failed))
+            return
         }
+        
+        // Get sanitized input values
+        val barcode = binding.tilBarcode.editText?.text.toString().trim()
+        val bookcase = binding.tilBookcase.editText?.text.toString().trim()
+        val shelf = binding.tilShelf.editText?.text.toString().trim()
+        
+        // Submit to ViewModel
+        viewModel.addGame(barcode, bookcase, shelf)
     }
     
     override fun onSupportNavigateUp(): Boolean {

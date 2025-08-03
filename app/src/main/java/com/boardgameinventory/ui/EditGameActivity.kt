@@ -18,6 +18,10 @@ import com.boardgameinventory.data.Game
 import com.boardgameinventory.databinding.ActivityEditGameBinding
 import com.boardgameinventory.utils.Utils
 import com.boardgameinventory.viewmodel.EditGameViewModel
+import com.boardgameinventory.validation.GameInputValidation
+import com.boardgameinventory.validation.ValidationUtils
+import com.boardgameinventory.validation.validateMultipleInputs
+import com.boardgameinventory.validation.areAllInputsValid
 import com.journeyapps.barcodescanner.ScanContract
 import com.journeyapps.barcodescanner.ScanOptions
 import kotlinx.coroutines.launch
@@ -96,6 +100,14 @@ class EditGameActivity : AppCompatActivity() {
     }
     
     private fun setupTextWatchers() {
+        // Setup validation for all input fields
+        GameInputValidation.setupGameNameValidation(binding.tilGameName, this)
+        GameInputValidation.setupBarcodeValidation(binding.tilBarcode, this)
+        GameInputValidation.setupBookcaseValidation(binding.tilBookcase, this)
+        GameInputValidation.setupShelfValidation(binding.tilShelf, this)
+        GameInputValidation.setupDescriptionValidation(binding.tilDescription, this)
+        
+        // Location barcode helper
         binding.etLocationBarcode.addTextChangedListener { text ->
             val barcode = text.toString()
             val (bookcase, shelf) = Utils.validateLocationBarcode(barcode)
@@ -182,40 +194,38 @@ class EditGameActivity : AppCompatActivity() {
     }
     
     private fun saveGame() {
+        // Validate all inputs
+        val validationResults = validateMultipleInputs(
+            this,
+            binding.tilGameName to ValidationUtils::validateGameName,
+            binding.tilBarcode to ValidationUtils::validateBarcode,
+            binding.tilBookcase to ValidationUtils::validateBookcase,
+            binding.tilShelf to ValidationUtils::validateShelf,
+            binding.tilDescription to ValidationUtils::validateDescription
+        )
+        
+        // Check if all inputs are valid
+        if (!areAllInputsValid(validationResults)) {
+            Utils.showToast(this, "Please fix the errors and try again")
+            return
+        }
+        
+        // Get sanitized input values
         val name = binding.etGameName.text.toString().trim()
         val barcode = binding.etBarcode.text.toString().trim()
         val bookcase = binding.etBookcase.text.toString().trim()
         val shelf = binding.etShelf.text.toString().trim()
         val description = binding.etDescription.text.toString().trim()
         
-        when {
-            name.isEmpty() -> {
-                binding.tilGameName.error = getString(R.string.game_name_required)
-                return
-            }
-            barcode.isEmpty() -> {
-                binding.tilBarcode.error = getString(R.string.barcode_required)
-                return
-            }
-            bookcase.isEmpty() || shelf.isEmpty() -> {
-                Utils.showToast(this, getString(R.string.location_required))
-                return
-            }
-            else -> {
-                binding.tilGameName.error = null
-                binding.tilBarcode.error = null
-                
-                originalGame?.let { game ->
-                    val updatedGame = game.copy(
-                        name = name,
-                        barcode = barcode,
-                        bookcase = bookcase,
-                        shelf = shelf,
-                        description = description.ifEmpty { null }
-                    )
-                    viewModel.updateGame(updatedGame)
-                }
-            }
+        originalGame?.let { game ->
+            val updatedGame = game.copy(
+                name = name,
+                barcode = barcode.uppercase(),
+                bookcase = bookcase.uppercase(),
+                shelf = shelf,
+                description = description.ifEmpty { null }
+            )
+            viewModel.updateGame(updatedGame)
         }
     }
     

@@ -17,6 +17,9 @@ import com.boardgameinventory.data.Game
 import com.boardgameinventory.databinding.ActivityLoanGameBinding
 import com.boardgameinventory.utils.Utils
 import com.boardgameinventory.viewmodel.GameListViewModel
+import com.boardgameinventory.validation.GameInputValidation
+import com.boardgameinventory.validation.ValidationUtils
+import com.boardgameinventory.validation.setupValidation
 import com.journeyapps.barcodescanner.ScanContract
 import com.journeyapps.barcodescanner.ScanOptions
 import kotlinx.coroutines.launch
@@ -52,7 +55,13 @@ class LoanGameActivity : AppCompatActivity() {
         setupActionBar()
         setupRecyclerView()
         setupClickListeners()
+        setupValidation()
         observeGames()
+    }
+    
+    private fun setupValidation() {
+        // Setup validation for borrower name field
+        binding.tilBorrowerName.setupValidation(this, ValidationUtils::validateLoanedTo)
     }
     
     private fun setupActionBar() {
@@ -116,8 +125,15 @@ class LoanGameActivity : AppCompatActivity() {
     private fun loanSelectedGame() {
         val borrowerName = binding.etBorrowerName.text.toString().trim()
         
-        if (borrowerName.isEmpty()) {
-            Utils.showToast(this, getString(R.string.error_borrower_name_required))
+        // Validate borrower name
+        val validationResult = ValidationUtils.validateLoanedTo(borrowerName)
+        if (!validationResult.isValid) {
+            val errorMessage = when {
+                validationResult.errorMessageRes != null -> getString(validationResult.errorMessageRes)
+                validationResult.errorMessage != null -> validationResult.errorMessage
+                else -> "Please enter a valid name"
+            }
+            Utils.showToast(this, errorMessage)
             binding.etBorrowerName.requestFocus()
             return
         }

@@ -208,4 +208,38 @@
     <string name="overwrite_database_no">Skip Duplicates</string>
     <string name="import_results_title">Import Complete</string>
     <string name="import_results_message">Import completed. %1$d games imported, %2$d skipped.</string>
+    
+    <!-- Validation Error Messages -->
+    <string name="error_name_required">Game name is required</string>
+    <string name="error_name_too_short">Game name is too short</string>
+    <string name="error_name_too_long">Game name is too long (max 100 characters)</string>
+    <string name="error_name_invalid_characters">Game name contains invalid characters</string>
+    
+    <string name="error_barcode_required">Barcode is required</string>
+    <string name="error_barcode_too_short">Barcode is too short (min 4 characters)</string>
+    <string name="error_barcode_too_long">Barcode is too long (max 20 characters)</string>
+    <string name="error_barcode_invalid">Barcode contains invalid characters</string>
+    
+    <string name="error_bookcase_required">Bookcase is required</string>
+    <string name="error_bookcase_too_short">Bookcase identifier is too short</string>
+    <string name="error_bookcase_too_long">Bookcase identifier is too long (max 10 characters)</string>
+    <string name="error_bookcase_invalid">Bookcase contains invalid characters</string>
+    
+    <string name="error_shelf_required">Shelf is required</string>
+    <string name="error_shelf_too_short">Shelf identifier is too short</string>
+    <string name="error_shelf_too_long">Shelf identifier is too long (max 10 characters)</string>
+    <string name="error_shelf_invalid">Shelf contains invalid characters</string>
+    
+    <string name="error_description_too_long">Description is too long (max 500 characters)</string>
+    
+    <string name="error_loaned_to_too_long">Name is too long (max 50 characters)</string>
+    <string name="error_loaned_to_invalid">Name contains invalid characters</string>
+    
+    <string name="error_invalid_url">Invalid URL format</string>
+    <string name="error_invalid_image_url">URL does not appear to be an image</string>
+    
+    <string name="error_date_future">Date cannot be in the future</string>
+    <string name="error_date_invalid">Invalid date</string>
+    
+    <string name="validation_failed">Please fix the errors and try again</string>
 </resources>
