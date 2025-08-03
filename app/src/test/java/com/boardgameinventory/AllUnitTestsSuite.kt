@@ -3,10 +3,14 @@ package com.boardgameinventory
 import com.boardgameinventory.data.GameTest
 import com.boardgameinventory.data.ValidatedGameTest
 import com.boardgameinventory.pagination.PaginationSetupTest
+import com.boardgameinventory.pagination.SimplePaginationTest
+import com.boardgameinventory.pagination.PaginationValidationTest
 import com.boardgameinventory.repository.GameRepositoryTest
 import com.boardgameinventory.utils.ScopedStorageUtilsTest
 import com.boardgameinventory.utils.UtilsTest
+import com.boardgameinventory.validation.ValidationUtilsTest
 import com.boardgameinventory.viewmodel.MainViewModelTest
+import com.boardgameinventory.viewmodel.GameListViewModelTest
 import org.junit.runner.RunWith
 import org.junit.runners.Suite
 
@@ -19,8 +23,12 @@ import org.junit.runners.Suite
     ValidatedGameTest::class,
     UtilsTest::class,
     ScopedStorageUtilsTest::class,
+    ValidationUtilsTest::class,
     GameRepositoryTest::class,
     MainViewModelTest::class,
-    PaginationSetupTest::class
+    GameListViewModelTest::class,
+    PaginationSetupTest::class,
+    SimplePaginationTest::class,
+    PaginationValidationTest::class
 )
 class AllUnitTestsSuite
