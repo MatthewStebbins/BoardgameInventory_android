@@ -9,8 +9,10 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import com.bumptech.glide.Glide
 import com.boardgameinventory.R
+import com.boardgameinventory.data.AppDatabase
 import com.boardgameinventory.data.Game
 import com.boardgameinventory.databinding.ActivityGameDetailBinding
+import com.boardgameinventory.repository.GameRepository
 import com.boardgameinventory.utils.Utils
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
@@ -157,11 +159,15 @@ class GameDetailActivity : AppCompatActivity() {
     }
     
     private fun returnGame() {
-        game?.let { _ ->
+        game?.let { currentGame ->
             lifecycleScope.launch {
                 try {
-                    // TODO: Add return game functionality to repository/viewmodel
-                    // For now, just show a success message and finish
+                    // Create a ViewModel instance for game operations
+                    val gameRepository = GameRepository(AppDatabase.getDatabase(this@GameDetailActivity).gameDao())
+                    
+                    // Return the game by clearing the loanedTo field
+                    gameRepository.returnGame(currentGame.id)
+                    
                     Utils.showToast(this@GameDetailActivity, getString(R.string.game_returned))
                     setResult(RESULT_OK)
                     finish()

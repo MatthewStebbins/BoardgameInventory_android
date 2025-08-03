@@ -17,6 +17,15 @@ android {
         versionName "1.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        
+        // Load API keys from local.properties
+        Properties properties = new Properties()
+        if (project.rootProject.file('local.properties').exists()) {
+            properties.load(project.rootProject.file('local.properties').newDataInputStream())
+        }
+        
+        buildConfigField "String", "RAPIDAPI_KEY", "\"${properties.getProperty('RAPIDAPI_KEY', 'your_api_key_here')}\""
+        buildConfigField "String", "RAPIDAPI_HOST", "\"${properties.getProperty('RAPIDAPI_HOST', 'barcodes1.p.rapidapi.com')}\""
     }
 
     compileOptions {
@@ -34,6 +43,7 @@ android {
     buildFeatures {
         viewBinding true
         dataBinding true
+        buildConfig true  // Enable BuildConfig generation
     }
 
     buildTypes {

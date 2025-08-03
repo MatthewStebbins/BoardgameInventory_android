@@ -1,0 +1,15 @@
+# Example local.properties file
+# Copy this to local.properties and fill in your actual values
+# This file should NOT be committed to version control
+
+# Android SDK location
+sdk.dir=C:\\Users\\YourUsername\\AppData\\Local\\Android\\Sdk
+
+# API Keys (get your own from RapidAPI)
+RAPIDAPI_KEY=your_rapidapi_key_here
+RAPIDAPI_HOST=barcodes1.p.rapidapi.com
+
+# Build configurations
+org.gradle.jvmargs=-Xmx2048m -Dfile.encoding=UTF-8
+android.useAndroidX=true
+android.enableJetifier=true
