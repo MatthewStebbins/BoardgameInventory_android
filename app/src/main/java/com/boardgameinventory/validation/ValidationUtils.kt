@@ -11,7 +11,7 @@ import com.boardgameinventory.R
 object ValidationUtils {
 
     // Constants for validation rules
-    const val MIN_NAME_LENGTH = 1
+    const val MIN_NAME_LENGTH = 2
     const val MAX_NAME_LENGTH = 100
     const val MIN_BARCODE_LENGTH = 4
     const val MAX_BARCODE_LENGTH = 20
@@ -119,7 +119,7 @@ object ValidationUtils {
     fun validateImageUrl(url: String?): ValidationResult {
         return when {
             url.isNullOrBlank() -> ValidationResult.success() // Optional field
-            !Patterns.WEB_URL.matcher(url).matches() -> ValidationResult.error(R.string.error_invalid_url)
+            !isValidUrl(url) -> ValidationResult.error(R.string.error_invalid_url)
             !isValidImageUrl(url) -> ValidationResult.error(R.string.error_invalid_image_url)
             else -> ValidationResult.success()
         }
@@ -214,6 +214,26 @@ object ValidationUtils {
         // Allow letters, spaces, apostrophes, and hyphens for names
         val pattern = "^[a-zA-Z\\s'\\-]+$".toRegex()
         return pattern.matches(name.trim())
+    }
+
+    /**
+     * Validates URL format - safe for unit tests
+     */
+    private fun isValidUrl(url: String): Boolean {
+        return try {
+            // Try to use Android Patterns if available (runtime)
+            Patterns.WEB_URL?.matcher(url)?.matches() ?: run {
+                // Fallback for unit tests where Android classes aren't available
+                val trimmedUrl = url.trim()
+                (trimmedUrl.startsWith("http://") || trimmedUrl.startsWith("https://")) && 
+                trimmedUrl.length > 7 && trimmedUrl.contains(".")
+            }
+        } catch (e: Exception) {
+            // Fallback for unit tests where Android classes aren't available
+            val trimmedUrl = url.trim()
+            (trimmedUrl.startsWith("http://") || trimmedUrl.startsWith("https://")) && 
+            trimmedUrl.length > 7 && trimmedUrl.contains(".")
+        }
     }
 
     /**
