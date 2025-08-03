@@ -40,6 +40,7 @@ class ValidationUtilsTest {
         invalidNames.forEach { (name, expectedError) ->
             val result = ValidationUtils.validateGameName(name)
             assertFalse("Name '$name' should be invalid", result.isValid)
+            assertNotNull("Error message resource should not be null for '$name'", result.errorMessageRes)
             assertEquals("Wrong error for name '$name'", expectedError, result.errorMessageRes)
         }
     }
