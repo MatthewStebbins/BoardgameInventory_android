@@ -213,7 +213,11 @@ class LoanGameActivity : BaseAdActivity() {
     }
     
     private fun setupAdsManually() {
-        setupAdsWithBinding(binding.adContainer, binding.adView, "LoanGameActivity")
+        try {
+            setupAdsWithBinding(binding.adContainer, binding.adView, "LoanGameActivity")
+        } catch (e: Exception) {
+            android.util.Log.e("LoanGameActivity", "Error in ad setup: ${e.message}", e)
+        }
     }
     
     override fun onSupportNavigateUp(): Boolean {
