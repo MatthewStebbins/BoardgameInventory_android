@@ -11,6 +11,9 @@
         }
     ],
     "kotlin.languageServer.enabled": true,
+    "kotlin.languageServer.path": "",
+    "kotlin.compiler.jvm.target": "17",
     "android.project.maxModules": 50,
-    "gradle.nestedProjects": true
+    "gradle.nestedProjects": true,
+    "java.jdt.ls.vmargs": "-XX:+UseParallelGC -XX:GCTimeRatio=4 -XX:AdaptiveSizePolicyWeight=90 -Dsun.zip.disableMemoryMapping=true -Xmx2G -Xms100m"
 }
