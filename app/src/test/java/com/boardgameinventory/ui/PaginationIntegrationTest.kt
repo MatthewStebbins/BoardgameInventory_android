@@ -10,10 +10,10 @@ import org.junit.Assert.assertTrue
 import org.junit.Test
 
 /**
- * Integration tests for data filtering and consistency functionality
+ * Unit tests for data filtering and consistency functionality
  */
 @OptIn(ExperimentalCoroutinesApi::class)
-class PaginationIntegrationTest {
+class DataFilteringUnitTest {
 
     @Test
     fun testPagingDataSnapshot() = runTest {
