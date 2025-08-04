@@ -14,7 +14,7 @@
         android:layout_height="0dp"
         android:fillViewport="true"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toTopOf="@+id/adBannerContainer">
+        app:layout_constraintBottom_toTopOf="@+id/adContainer">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -41,6 +41,23 @@
                     android:orientation="vertical"
                     android:padding="16dp">
 
+                    <!-- Game Name -->
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/tilGameName"
+                        style="@style/TextInputStyle"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="@string/game_name_hint">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/etGameName"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:inputType="text" />
+
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                    <!-- Barcode -->
                     <com.google.android.material.textfield.TextInputLayout
                         android:id="@+id/tilBarcode"
                         style="@style/TextInputStyle"
@@ -66,6 +83,7 @@
                         android:text="@string/scan_barcode"
                         android:layout_marginHorizontal="16dp" />
 
+                    <!-- Location Barcode -->
                     <com.google.android.material.textfield.TextInputLayout
                         android:id="@+id/tilLocationBarcode"
                         style="@style/TextInputStyle"
@@ -81,6 +99,27 @@
 
                     </com.google.android.material.textfield.TextInputLayout>
 
+                    <!-- Description -->
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/tilDescription"
+                        style="@style/TextInputStyle"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="@string/description_hint">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/etDescription"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:inputType="textMultiLine"
+                            android:lines="3"
+                            android:minLines="3"
+                            android:gravity="top"
+                            android:scrollbars="vertical" />
+
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                    <!-- Location Fields -->
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -138,7 +177,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:layout_marginTop="16dp">
+                android:layout_marginTop="24dp"
+                android:layout_marginBottom="16dp">
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/btnSubmit"
@@ -146,6 +186,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+                    android:layout_marginEnd="8dp"
                     android:text="@string/submit" />
 
                 <com.google.android.material.button.MaterialButton
@@ -154,6 +195,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+                    android:layout_marginStart="8dp"
                     android:text="@string/cancel" />
 
             </LinearLayout>

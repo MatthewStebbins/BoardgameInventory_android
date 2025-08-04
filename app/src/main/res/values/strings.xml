@@ -22,6 +22,8 @@
     <string name="bookcase_hint">Bookcase</string>
     <string name="shelf_hint">Shelf</string>
     <string name="scan_barcode">Scan Barcode</string>
+    <string name="select_image">Select Image</string>
+    <string name="update_image">Update Image</string>
     <string name="submit">Submit</string>
     <string name="cancel">Cancel</string>
     

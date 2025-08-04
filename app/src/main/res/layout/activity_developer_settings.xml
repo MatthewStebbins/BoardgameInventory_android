@@ -103,6 +103,26 @@
                 android:text="Developer Information"
                 app:icon="@android:drawable/ic_menu_info_details" />
 
+            <!-- App Version and Build Info -->
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnAppInfo"
+                style="@style/Widget.Material3.Button.OutlinedButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:text="App Version &amp; Build Info"
+                app:icon="@android:drawable/ic_menu_agenda" />
+
+            <!-- Export Logs -->
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnExportLogs"
+                style="@style/Widget.Material3.Button.OutlinedButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                android:text="Export Debug Logs"
+                app:icon="@android:drawable/ic_menu_save" />
+
             <!-- Developer Information Section -->
             <TextView
                 android:layout_width="match_parent"
