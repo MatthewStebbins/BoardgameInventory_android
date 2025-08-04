@@ -13,12 +13,13 @@ import com.boardgameinventory.utils.DeveloperMode
  * Only accessible when developer mode is active.
  * Provides access to developer tools and database management.
  */
-class DeveloperSettingsActivity : AppCompatActivity() {
+class DeveloperSettingsActivity : BaseAdActivity() {
     
     private lateinit var binding: ActivityDeveloperSettingsBinding
     
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        setupAdsManually(binding.adContainer, binding.adView, "DeveloperSettingsActivity")
         
         // Security check: Verify developer mode access
         if (!DeveloperMode.isDeveloperModeActive(this)) {

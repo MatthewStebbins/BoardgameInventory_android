@@ -24,7 +24,7 @@ import java.util.*
  * - Migration management
  * - Maintenance scheduling
  */
-class DatabaseManagementActivity : AppCompatActivity() {
+class DatabaseManagementActivity : BaseAdActivity() {
     
     private lateinit var binding: ActivityDatabaseManagementBinding
     private val viewModel: DatabaseManagementViewModel by viewModels()
@@ -33,6 +33,9 @@ class DatabaseManagementActivity : AppCompatActivity() {
     
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        
+        // Setup ads
+        setupAdsManually(binding.adContainer, binding.adView, "DatabaseManagementActivity")
         
         // Security check: Verify developer mode access
         if (!DeveloperMode.isDeveloperModeActive(this)) {

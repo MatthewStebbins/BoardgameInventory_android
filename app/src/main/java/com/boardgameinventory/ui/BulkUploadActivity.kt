@@ -19,7 +19,7 @@ import com.journeyapps.barcodescanner.ScanContract
 import com.journeyapps.barcodescanner.ScanOptions
 import kotlinx.coroutines.launch
 
-class BulkUploadActivity : AppCompatActivity() {
+class BulkUploadActivity : BaseAdActivity() {
     private lateinit var binding: ActivityBulkUploadBinding
     private lateinit var viewModel: BulkUploadViewModel
     private lateinit var adapter: ScannedBarcodesAdapter
@@ -39,6 +39,7 @@ class BulkUploadActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        setupAdsManually(binding.adContainer, binding.adView, "BulkUploadActivity")
         binding = ActivityBulkUploadBinding.inflate(layoutInflater)
         setContentView(binding.root)
 

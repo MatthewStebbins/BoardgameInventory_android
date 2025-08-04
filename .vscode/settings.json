@@ -1,9 +1,6 @@
 {
     "java.configuration.updateBuildConfiguration": "automatic",
     "java.jdt.ls.java.home": "C:\\Users\\Wouph\\Documents\\BoardgameInventory_Android\\jdk-17.0.12",
-    "java.import.gradle.enabled": true,
-    "java.import.gradle.wrapper.enabled": true,
-    "java.import.gradle.offline.enabled": false,
     "java.compile.nullAnalysis.mode": "automatic",
     "java.configuration.runtimes": [
         {
@@ -12,12 +9,34 @@
             "default": true
         }
     ],
+    
+    // Kotlin Language Server - Fixed Configuration
     "kotlin.languageServer.enabled": true,
     "kotlin.languageServer.path": "",
     "kotlin.compiler.jvm.target": "17",
+    "kotlin.languageServer.javaHome": "C:\\Users\\Wouph\\Documents\\BoardgameInventory_Android\\jdk-17.0.12",
+    "kotlin.languageServer.jvm.vmargs": "-Xmx4g -Xms1g -XX:+UseG1GC -Djava.home=C:\\Users\\Wouph\\Documents\\BoardgameInventory_Android\\jdk-17.0.12 -Dfile.encoding=UTF-8",
+    "kotlin.trace.server": "verbose",
+    "kotlin.diagnostics.debounceTime": 250,
+    "kotlin.externalSources.useKlsScheme": true,
+    "kotlin.externalSources.autoConvertToKotlin": true,
+    "kotlin.languageServer.transport": "stdio",
+    "kotlin.completion.snippets.enabled": true,
+    
+    // Android & Gradle
     "android.project.maxModules": 50,
     "gradle.nestedProjects": true,
-    "java.jdt.ls.vmargs": "-XX:+UseParallelGC -XX:GCTimeRatio=4 -XX:AdaptiveSizePolicyWeight=90 -Dsun.zip.disableMemoryMapping=true -Xmx2G -Xms100m",
+    "java.import.gradle.jvmArguments": "-Dfile.encoding=UTF-8 -Xmx4G -Dorg.gradle.daemon=true",
+    "java.import.gradle.enabled": true,
+    "java.import.gradle.wrapper.enabled": true,
+    "java.import.gradle.offline.enabled": false,
+    "java.import.gradle.arguments": "--info --stacktrace",
+    "java.project.importOnFirstTimeStartup": "automatic",
+    "java.project.importHint": true,
+    "java.autobuild.enabled": true,
+    
+    // Java Language Server
+    "java.jdt.ls.vmargs": "-XX:+UseG1GC -XX:GCTimeRatio=4 -XX:AdaptiveSizePolicyWeight=90 -Dsun.zip.disableMemoryMapping=true -Xmx4G -Xms1G -Djava.home=C:\\Users\\Wouph\\Documents\\BoardgameInventory_Android\\jdk-17.0.12 -Dfile.encoding=UTF-8",
     "java.eclipse.downloadSources": true,
     "java.maven.downloadSources": true,
     "java.project.sourcePaths": [],
@@ -25,5 +44,31 @@
     "java.codeGeneration.useBlocks": true,
     "java.saveActions.organizeImports": true,
     "java.debug.settings.enableRunDebugCodeLens": false,
-    "java.test.editor.enableShortcuts": true
+    "java.test.editor.enableShortcuts": true,
+    "java.project.referencedLibraries": [
+        "lib/**/*.jar"
+    ],
+    "java.project.resourceFilters": [
+        "node_modules",
+        ".git", 
+        "build",
+        ".gradle"
+    ],
+    
+    // Environment
+    "java.environment.external": {
+        "JAVA_HOME": "C:\\Users\\Wouph\\Documents\\BoardgameInventory_Android\\jdk-17.0.12"
+    },
+    
+    // Extension Management
+    "extensions.ignoreRecommendations": false,
+    
+    // File Management for Android
+    "files.exclude": {
+        "**/build/": true,
+        "**/.gradle/": true,
+        "**/captures/": true,
+        "**/.externalNativeBuild/": true,
+        "**/.cxx/": true
+    }
 }

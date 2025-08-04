@@ -12,7 +12,31 @@
 			"isBackground": false,
 			"problemMatcher": [
 				"$gradle"
-			]
+			],
+			"options": {
+				"env": {
+					"JAVA_HOME": "C:\\Users\\Wouph\\Documents\\BoardgameInventory_Android\\jdk-17.0.12"
+				}
+			}
+		},
+		{
+			"label": "Clean and Sync Project",
+			"type": "shell",
+			"command": "./gradlew",
+			"args": [
+				"clean",
+				"--refresh-dependencies"
+			],
+			"group": "build",
+			"isBackground": false,
+			"problemMatcher": [
+				"$gradle"
+			],
+			"options": {
+				"env": {
+					"JAVA_HOME": "C:\\Users\\Wouph\\Documents\\BoardgameInventory_Android\\jdk-17.0.12"
+				}
+			}
 		}
 	]
 }
