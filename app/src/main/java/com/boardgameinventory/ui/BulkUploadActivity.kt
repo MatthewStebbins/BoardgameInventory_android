@@ -39,11 +39,11 @@ class BulkUploadActivity : BaseAdActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setupAdsManually(binding.adContainer, binding.adView, "BulkUploadActivity")
         binding = ActivityBulkUploadBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
         viewModel = ViewModelProvider(this)[BulkUploadViewModel::class.java]
+        setupAdsWithBinding(binding.adContainer, binding.adView, "BulkUploadActivity")
         setupUI()
         observeViewModel()
     }

@@ -186,6 +186,23 @@
                 app:icon="@android:drawable/ic_menu_close_clear_cancel"
                 app:strokeColor="@color/design_default_color_error" />
 
+            <!-- AdMob Banner Ad -->
+            <LinearLayout
+                android:id="@+id/adContainer"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:gravity="center">
+
+                <com.google.android.gms.ads.AdView
+                    android:id="@+id/adView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:adSize="BANNER"
+                    app:adUnitId="@string/admob_banner_ad_unit_id" />
+
+            </LinearLayout>
+
         </LinearLayout>
 
     </ScrollView>

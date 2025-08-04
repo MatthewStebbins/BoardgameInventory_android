@@ -33,22 +33,9 @@ class DatabaseManagementActivity : BaseAdActivity() {
     
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        
-        // Setup ads
-        setupAdsManually(binding.adContainer, binding.adView, "DatabaseManagementActivity")
-        
-        // Security check: Verify developer mode access
-        if (!DeveloperMode.isDeveloperModeActive(this)) {
-            showUnauthorizedDialog()
-            return
-        }
-        
-        // Update last access time to extend session
-        DeveloperMode.updateLastAccess(this)
-        
         binding = ActivityDatabaseManagementBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        
+
         setupToolbar()
         setupRecyclerView()
         setupClickListeners()

@@ -20,53 +20,30 @@ abstract class BaseAdActivity : AppCompatActivity() {
      */
     protected fun setupAdsWithBinding(
         adContainer: android.view.View,
-        adView: com.google.android.gms.ads.AdView?,
+        adView: com.google.android.gms.ads.AdView,
         activityName: String
     ) {
         try {
-            android.util.Log.d(activityName, "=== Manual Ad Setup ===")
+            android.util.Log.d(activityName, "Setting up ads manually")
             AdManager.initialize(this)
-            
-            this.adView = adView
-            
-            if (adView != null) {
-                // Set test background colors
-                adContainer.setBackgroundColor(android.graphics.Color.parseColor("#FF5722")) // Red container
-                adView.setBackgroundColor(android.graphics.Color.parseColor("#FFEB3B")) // Yellow ad view
-                
-                android.util.Log.d(activityName, "Set background colors for testing")
-                
-                // Configure ad listener
-                adView.adListener = object : com.google.android.gms.ads.AdListener() {
-                    override fun onAdFailedToLoad(adError: com.google.android.gms.ads.LoadAdError) {
-                        android.util.Log.e(activityName, "Ad failed to load: ${adError.message}")
-                        hasAdLoaded = true
-                        adView.setBackgroundColor(android.graphics.Color.parseColor("#FF9800")) // Orange for error
-                    }
-                    
-                    override fun onAdLoaded() {
-                        android.util.Log.d(activityName, "Ad loaded successfully")
-                        hasAdLoaded = true
-                        adView.setBackgroundColor(android.graphics.Color.parseColor("#4CAF50")) // Green for success
-                    }
+
+            adContainer.visibility = android.view.View.VISIBLE
+
+            // Configure the existing AdView from XML instead of creating a new one
+            adView.adListener = object : com.google.android.gms.ads.AdListener() {
+                override fun onAdLoaded() {
+                    android.util.Log.d(activityName, "Ad loaded successfully")
                 }
-                
-                // Set timeout
-                android.os.Handler(android.os.Looper.getMainLooper()).postDelayed({
-                    if (!hasAdLoaded) {
-                        android.util.Log.w(activityName, "Ad loading timeout")
-                        adView.setBackgroundColor(android.graphics.Color.parseColor("#9C27B0")) // Purple for timeout
-                    }
-                }, 15000)
-                
-                // Load the ad
-                AdManager.loadAd(adView)
-                android.util.Log.d(activityName, "Ad loading initiated")
-            } else {
-                android.util.Log.e(activityName, "adView is null")
+
+                override fun onAdFailedToLoad(adError: com.google.android.gms.ads.LoadAdError) {
+                    android.util.Log.e(activityName, "Ad failed to load: ${adError.message}")
+                }
             }
+
+            // Load the ad using the existing AdView configuration from XML
+            adView.loadAd(com.google.android.gms.ads.AdRequest.Builder().build())
         } catch (e: Exception) {
-            android.util.Log.e(activityName, "Error in manual ad setup: ${e.message}", e)
+            android.util.Log.e(activityName, "Error setting up ads: ${e.message}", e)
         }
     }
     

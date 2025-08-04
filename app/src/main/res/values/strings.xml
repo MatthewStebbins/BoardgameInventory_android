@@ -245,4 +245,5 @@
     <string name="error_date_invalid">Invalid date</string>
     
     <string name="validation_failed">Please fix the errors and try again</string>
+    <string name="admob_banner_ad_unit_id">ca-app-pub-3940256099942544/6300978111</string>
 </resources>

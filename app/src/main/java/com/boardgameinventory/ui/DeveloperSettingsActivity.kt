@@ -19,8 +19,9 @@ class DeveloperSettingsActivity : BaseAdActivity() {
     
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setupAdsManually(binding.adContainer, binding.adView, "DeveloperSettingsActivity")
-        
+        binding = ActivityDeveloperSettingsBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+
         // Security check: Verify developer mode access
         if (!DeveloperMode.isDeveloperModeActive(this)) {
             showUnauthorizedDialog()
@@ -29,9 +30,6 @@ class DeveloperSettingsActivity : BaseAdActivity() {
         
         // Update last access time to extend session
         DeveloperMode.updateLastAccess(this)
-        
-        binding = ActivityDeveloperSettingsBinding.inflate(layoutInflater)
-        setContentView(binding.root)
         
         setupToolbar()
         setupClickListeners()
