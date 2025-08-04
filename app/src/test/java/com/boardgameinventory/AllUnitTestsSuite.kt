@@ -12,7 +12,7 @@ import com.boardgameinventory.validation.ValidationUtilsTest
 import com.boardgameinventory.validation.InputValidationExtensionsTest
 import com.boardgameinventory.validation.SecurityValidationTest
 import com.boardgameinventory.viewmodel.MainViewModelTest
-import com.boardgameinventory.viewmodel.GameListViewModelTest
+import com.boardgameinventory.viewmodel.ExportImportViewModelTest
 import org.junit.runner.RunWith
 import org.junit.runners.Suite
 
@@ -30,7 +30,7 @@ import org.junit.runners.Suite
     SecurityValidationTest::class,
     GameRepositoryTest::class,
     MainViewModelTest::class,
-    GameListViewModelTest::class,
+    ExportImportViewModelTest::class,
     PaginationSetupTest::class,
     SimplePaginationTest::class,
     PaginationValidationTest::class
