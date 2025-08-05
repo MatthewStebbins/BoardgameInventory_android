@@ -10,6 +10,89 @@ import org.apache.poi.ss.usermodel.WorkbookFactory
 import java.io.InputStreamReader
 
 object ImportUtils {
+    // Parses a single CSV row, handling quoted fields and commas
+    fun parseCSVRow(row: String): List<String> {
+        val result = mutableListOf<String>()
+        var current = StringBuilder()
+        var inQuotes = false
+        var i = 0
+        while (i < row.length) {
+            val c = row[i]
+            when {
+                c == '"' -> {
+                    if (inQuotes && i + 1 < row.length && row[i + 1] == '"') {
+                        current.append('"')
+                        i++
+                    } else {
+                        inQuotes = !inQuotes
+                    }
+                }
+                c == ',' && !inQuotes -> {
+                    result.add(current.toString())
+                    current = StringBuilder()
+                }
+                else -> current.append(c)
+            }
+            i++
+        }
+        result.add(current.toString())
+        return result
+    }
+
+    // Creates a Game object from CSV headers and values
+    fun createGameFromCSVData(headers: List<String>, values: List<String>): Game? {
+        if (headers.size != values.size) return null
+        val map = headers.map { it.trim().lowercase() }.zip(values).toMap()
+        return Game(
+            name = map["name"] ?: map["title"] ?: "",
+            barcode = map["barcode"] ?: "",
+            bookcase = map["bookcase"] ?: "",
+            shelf = map["shelf"] ?: "",
+            loanedTo = map["loanedto"]?.takeIf { it.isNotBlank() },
+            description = map["description"]?.takeIf { it.isNotBlank() },
+            imageUrl = map["imageurl"]?.takeIf { it.isNotBlank() }
+        )
+    }
+
+    // Checks if a game is a duplicate in a list
+    fun isDuplicateGame(game: Game, existingGames: List<Game>): Boolean {
+        return existingGames.any {
+            it.name.equals(game.name, ignoreCase = true) &&
+            it.barcode.equals(game.barcode, ignoreCase = true) &&
+            it.bookcase.equals(game.bookcase, ignoreCase = true) &&
+            it.shelf.equals(game.shelf, ignoreCase = true)
+        }
+    }
+
+    // Parses a price string to a Double
+    fun parsePrice(input: String): Double? {
+        return input.replace("$", "").replace(",", "").toDoubleOrNull()
+    }
+
+    // Parses a date string in yyyy-MM-dd or MM/dd/yyyy format
+    fun parseDate(input: String): String? {
+        val trimmed = input.trim()
+        return when {
+            Regex("\\d{4}-\\d{2}-\\d{2}").matches(trimmed) -> trimmed
+            Regex("\\d{2}/\\d{2}/\\d{4}").matches(trimmed) -> trimmed
+            else -> null
+        }
+    }
+
+    // Validates a game for import (must have title and publisher)
+    fun validateGameForImport(game: Game): Boolean {
+        return game.name.isNotBlank() && game.barcode.isNotBlank()
+    }
+
+    // Creates a map from headers and values
+    fun createFieldMap(headers: List<String>, values: List<String>): Map<String, String> {
+        return headers.zip(values).toMap()
+    }
+
+    // Checks if a file is an Excel file by extension
+    fun isExcelFile(filename: String): Boolean {
+        return filename.endsWith(".xlsx", true) || filename.endsWith(".xls", true)
+    }
     
     fun importFromCSV(context: Context, launcher: androidx.activity.result.ActivityResultLauncher<Intent>) {
         val intent = Intent(Intent.ACTION_OPEN_DOCUMENT).apply {
