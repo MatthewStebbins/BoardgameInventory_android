@@ -14,6 +14,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.boardgameinventory.R
 import com.boardgameinventory.databinding.ActivityBulkUploadBinding
+import com.boardgameinventory.utils.BarcodeUtils
 import com.boardgameinventory.viewmodel.BulkUploadViewModel
 import com.journeyapps.barcodescanner.ScanContract
 import com.journeyapps.barcodescanner.ScanOptions
@@ -23,6 +24,10 @@ class BulkUploadActivity : BaseAdActivity() {
     private lateinit var binding: ActivityBulkUploadBinding
     private lateinit var viewModel: BulkUploadViewModel
     private lateinit var adapter: ScannedBarcodesAdapter
+    
+    // Toggles for orientation lock and torch. Replace with real UI toggles as needed.
+    private var isOrientationLocked: Boolean = false
+    private var isTorchOn: Boolean = false
 
     private val scanLocationBarcodeLauncher = registerForActivityResult(ScanContract()) { result ->
         if (result.contents != null) {
@@ -71,14 +76,18 @@ class BulkUploadActivity : BaseAdActivity() {
         })
 
         // Button listeners
+        // Example: Toggle orientation lock and torch for demonstration
         binding.btnScanLocationBarcode.setOnClickListener {
+            isOrientationLocked = !isOrientationLocked
+            isTorchOn = !isTorchOn
             scanLocationBarcode()
         }
-
+        
         binding.btnScanGameBarcode.setOnClickListener {
+            isOrientationLocked = !isOrientationLocked
+            isTorchOn = !isTorchOn
             scanGameBarcode()
         }
-
         binding.btnAddManually.setOnClickListener {
             showManualBarcodeDialog()
         }
@@ -122,24 +131,18 @@ class BulkUploadActivity : BaseAdActivity() {
     }
 
     private fun scanLocationBarcode() {
-        val options = ScanOptions()
-        options.setDesiredBarcodeFormats(ScanOptions.ALL_CODE_TYPES)
-        options.setPrompt("Scan Location Barcode (e.g., A-1)")
-        options.setCameraId(0)
-        options.setBeepEnabled(true)
-        options.setBarcodeImageEnabled(false)
-        options.setOrientationLocked(false)
+        val options = BarcodeUtils.createLocationBarcodeScanOptions(
+            orientationLocked = isOrientationLocked,
+            torchOn = isTorchOn
+        )
         scanLocationBarcodeLauncher.launch(options)
     }
 
     private fun scanGameBarcode() {
-        val options = ScanOptions()
-        options.setDesiredBarcodeFormats(ScanOptions.ALL_CODE_TYPES)
-        options.setPrompt("Scan Game Barcode")
-        options.setCameraId(0)
-        options.setBeepEnabled(true)
-        options.setBarcodeImageEnabled(false)
-        options.setOrientationLocked(false)
+        val options = BarcodeUtils.createBulkScanOptions(
+            orientationLocked = isOrientationLocked,
+            torchOn = isTorchOn
+        )
         scanGameBarcodeLauncher.launch(options)
     }
 

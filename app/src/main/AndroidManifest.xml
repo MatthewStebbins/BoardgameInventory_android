@@ -38,6 +38,13 @@
         <meta-data
             android:name="com.google.android.gms.ads.APPLICATION_ID"
             android:value="ca-app-pub-3940256099942544~3347511713" />
+
+        <!-- Custom CaptureActivity for ZXing barcode scanning -->
+        <activity
+            android:name=".ui.CustomCaptureActivity"
+            android:screenOrientation="unspecified"
+            android:configChanges="orientation|screenSize"
+            android:exported="false" />
         
         <activity
             android:name=".MainActivity"

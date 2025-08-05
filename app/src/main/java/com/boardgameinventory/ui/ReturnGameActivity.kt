@@ -15,6 +15,7 @@ import com.boardgameinventory.R
 import com.boardgameinventory.data.Game
 import com.boardgameinventory.databinding.ActivityReturnGameBinding
 import com.boardgameinventory.utils.Utils
+import com.boardgameinventory.utils.BarcodeUtils
 import com.boardgameinventory.viewmodel.GameListViewModel
 import com.journeyapps.barcodescanner.ScanContract
 import com.journeyapps.barcodescanner.ScanOptions
@@ -209,12 +210,7 @@ class ReturnGameActivity : BaseAdActivity() {
     }
     
     private fun startBarcodeScan() {
-        val options = ScanOptions()
-        options.setDesiredBarcodeFormats(ScanOptions.ALL_CODE_TYPES)
-        options.setPrompt("Scan a game barcode to return")
-        options.setCameraId(0)
-        options.setBeepEnabled(false)
-        options.setBarcodeImageEnabled(true)
+        val options = BarcodeUtils.createLoanReturnScanOptions(isReturning = true)
         scanLauncher.launch(options)
     }
     

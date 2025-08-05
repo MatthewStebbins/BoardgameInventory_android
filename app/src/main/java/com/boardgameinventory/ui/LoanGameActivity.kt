@@ -16,6 +16,7 @@ import com.boardgameinventory.R
 import com.boardgameinventory.data.Game
 import com.boardgameinventory.databinding.ActivityLoanGameBinding
 import com.boardgameinventory.utils.Utils
+import com.boardgameinventory.utils.BarcodeUtils
 import com.boardgameinventory.viewmodel.GameListViewModel
 import com.boardgameinventory.validation.GameInputValidation
 import com.boardgameinventory.validation.ValidationUtils
@@ -178,12 +179,7 @@ class LoanGameActivity : BaseAdActivity() {
     }
     
     private fun startBarcodeScan() {
-        val options = ScanOptions()
-        options.setDesiredBarcodeFormats(ScanOptions.ALL_CODE_TYPES)
-        options.setPrompt("Scan a game barcode")
-        options.setCameraId(0)
-        options.setBeepEnabled(false)
-        options.setBarcodeImageEnabled(true)
+        val options = BarcodeUtils.createLoanReturnScanOptions(isReturning = false)
         scanLauncher.launch(options)
     }
     
