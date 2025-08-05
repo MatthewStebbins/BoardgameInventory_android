@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="toggle_orientation">Toggle Orientation Lock</string>
+    <string name="toggle_torch">Toggle Flashlight</string>
     <string name="app_name">Boardgame Inventory</string>
     
     <!-- Main Activity -->
