@@ -1,24 +1,18 @@
 package com.boardgameinventory.ui
 
-import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.widget.EditText
 import android.widget.Toast
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
-import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.boardgameinventory.R
 import com.boardgameinventory.databinding.ActivityBulkUploadBinding
 import com.boardgameinventory.utils.BarcodeUtils
 import com.boardgameinventory.viewmodel.BulkUploadViewModel
 import com.journeyapps.barcodescanner.ScanContract
-import com.journeyapps.barcodescanner.ScanOptions
-import kotlinx.coroutines.launch
 
 class BulkUploadActivity : BaseAdActivity() {
     private lateinit var binding: ActivityBulkUploadBinding
@@ -151,22 +145,20 @@ class BulkUploadActivity : BaseAdActivity() {
         editText.hint = getString(R.string.enter_barcode_manually_hint)
 
         AlertDialog.Builder(this)
-            .setTitle(getString(R.string.add_barcode_title))
+            .setTitle("Add Barcode Manually")
             .setView(editText)
-            .setPositiveButton(getString(R.string.add)) { _, _ ->
+            .setPositiveButton("Add") { _, _ ->
                 val barcode = editText.text.toString().trim()
                 if (barcode.isNotEmpty()) {
                     addGameBarcode(barcode)
                 }
             }
-            .setNegativeButton(getString(R.string.cancel), null)
+            .setNegativeButton("Cancel", null)
             .show()
     }
 
     private fun addGameBarcode(barcode: String) {
-        if (barcode.isNotEmpty()) {
-            viewModel.addGameBarcode(barcode)
-        }
+        viewModel.addGameBarcode(barcode)
     }
 
     private fun finishBulkUpload() {
@@ -174,41 +166,45 @@ class BulkUploadActivity : BaseAdActivity() {
         val shelf = binding.etShelf.text.toString().trim()
 
         if (bookcase.isEmpty() || shelf.isEmpty()) {
-            Toast.makeText(this, getString(R.string.error_bookcase_shelf_required), Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, "Please fill in bookcase and shelf information", Toast.LENGTH_SHORT).show()
             return
         }
 
-        lifecycleScope.launch {
-            viewModel.processBulkUpload(bookcase, shelf)
+        if (viewModel.scannedBarcodes.value?.isEmpty() == true) {
+            Toast.makeText(this, "Please scan at least one game barcode", Toast.LENGTH_SHORT).show()
+            return
         }
+
+        viewModel.uploadGames(bookcase, shelf)
     }
 
     private fun showUploadResultDialog(result: BulkUploadViewModel.UploadResult) {
         val message = buildString {
-            append(getString(R.string.bulk_upload_results_message, result.successful))
-            if (result.failed.isNotEmpty()) {
-                append("\n\n")
-                append(getString(R.string.bulk_upload_results_with_failures, result.successful, result.failed.size))
-                result.failed.forEach { barcode ->
-                    append("\n")
-                    append(getString(R.string.bulk_upload_failed_item, barcode))
+            append("Upload completed!\n\n")
+            append("Successfully added: ${result.successfulCount} games\n")
+            if (result.failedBarcodes.isNotEmpty()) {
+                append("Failed to add: ${result.failedBarcodes.size} games\n")
+                append("Failed barcodes:\n")
+                result.failedBarcodes.forEach { barcode ->
+                    append("• $barcode\n")
                 }
             }
         }
 
         AlertDialog.Builder(this)
-            .setTitle(getString(R.string.bulk_upload_complete))
+            .setTitle("Upload Result")
             .setMessage(message)
-            .setPositiveButton(getString(R.string.ok)) { _, _ ->
-                if (result.failed.isEmpty()) {
+            .setPositiveButton("OK") { _, _ ->
+                if (result.failedBarcodes.isEmpty()) {
                     finish()
                 }
             }
+            .setCancelable(false)
             .show()
     }
 
     override fun onSupportNavigateUp(): Boolean {
-        onBackPressedDispatcher.onBackPressed()
+        finish()
         return true
     }
 }

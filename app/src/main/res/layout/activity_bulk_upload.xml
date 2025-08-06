@@ -1,23 +1,42 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/background"
+    tools:context=".ui.BulkUploadActivity">
 
-    <LinearLayout
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:padding="16dp">
+        android:layout_height="0dp"
+        android:fillViewport="true"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/adContainer">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="16dp">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Bulk Upload Games"
+                android:textAlignment="center"
+                android:textSize="24sp"
+                android:textStyle="bold"
+                android:textColor="@color/text_primary"
+                android:layout_marginBottom="24dp" />
 
             <!-- Location Section -->
             <com.google.android.material.card.MaterialCardView
+                style="@style/CardStyle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="16dp"
-                app:cardCornerRadius="8dp"
-                app:cardElevation="2dp">
+                android:layout_marginBottom="16dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -28,53 +47,56 @@
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Step 1: Set Location"
-                        android:textAppearance="?attr/textAppearanceHeadline6"
-                        android:textColor="?attr/colorPrimary"
-                        android:layout_marginBottom="8dp" />
+                        android:text="Location Information"
+                        android:textSize="18sp"
+                        android:textStyle="bold"
+                        android:textColor="@color/text_primary"
+                        android:layout_marginBottom="16dp" />
 
                     <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/tilLocationBarcode"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:hint="Location Barcode (e.g., A-1)"
-                        android:layout_marginBottom="8dp">
+                        android:hint="@string/location_barcode_hint"
+                        android:layout_marginBottom="8dp"
+                        style="@style/Widget.Material3.TextInputLayout.OutlinedBox">
 
                         <com.google.android.material.textfield.TextInputEditText
                             android:id="@+id/etLocationBarcode"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:inputType="text"
-                            android:maxLines="1" />
+                            android:inputType="text" />
 
                     </com.google.android.material.textfield.TextInputLayout>
 
                     <com.google.android.material.button.MaterialButton
                         android:id="@+id/btnScanLocationBarcode"
+                        style="@style/ButtonStyle"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="Scan Location Barcode"
-                        app:icon="@drawable/ic_qr_code_scanner"
-                        android:layout_marginBottom="16dp" />
+                        app:iconGravity="start" />
 
+                    <!-- Bookcase and Shelf fields -->
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="horizontal"
-                        android:baselineAligned="false">
+                        android:layout_marginTop="8dp">
 
                         <com.google.android.material.textfield.TextInputLayout
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:hint="Bookcase"
-                            android:layout_marginEnd="8dp">
+                            android:layout_marginEnd="8dp"
+                            android:hint="@string/bookcase_hint"
+                            style="@style/Widget.Material3.TextInputLayout.OutlinedBox">
 
                             <com.google.android.material.textfield.TextInputEditText
                                 android:id="@+id/etBookcase"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:inputType="text"
-                                android:maxLines="1" />
+                                android:inputType="text" />
 
                         </com.google.android.material.textfield.TextInputLayout>
 
@@ -82,17 +104,35 @@
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:hint="Shelf"
-                            android:layout_marginStart="8dp">
+                            android:layout_marginStart="8dp"
+                            android:hint="@string/shelf_hint"
+                            style="@style/Widget.Material3.TextInputLayout.OutlinedBox">
 
                             <com.google.android.material.textfield.TextInputEditText
                                 android:id="@+id/etShelf"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:inputType="text"
-                                android:maxLines="1" />
+                                android:inputType="text" />
 
                         </com.google.android.material.textfield.TextInputLayout>
+
+                    </LinearLayout>
+
+                    <!-- Location Display Fields -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:layout_marginTop="8dp">
+
+                        <TextView
+                            android:id="@+id/tvLocationInfo"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="Location will appear here"
+                            android:textSize="14sp"
+                            android:textColor="@color/text_secondary" />
 
                     </LinearLayout>
 
@@ -100,13 +140,12 @@
 
             </com.google.android.material.card.MaterialCardView>
 
-            <!-- Games Section -->
+            <!-- Game Scanning Section -->
             <com.google.android.material.card.MaterialCardView
+                style="@style/CardStyle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="16dp"
-                app:cardCornerRadius="8dp"
-                app:cardElevation="2dp">
+                android:layout_marginBottom="16dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -117,10 +156,11 @@
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Step 2: Scan Game Barcodes"
-                        android:textAppearance="?attr/textAppearanceHeadline6"
-                        android:textColor="?attr/colorPrimary"
-                        android:layout_marginBottom="8dp" />
+                        android:text="Scan Games"
+                        android:textSize="18sp"
+                        android:textStyle="bold"
+                        android:textColor="@color/text_primary"
+                        android:layout_marginBottom="16dp" />
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -130,41 +170,68 @@
 
                         <com.google.android.material.button.MaterialButton
                             android:id="@+id/btnScanGameBarcode"
+                            style="@style/ButtonStyle.Primary"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
+                            android:layout_marginEnd="8dp"
                             android:text="Scan Game"
-                            app:icon="@drawable/ic_qr_code_scanner"
-                            android:layout_marginEnd="8dp" />
+                            app:iconGravity="start" />
 
                         <com.google.android.material.button.MaterialButton
                             android:id="@+id/btnAddManually"
+                            style="@style/ButtonStyle"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
+                            android:layout_marginStart="8dp"
                             android:text="Add Manually"
-                            app:icon="@drawable/ic_add"
-                            style="@style/Widget.Material3.Button.TextButton"
-                            android:layout_marginStart="8dp" />
+                            app:iconGravity="start" />
 
                     </LinearLayout>
 
-                    <TextView
-                        android:id="@+id/tvBarcodeCount"
+                    <!-- Scanned Games List -->
+                    <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Scanned: 0 barcodes"
-                        android:textAppearance="?attr/textAppearanceBodyMedium"
-                        android:layout_marginBottom="8dp" />
+                        android:orientation="horizontal"
+                        android:layout_marginBottom="8dp">
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="Scanned Games:"
+                            android:textSize="16sp"
+                            android:textStyle="bold"
+                            android:textColor="@color/text_primary" />
+
+                        <TextView
+                            android:id="@+id/tvBarcodeCount"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Scanned: 0 barcodes"
+                            android:textSize="14sp"
+                            android:textColor="@color/text_secondary" />
+
+                    </LinearLayout>
 
                     <androidx.recyclerview.widget.RecyclerView
                         android:id="@+id/rvScannedBarcodes"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:minHeight="120dp"
-                        android:background="?attr/colorSurfaceVariant"
-                        android:padding="8dp"
-                        tools:listitem="@layout/item_scanned_barcode" />
+                        android:nestedScrollingEnabled="false" />
+
+                    <TextView
+                        android:id="@+id/tvEmptyState"
+                        android:layout_width="match_parent"
+                        android:layout_height="120dp"
+                        android:text="No games scanned yet.\nTap 'Scan Game' to start adding games."
+                        android:textAlignment="center"
+                        android:gravity="center"
+                        android:textColor="@color/text_secondary"
+                        android:visibility="gone" />
 
                 </LinearLayout>
 
@@ -175,42 +242,54 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:gravity="end">
+                android:layout_marginTop="16dp"
+                android:layout_marginBottom="16dp">
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/btnCancel"
-                    android:layout_width="wrap_content"
+                    style="@style/ButtonStyle"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:text="Cancel"
-                    style="@style/Widget.Material3.Button.TextButton"
-                    android:layout_marginEnd="8dp" />
+                    android:layout_weight="1"
+                    android:layout_marginEnd="8dp"
+                    android:text="@string/cancel"
+                    app:iconGravity="start" />
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/btnFinishUpload"
-                    android:layout_width="wrap_content"
+                    style="@style/ButtonStyle.Primary"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_marginStart="8dp"
                     android:text="Finish Upload"
-                    app:icon="@drawable/ic_upload" />
-
-            </LinearLayout>
-
-            <!-- AdMob Banner Ad -->
-            <LinearLayout
-                android:id="@+id/adContainer"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:gravity="center">
-
-                <com.google.android.gms.ads.AdView
-                    android:id="@+id/adView"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    app:adSize="BANNER"
-                    app:adUnitId="@string/admob_banner_ad_unit_id" />
+                    app:iconGravity="start" />
 
             </LinearLayout>
 
         </LinearLayout>
 
-</androidx.core.widget.NestedScrollView>
+    </ScrollView>
+
+    <!-- Ad Container -->
+    <LinearLayout
+        android:id="@+id/adContainer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:background="@color/surface"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <com.google.android.gms.ads.AdView
+            android:id="@+id/adView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            app:adSize="BANNER"
+            app:adUnitId="@string/admob_banner_ad_unit_id" />
+
+    </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

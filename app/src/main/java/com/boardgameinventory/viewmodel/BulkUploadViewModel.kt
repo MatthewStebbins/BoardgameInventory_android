@@ -4,18 +4,21 @@ import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.viewModelScope
 import com.boardgameinventory.api.ApiClient
 import com.boardgameinventory.api.ProductInfo
 import com.boardgameinventory.data.AppDatabase
 import com.boardgameinventory.data.Game
 import com.boardgameinventory.repository.GameRepository
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 class BulkUploadViewModel(
-    application: Application,
-    private val repository: GameRepository = GameRepository(AppDatabase.getDatabase(application).gameDao())
+    application: Application
 ) : AndroidViewModel(application) {
+
+    private val repository = GameRepository(AppDatabase.getDatabase(application).gameDao())
 
     private val _scannedBarcodes = MutableLiveData<List<String>>(emptyList())
     val scannedBarcodes: LiveData<List<String>> = _scannedBarcodes
@@ -38,60 +41,57 @@ class BulkUploadViewModel(
         _scannedBarcodes.value = currentList - barcode
     }
 
-    /**
-     * Refactored: processBulkUpload is now a suspend function and does not launch a coroutine internally.
-     * This makes it test-friendly and ensures synchronous completion in unit tests.
-     */
-    suspend fun processBulkUpload(bookcase: String, shelf: String) {
-        val barcodes = _scannedBarcodes.value ?: emptyList()
-        if (barcodes.isEmpty()) return
+    fun uploadGames(bookcase: String, shelf: String) {
+        viewModelScope.launch {
+            _isLoading.value = true
 
-        _isLoading.value = true
-        try {
-            val successful = mutableListOf<String>()
-            val failed = mutableListOf<String>()
+            try {
+                val barcodes = _scannedBarcodes.value ?: emptyList()
+                val successful = mutableListOf<String>()
+                val failed = mutableListOf<String>()
 
-            for (barcode in barcodes) {
-                try {
-                    // Check if game already exists in database
-                    val existingGame = repository.getGameByBarcode(barcode)
+                for (barcode in barcodes) {
+                    try {
+                        // Check if game already exists
+                        val existingGame = repository.getGameByBarcode(barcode)
 
-                    val game = if (existingGame != null) {
-                        // Use existing game data but update location
-                        existingGame.copy(
-                            bookcase = bookcase,
-                            shelf = shelf
-                        )
-                    } else {
-                        // Try to fetch from API
-                        val gameData: ProductInfo? = try {
-                            ApiClient.lookupBarcode(barcode)
-                        } catch (e: Exception) {
-                            null
+                        val game = if (existingGame != null) {
+                            // Update existing game location
+                            existingGame.copy(
+                                bookcase = bookcase,
+                                shelf = shelf
+                            )
+                        } else {
+                            // Try to fetch from API
+                            val gameData: ProductInfo? = try {
+                                ApiClient.lookupBarcode(barcode)
+                            } catch (e: Exception) {
+                                null
+                            }
+
+                            Game(
+                                barcode = barcode,
+                                name = gameData?.getDisplayTitle() ?: "Unknown Game",
+                                bookcase = bookcase,
+                                shelf = shelf,
+                                loanedTo = null,
+                                description = gameData?.getDisplayDescription(),
+                                imageUrl = gameData?.getDisplayImage()
+                            )
                         }
 
-                        Game(
-                            barcode = barcode,
-                            name = gameData?.getDisplayTitle() ?: "Unknown Game",
-                            bookcase = bookcase,
-                            shelf = shelf,
-                            loanedTo = null,
-                            description = gameData?.getDisplayDescription(),
-                            imageUrl = gameData?.getDisplayImage()
-                        )
+                        repository.insertGame(game)
+                        successful.add(barcode)
+                    } catch (e: Exception) {
+                        failed.add(barcode)
                     }
-
-                    repository.insertGame(game)
-                    successful.add(barcode)
-                } catch (e: Exception) {
-                    failed.add(barcode)
                 }
-            }
 
-            _uploadResult.value = UploadResult(successful.size, failed)
-            _scannedBarcodes.value = emptyList()
-        } finally {
-            _isLoading.value = false
+                _uploadResult.value = UploadResult(successful.size, failed)
+                _scannedBarcodes.value = emptyList()
+            } finally {
+                _isLoading.value = false
+            }
         }
     }
 
@@ -100,7 +100,7 @@ class BulkUploadViewModel(
     }
 
     data class UploadResult(
-        val successful: Int,
-        val failed: List<String>
+        val successfulCount: Int,
+        val failedBarcodes: List<String>
     )
 }
