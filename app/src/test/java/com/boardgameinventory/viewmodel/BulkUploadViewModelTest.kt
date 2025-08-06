@@ -11,14 +11,16 @@ import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.runBlocking
-import org.junit.*
+import org.junit.After
+import org.junit.Assert
+import org.junit.Before
+import org.junit.Rule
+import org.junit.Test
 import org.mockito.Mock
-import org.mockito.Mockito.*
 import org.mockito.MockitoAnnotations
 import org.mockito.kotlin.any
-
-import com.boardgameinventory.viewmodel.BulkUploadViewModel
 import org.mockito.kotlin.whenever
+import com.boardgameinventory.viewmodel.BulkUploadViewModel
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class BulkUploadViewModelTest {
@@ -33,15 +35,12 @@ class BulkUploadViewModelTest {
     private lateinit var viewModel: BulkUploadViewModel
     private val testDispatcher = StandardTestDispatcher()
 
+
     @Before
     fun setup() {
         MockitoAnnotations.openMocks(this)
         Dispatchers.setMain(testDispatcher)
-        // Use reflection to inject the mock repository if not in constructor
-        viewModel = BulkUploadViewModel(application)
-        val repoField = BulkUploadViewModel::class.java.getDeclaredField("repository")
-        repoField.isAccessible = true
-        repoField.set(viewModel, repository)
+        viewModel = BulkUploadViewModel(application, repository)
     }
 
     @After
@@ -69,9 +68,10 @@ class BulkUploadViewModelTest {
     fun `processBulkUpload success scenario`() = runTest(testDispatcher) {
         viewModel.addGameBarcode("123")
         viewModel.addGameBarcode("456")
-        // Mock repository to always succeed
-        whenever(repository.getGameByBarcode(any())).thenReturn(null)
-        whenever(repository.insertGame(any())).thenReturn(1L)
+        runBlocking {
+            whenever(repository.getGameByBarcode(any())).thenReturn(null)
+            whenever(repository.insertGame(any())).thenReturn(1L)
+        }
         viewModel.processBulkUpload("A", "1")
         testDispatcher.scheduler.advanceUntilIdle()
         val result = viewModel.uploadResult.value
@@ -84,10 +84,11 @@ class BulkUploadViewModelTest {
     fun `processBulkUpload with failures`() = runTest(testDispatcher) {
         viewModel.addGameBarcode("123")
         viewModel.addGameBarcode("456")
-        // First barcode fails, second succeeds
-        whenever(repository.getGameByBarcode("123")).thenThrow(RuntimeException("fail"))
-        whenever(repository.getGameByBarcode("456")).thenReturn(null)
-        whenever(repository.insertGame(any())).thenReturn(1L)
+        runBlocking {
+            whenever(repository.getGameByBarcode("123")).thenThrow(RuntimeException("fail"))
+            whenever(repository.getGameByBarcode("456")).thenReturn(null)
+            whenever(repository.insertGame(any())).thenReturn(1L)
+        }
         viewModel.processBulkUpload("A", "1")
         testDispatcher.scheduler.advanceUntilIdle()
         val result = viewModel.uploadResult.value
@@ -99,8 +100,10 @@ class BulkUploadViewModelTest {
     @Test
     fun `clearUploadResult resets uploadResult`() = runTest(testDispatcher) {
         viewModel.addGameBarcode("123")
-        whenever(repository.getGameByBarcode(any())).thenReturn(null)
-        whenever(repository.insertGame(any())).thenReturn(1L)
+        runBlocking {
+            whenever(repository.getGameByBarcode(any())).thenReturn(null)
+            whenever(repository.insertGame(any())).thenReturn(1L)
+        }
         viewModel.processBulkUpload("A", "1")
         testDispatcher.scheduler.advanceUntilIdle()
         Assert.assertNotNull(viewModel.uploadResult.value)
