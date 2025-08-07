@@ -31,6 +31,8 @@ class SecureApiKeyManager(private val context: Context) {
         private const val ENCRYPTED_PREFS_FILE = "encrypted_api_keys"
         private const val KEY_RAPIDAPI_KEY = "rapidapi_key"
         private const val KEY_RAPIDAPI_HOST = "rapidapi_host"
+        private const val KEY_ADMOB_APP_ID = "admob_app_id" // Added AdMob App ID key
+        private const val KEY_ADMOB_BANNER_ID = "admob_banner_id" // Added AdMob Banner ID key
 
         @Volatile
         private var INSTANCE: SecureApiKeyManager? = null
@@ -87,8 +89,26 @@ class SecureApiKeyManager(private val context: Context) {
                     Log.w(TAG, "API key is blank or default - not initializing")
                 }
             }
+
+            // Initialize AdMob IDs if not already stored
+            if (encryptedPreferences?.contains(KEY_ADMOB_APP_ID) != true) {
+                // Store AdMob App ID from BuildConfig
+                val adMobAppId = BuildConfig.ADMOB_APP_ID
+                val adMobBannerId = BuildConfig.ADMOB_BANNER_ID
+
+                if (adMobAppId.isNotBlank() && adMobAppId != "ca-app-pub-0000000000000000~0000000000") {
+                    encryptedPreferences?.edit()
+                        ?.putString(KEY_ADMOB_APP_ID, adMobAppId)
+                        ?.putString(KEY_ADMOB_BANNER_ID, adMobBannerId)
+                        ?.apply()
+
+                    Log.d(TAG, "AdMob IDs initialized successfully")
+                } else {
+                    Log.w(TAG, "AdMob ID is blank or default - not initializing")
+                }
+            }
         } catch (e: Exception) {
-            Log.e(TAG, "Error initializing API keys", e)
+            Log.e(TAG, "Error initializing secure keys", e)
         }
     }
 
@@ -107,6 +127,20 @@ class SecureApiKeyManager(private val context: Context) {
     }
 
     /**
+     * Get AdMob App ID
+     */
+    fun getAdMobAppId(): String {
+        return encryptedPreferences?.getString(KEY_ADMOB_APP_ID, "") ?: ""
+    }
+
+    /**
+     * Get AdMob Banner ID
+     */
+    fun getAdMobBannerId(): String {
+        return encryptedPreferences?.getString(KEY_ADMOB_BANNER_ID, "") ?: ""
+    }
+
+    /**
      * Update API keys (could be used for settings screen)
      */
     fun updateApiKeys(rapidApiKey: String, rapidApiHost: String) {
@@ -118,6 +152,21 @@ class SecureApiKeyManager(private val context: Context) {
             Log.d(TAG, "API keys updated successfully")
         } catch (e: Exception) {
             Log.e(TAG, "Error updating API keys", e)
+        }
+    }
+
+    /**
+     * Update AdMob IDs (could be used for settings screen)
+     */
+    fun updateAdMobIds(appId: String, bannerId: String) {
+        try {
+            encryptedPreferences?.edit()
+                ?.putString(KEY_ADMOB_APP_ID, appId)
+                ?.putString(KEY_ADMOB_BANNER_ID, bannerId)
+                ?.apply()
+            Log.d(TAG, "AdMob IDs updated successfully")
+        } catch (e: Exception) {
+            Log.e(TAG, "Error updating AdMob IDs", e)
         }
     }
 }
