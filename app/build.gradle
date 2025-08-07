@@ -99,14 +99,18 @@ dependencies {
     
     // CSV/Excel handling
     implementation 'com.opencsv:opencsv:5.8'
-    implementation 'org.apache.poi:poi:5.2.4'
-    implementation 'org.apache.poi:poi-ooxml:5.2.4'
-    
-    // Google AdMob
-    implementation 'com.google.android.gms:play-services-ads:22.6.0'
-    
-    // Security - for API key encryption
+
+    // Database encryption with SQLCipher
+    implementation 'net.zetetic:android-database-sqlcipher:4.5.4'
+
+    // Android Security libraries
     implementation 'androidx.security:security-crypto:1.1.0-alpha06'
+
+    // Certificate pinning and TLS
+    implementation 'com.squareup.okhttp3:okhttp-tls:4.12.0'
+
+    // User Messaging Platform for ad consent
+    implementation 'com.google.android.ump:user-messaging-platform:2.1.0'
 
     // Testing
 

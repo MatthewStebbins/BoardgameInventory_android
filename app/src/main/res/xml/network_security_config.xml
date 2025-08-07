@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<network-security-config>
+    <!-- Base configuration that all connections inherit -->
+    <base-config cleartextTrafficPermitted="false">
+        <trust-anchors>
+            <certificates src="system" />
+        </trust-anchors>
+    </base-config>
+
+    <!-- Domain specific configurations -->
+    <domain-config>
+        <!-- Include all API domains your app communicates with -->
+        <domain includeSubdomains="true">barcodes1.p.rapidapi.com</domain>
+        <domain includeSubdomains="true">boardgamegeek.com</domain>
+        <domain includeSubdomains="true">api.boardgameatlas.com</domain>
+
+        <trust-anchors>
+            <certificates src="system" />
+        </trust-anchors>
+
+        <!-- Pin certificates if needed for heightened security -->
+        <!--
+        <pin-set>
+            <pin digest="SHA-256">YourPinnedCertificateHash</pin>
+        </pin-set>
+        -->
+    </domain-config>
+</network-security-config>

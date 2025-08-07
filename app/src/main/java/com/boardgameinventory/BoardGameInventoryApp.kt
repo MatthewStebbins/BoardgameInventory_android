@@ -4,6 +4,9 @@ import android.app.Application
 import android.os.Build
 import android.util.Log
 import androidx.annotation.RequiresApi
+import androidx.lifecycle.ProcessLifecycleOwner
+import com.boardgameinventory.ads.AdManager
+import com.boardgameinventory.ads.ConsentManager
 import com.boardgameinventory.api.ApiClient
 import com.boardgameinventory.utils.SecureApiKeyManager
 import com.google.android.gms.ads.MobileAds
@@ -19,6 +22,13 @@ class BoardGameInventoryApp : Application() {
 
     companion object {
         private const val TAG = "BoardGameInventoryApp"
+
+        // Store managers as singletons for access throughout the app
+        lateinit var consentManager: ConsentManager
+            private set
+
+        lateinit var adManager: AdManager
+            private set
     }
 
     override fun onCreate() {
@@ -30,8 +40,8 @@ class BoardGameInventoryApp : Application() {
         // Initialize API client with application context
         initializeApiClient()
 
-        // Initialize AdMob securely
-        initializeSecureAdMob()
+        // Initialize consent and ad management
+        initializeAdConsent()
     }
 
     private fun initializeApiKeys() {
@@ -55,75 +65,36 @@ class BoardGameInventoryApp : Application() {
     }
 
     /**
-     * Initialize AdMob with secure App ID
-     * This overrides the placeholder value in the manifest
+     * Initialize consent management and AdMob with proper consent flows
      */
-    private fun initializeSecureAdMob() {
+    private fun initializeAdConsent() {
         try {
-            // Get the secure AdMob App ID
-            val secureAdMobAppId = SecureApiKeyManager.getInstance(this).getAdMobAppId()
+            // Create consent manager instance
+            consentManager = ConsentManager.getInstance(this)
 
-            if (secureAdMobAppId.isNotEmpty() &&
-                !secureAdMobAppId.startsWith("ca-app-pub-0000000000000000")) {
+            // Create ad manager instance
+            adManager = AdManager.getInstance(this)
 
-                // For Android 12+ (API 31+), use the new method to set the App ID
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-                    setAdMobAppIdApi31Plus(secureAdMobAppId)
-                } else {
-                    // For older Android versions, set it through the manifest metadata
-                    // (already set as placeholder, will be used from BuildConfig)
-                }
+            // Add lifecycle observers to process lifecycle owner to manage lifecycle events
+            ProcessLifecycleOwner.get().lifecycle.addObserver(consentManager)
+            ProcessLifecycleOwner.get().lifecycle.addObserver(adManager)
 
-                // Initialize AdMob SDK
-                MobileAds.initialize(this) { initializationStatus ->
-                    val statusMap = initializationStatus.adapterStatusMap
-                    for ((adapter, status) in statusMap) {
-                        Log.d(TAG, "AdMob Adapter: $adapter - ${status.initializationState}")
-                    }
-                    Log.d(TAG, "AdMob initialized successfully")
-                }
+            // Initialize ad manager with consent manager
+            adManager.initialize(consentManager)
 
-                // Set up ad request configuration (optional)
-                val requestConfiguration = RequestConfiguration.Builder()
-                    .setTagForChildDirectedTreatment(RequestConfiguration.TAG_FOR_CHILD_DIRECTED_TREATMENT_UNSPECIFIED)
-                    .setMaxAdContentRating(RequestConfiguration.MAX_AD_CONTENT_RATING_G)
-                    .build()
-                MobileAds.setRequestConfiguration(requestConfiguration)
-            } else {
-                Log.w(TAG, "AdMob App ID not properly configured, using test ID")
-                // Initialize with default/test ID from manifest
-                MobileAds.initialize(this)
-            }
+            Log.d(TAG, "Ad consent management initialized successfully")
         } catch (e: Exception) {
-            Log.e(TAG, "Error initializing AdMob", e)
-            // Fallback to standard initialization with manifest value
-            MobileAds.initialize(this)
+            Log.e(TAG, "Error initializing ad consent management", e)
         }
     }
 
     /**
-     * Special handling for Android 12+ to set AdMob App ID programmatically
+     * Legacy method maintained for compatibility - now handled by ConsentManager
+     * @deprecated Use ConsentManager for ad initialization
      */
-    @RequiresApi(Build.VERSION_CODES.S)
-    private fun setAdMobAppIdApi31Plus(appId: String) {
-        try {
-            // On Android 12+, need to use reflection to update the App ID
-            val applicationClass = Class.forName("android.app.Application")
-            val metaDataField = applicationClass.getDeclaredField("mApplicationInfo")
-            metaDataField.isAccessible = true
-
-            val applicationInfo = metaDataField.get(this)
-            val metaDataField2 = applicationInfo.javaClass.getDeclaredField("metaData")
-            metaDataField2.isAccessible = true
-
-            val metaData = metaDataField2.get(applicationInfo)
-            if (metaData != null) {
-                val metaDataClass = Class.forName("android.os.Bundle")
-                val putStringMethod = metaDataClass.getDeclaredMethod("putString", String::class.java, String::class.java)
-                putStringMethod.invoke(metaData, "com.google.android.gms.ads.APPLICATION_ID", appId)
-            }
-        } catch (e: Exception) {
-            Log.e(TAG, "Failed to set AdMob App ID via reflection: ${e.message}", e)
-        }
+    @Deprecated("Use ConsentManager for ad initialization with proper consent flows")
+    private fun initializeSecureAdMob() {
+        // This functionality is now handled by the ConsentManager
+        Log.d(TAG, "initializeSecureAdMob called (deprecated)")
     }
 }
