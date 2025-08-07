@@ -2,6 +2,7 @@ package com.boardgameinventory.ui
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import com.boardgameinventory.utils.AdHelper
 import com.boardgameinventory.utils.AdManager
 import com.google.android.gms.ads.AdView
 
@@ -15,7 +16,7 @@ abstract class BaseAdActivity : AppCompatActivity() {
     private var hasAdLoaded = false
     
     /**
-     * Helper function for activities using data binding to setup ads manually
+     * Helper function for activities using data binding to setup ads securely
      * Call this from onCreate() after setContentView()
      */
     protected fun setupAdsWithBinding(
@@ -24,24 +25,13 @@ abstract class BaseAdActivity : AppCompatActivity() {
         activityName: String
     ) {
         try {
-            android.util.Log.d(activityName, "Setting up ads manually")
+            android.util.Log.d(activityName, "Setting up ads securely with test mode detection")
             AdManager.initialize(this)
 
             adContainer.visibility = android.view.View.VISIBLE
 
-            // Configure the existing AdView from XML instead of creating a new one
-            adView.adListener = object : com.google.android.gms.ads.AdListener() {
-                override fun onAdLoaded() {
-                    android.util.Log.d(activityName, "Ad loaded successfully")
-                }
-
-                override fun onAdFailedToLoad(adError: com.google.android.gms.ads.LoadAdError) {
-                    android.util.Log.e(activityName, "Ad failed to load: ${adError.message}")
-                }
-            }
-
-            // Load the ad using the existing AdView configuration from XML
-            adView.loadAd(com.google.android.gms.ads.AdRequest.Builder().build())
+            // Use the new secure AdHelper to load ads with test mode detection
+            AdHelper.loadAd(this, adView, activityName)
         } catch (e: Exception) {
             android.util.Log.e(activityName, "Error setting up ads: ${e.message}", e)
         }
