@@ -139,6 +139,22 @@
                     android:layout_height="wrap_content"
                     android:text="@string/export_import_games" />
 
+                <!-- Settings and Privacy Policy Section -->
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/divider"
+                    android:layout_marginVertical="16dp" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnSettings"
+                    style="@style/ButtonStyle.Secondary"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/settings"
+                    app:icon="@android:drawable/ic_menu_preferences"
+                    app:iconGravity="start" />
+
             </LinearLayout>
             
             <!-- Version Info for Developer Mode Access -->

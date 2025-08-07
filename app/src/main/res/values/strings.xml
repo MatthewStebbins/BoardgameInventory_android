@@ -49,14 +49,13 @@
     <string name="from_date">From Date</string>
     <string name="to_date">To Date</string>
     <string name="apply_filters">Apply Filters</string>
-    <string name="sort_by">Sort By</string>
-    <string name="sort_by_name">Name</string>
-    <string name="sort_by_year">Year</string>
-    <string name="sort_by_date_added">Date Added</string>
-    <string name="sort_by_bookcase">Bookcase</string>
-    <string name="all_bookcases">All Bookcases</string>
-    <string name="all_locations">All Locations</string>
-    
+
+    <!-- Settings and Privacy -->
+    <string name="settings">Settings</string>
+    <string name="privacy_policy">Privacy Policy</string>
+    <string name="app_information">App Information</string>
+    <string name="legal_privacy">Legal &amp; Privacy</string>
+
     <!-- Game Details -->
     <string name="game_detail_title">Game Details</string>
     <string name="game_image">Game Image</string>

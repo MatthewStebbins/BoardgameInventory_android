@@ -152,23 +152,26 @@ class MainActivity : BaseAdActivity() {
         }
         
         binding.btnLoanGame.setOnClickListener {
-            val intent = Intent(this, LoanGameActivity::class.java)
-            startActivity(intent)
+            startActivity(Intent(this, LoanGameActivity::class.java))
         }
         
         binding.btnReturnGame.setOnClickListener {
-            val intent = Intent(this, ReturnGameActivity::class.java)
-            startActivity(intent)
+            startActivity(Intent(this, ReturnGameActivity::class.java))
         }
         
         binding.btnDeleteGame.setOnClickListener {
-            val intent = Intent(this, GameListActivity::class.java)
-            intent.putExtra("deleteMode", true)
-            startActivity(intent)
+            startActivity(Intent(this, GameListActivity::class.java).apply {
+                putExtra("mode", "delete")
+            })
         }
         
         binding.btnExportImportGames.setOnClickListener {
-            showExportImportScreen()
+            startActivity(Intent(this, ExportImportActivity::class.java))
+        }
+
+        // Settings button click handler for accessing privacy policy
+        binding.btnSettings.setOnClickListener {
+            startActivity(Intent(this, SettingsActivity::class.java))
         }
     }
     

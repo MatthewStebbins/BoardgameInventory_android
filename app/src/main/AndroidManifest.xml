@@ -100,13 +100,23 @@
         <activity
             android:name=".ui.DatabaseManagementActivity"
             android:exported="false"
-            android:enabled="true"
-            android:excludeFromRecents="true"
-            android:noHistory="true"
-            android:theme="@style/Theme.BoardgameInventory"
+            android:parentActivityName=".MainActivity" />
+
+        <!-- Settings Activity with Privacy Policy -->
+        <activity
+            android:name=".ui.SettingsActivity"
+            android:exported="false"
             android:parentActivityName=".MainActivity"
-            android:label="Database Management (Developer Mode)" />
-            
+            android:label="Settings" />
+
+        <!-- Privacy Policy Activity -->
+        <activity
+            android:name=".ui.PrivacyPolicyActivity"
+            android:exported="false"
+            android:parentActivityName=".ui.SettingsActivity"
+            android:label="Privacy Policy" />
+
+        <!-- Developer Settings Activity (for development use) -->
         <activity
             android:name=".ui.DeveloperSettingsActivity"
             android:exported="false"
