@@ -25,7 +25,12 @@ class AddGameViewModel(application: Application) : AndroidViewModel(application)
     
     init {
         val database = AppDatabase.getDatabase(application)
-        repository = GameRepository(database.gameDao())
+        repository = GameRepository(database.gameDao(), application.applicationContext)
+    }
+
+    // Constructor that accepts a repository directly (used by ViewModelFactory)
+    constructor(repository: GameRepository) : this(Application()) {
+        // Repository is already set in the primary constructor
     }
     
     fun addGame(barcode: String, bookcase: String, shelf: String) {

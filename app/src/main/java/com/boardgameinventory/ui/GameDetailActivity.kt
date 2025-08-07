@@ -164,7 +164,7 @@ class GameDetailActivity : BaseAdActivity() {
             lifecycleScope.launch {
                 try {
                     // Create a ViewModel instance for game operations
-                    val gameRepository = GameRepository(AppDatabase.getDatabase(this@GameDetailActivity).gameDao())
+                    val gameRepository = GameRepository(AppDatabase.getDatabase(this@GameDetailActivity).gameDao(), this@GameDetailActivity)
                     
                     // Return the game by clearing the loanedTo field
                     gameRepository.returnGame(currentGame.id)

@@ -1,5 +1,6 @@
 package com.boardgameinventory.repository
 
+import android.content.Context
 import kotlinx.coroutines.flow.Flow
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
@@ -8,10 +9,10 @@ import com.boardgameinventory.data.Game
 import com.boardgameinventory.data.GameDao
 import com.boardgameinventory.data.SearchAndFilterCriteria
 import com.boardgameinventory.api.ApiClient
-import com.boardgameinventory.api.ProductInfo
+import com.boardgameinventory.api.ProductInfo // Import the ProductInfo class
 
-class GameRepository(private val gameDao: GameDao) {
-    
+class GameRepository(private val gameDao: GameDao, private val context: Context) {
+
     fun getAllGames(): Flow<List<Game>> = gameDao.getAllGames()
     
     fun getLoanedGames(): Flow<List<Game>> = gameDao.getLoanedGames()
@@ -55,8 +56,8 @@ class GameRepository(private val gameDao: GameDao) {
     
     suspend fun getAllBarcodes(): List<String> = gameDao.getAllBarcodes()
     
-    suspend fun lookupBarcodeInfo(barcode: String): ProductInfo? = ApiClient.lookupBarcode(barcode)
-    
+    suspend fun lookupBarcodeInfo(barcode: String): ProductInfo? = ApiClient.lookupBarcode(context, barcode)
+
     suspend fun addGameByBarcode(
         barcode: String, 
         bookcase: String, 

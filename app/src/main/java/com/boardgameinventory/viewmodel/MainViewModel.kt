@@ -15,25 +15,35 @@ data class GameStats(
     val availableGames: Int = 0
 )
 
-class MainViewModel(application: Application) : AndroidViewModel(application) {
-    
+/**
+ * Main ViewModel supporting secure API key access
+ */
+class MainViewModel : AndroidViewModel {
+
     private val repository: GameRepository
-    
+
     private val _gameStats = MutableStateFlow(GameStats())
     val gameStats: StateFlow<GameStats> = _gameStats
-    
-    init {
+
+    // Primary constructor with application
+    constructor(application: Application) : super(application) {
         val database = AppDatabase.getDatabase(application)
-        repository = GameRepository(database.gameDao())
+        repository = GameRepository(database.gameDao(), application.applicationContext)
         refreshStats()
     }
-    
+
+    // Secondary constructor with repository for ViewModelFactory
+    constructor(repository: GameRepository) : super(Application()) {
+        this.repository = repository
+        refreshStats()
+    }
+
     fun refreshStats() {
         viewModelScope.launch {
             val totalGames = repository.getGameCount()
             val loanedGames = repository.getLoanedGameCount()
             val availableGames = totalGames - loanedGames
-            
+
             _gameStats.value = GameStats(
                 totalGames = totalGames,
                 loanedGames = loanedGames,

@@ -1,6 +1,7 @@
 package com.boardgameinventory.viewmodel
 
 import android.app.Application
+import android.content.Context
 import android.net.Uri
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
@@ -32,7 +33,12 @@ class ExportImportViewModel(application: Application) : AndroidViewModel(applica
     
     init {
         val database = AppDatabase.getDatabase(application)
-        repository = GameRepository(database.gameDao())
+        repository = GameRepository(database.gameDao(), application.applicationContext)
+    }
+
+    // Constructor that accepts a repository directly (used by ViewModelFactory)
+    constructor(repository: GameRepository, context: Context) : this(context.applicationContext as Application) {
+        // Repository is already set in the primary constructor
     }
     
     fun exportToCSV(uri: Uri) {

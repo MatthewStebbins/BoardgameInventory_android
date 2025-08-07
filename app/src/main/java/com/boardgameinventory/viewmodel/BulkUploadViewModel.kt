@@ -1,6 +1,7 @@
 package com.boardgameinventory.viewmodel
 
 import android.app.Application
+import android.content.Context
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -18,7 +19,17 @@ class BulkUploadViewModel(
     application: Application
 ) : AndroidViewModel(application) {
 
-    private val repository = GameRepository(AppDatabase.getDatabase(application).gameDao())
+    private val repository: GameRepository
+
+    init {
+        val database = AppDatabase.getDatabase(application)
+        repository = GameRepository(database.gameDao(), application.applicationContext)
+    }
+
+    // Constructor that accepts a repository directly (used by ViewModelFactory)
+    constructor(repository: GameRepository, context: Context) : this(context.applicationContext as Application) {
+        // Repository is already set in the primary constructor
+    }
 
     private val _scannedBarcodes = MutableLiveData<List<String>>(emptyList())
     val scannedBarcodes: LiveData<List<String>> = _scannedBarcodes
@@ -64,7 +75,7 @@ class BulkUploadViewModel(
                         } else {
                             // Try to fetch from API
                             val gameData: ProductInfo? = try {
-                                ApiClient.lookupBarcode(barcode)
+                                ApiClient.lookupBarcode(getApplication<Application>().applicationContext, barcode)
                             } catch (e: Exception) {
                                 null
                             }

@@ -43,7 +43,6 @@ abstract class AppDatabase : RoomDatabase() {
                         // Note: PRAGMA statements moved to avoid callback restrictions
                     }
                 })
-                .fallbackToDestructiveMigration() // Use only during development
                 .build()
                 
                 INSTANCE = instance

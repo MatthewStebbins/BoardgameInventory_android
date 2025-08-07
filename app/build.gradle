@@ -48,7 +48,8 @@ android {
 
     buildTypes {
         release {
-            minifyEnabled false
+            minifyEnabled true
+            shrinkResources true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
@@ -100,6 +101,9 @@ dependencies {
     // Google AdMob
     implementation 'com.google.android.gms:play-services-ads:22.6.0'
     
+    // Security - for API key encryption
+    implementation 'androidx.security:security-crypto:1.1.0-alpha06'
+
     // Testing
 
     testImplementation 'junit:junit:4.13.2'
