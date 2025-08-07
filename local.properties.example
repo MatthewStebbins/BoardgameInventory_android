@@ -9,6 +9,10 @@ sdk.dir=C:\\Users\\YourUsername\\AppData\\Local\\Android\\Sdk
 RAPIDAPI_KEY=your_rapidapi_key_here
 RAPIDAPI_HOST=barcodes1.p.rapidapi.com
 
+# AdMob Configuration (replace with your own AdMob credentials)
+ADMOB_APP_ID=ca-app-pub-0000000000000000~0000000000
+ADMOB_BANNER_ID=ca-app-pub-0000000000000000/0000000000
+
 # Build configurations
 org.gradle.jvmargs=-Xmx2048m -Dfile.encoding=UTF-8
 android.useAndroidX=true
