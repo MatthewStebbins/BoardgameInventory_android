@@ -14,8 +14,6 @@ import com.boardgameinventory.ads.ConsentManager
  */
 class SettingsActivity : BaseAdActivity() {
 
-    private lateinit var consentManager: ConsentManager
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_settings)

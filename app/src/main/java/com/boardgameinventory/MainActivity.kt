@@ -25,9 +25,6 @@ class MainActivity : BaseAdActivity() {
     private lateinit var binding: ActivityMainBinding
     private val viewModel: MainViewModel by viewModels()
     
-    // Since BaseAdActivity already has adView property, we need to use override
-    override var adView: AdView? = null
-
     // Update manager for handling in-app updates
     private lateinit var updateManager: UpdateManager
 
@@ -108,106 +105,62 @@ class MainActivity : BaseAdActivity() {
 
     private fun setupAdsManually() {
         try {
-            setupAdsWithBinding(binding.adContainer, binding.adView, "MainActivity")
+            // Find the AdView directly from the layout rather than using binding
+            val localAdView = findViewById<com.google.android.gms.ads.AdView>(R.id.adView)
+
+            // Set the class-level adView property
+            adView = localAdView
+
+            if (localAdView != null) {
+                // Set up the ad container
+                val adContainer = findViewById<android.view.ViewGroup>(R.id.adContainer)
+
+                // Configure the listener
+                localAdView.adListener = object : com.google.android.gms.ads.AdListener() {
+                    override fun onAdLoaded() {
+                        android.util.Log.d("MainActivity", "Ad loaded successfully")
+                    }
+
+                    override fun onAdFailedToLoad(error: com.google.android.gms.ads.LoadAdError) {
+                        android.util.Log.e("MainActivity", "Ad failed to load: ${error.message}")
+                    }
+                }
+
+                // Load the ad
+                com.boardgameinventory.utils.AdManager.loadAd(localAdView)
+            }
         } catch (e: Exception) {
             android.util.Log.e("MainActivity", "Error in ad setup: ${e.message}", e)
         }
     }
     
-    /**
-     * Initialize ad view with data binding
-     * Note: This is not overriding a parent method, it's a local implementation
-     */
-    private fun initializeAdView() {
-        try {
-            android.util.Log.d("MainActivity", "Initializing AdView using data binding...")
-            
-            // Access adContainer through binding
-            val adContainer = binding.adContainer
-            android.util.Log.d("MainActivity", "adContainer from binding found")
-            android.util.Log.d("MainActivity", "adContainer class: ${adContainer.javaClass.simpleName}")
-            android.util.Log.d("MainActivity", "adContainer visibility: ${adContainer.visibility}")
-            
-            // Set test background
-            adContainer.setBackgroundColor(android.graphics.Color.parseColor("#FF5722")) // Red background
-            adContainer.visibility = android.view.View.VISIBLE
-            android.util.Log.d("MainActivity", "Set red background on adContainer")
-            
-            // Access adView through binding
-            adView = binding.adView
-            android.util.Log.d("MainActivity", "adView from binding: ${adView != null}")
-            
-            if (adView != null) {
-                android.util.Log.d("MainActivity", "Found AdView through binding - configuring...")
-                
-                // Set yellow background for testing
-                adView!!.setBackgroundColor(android.graphics.Color.parseColor("#FFEB3B"))
-                adView!!.visibility = android.view.View.VISIBLE
-                
-                // Configure the AdView
-                configureAdView(adView!!)
-                
-                // Add timeout mechanism
-                android.os.Handler(android.os.Looper.getMainLooper()).postDelayed({
-                    if (!hasAdLoaded) {
-                        android.util.Log.w("MainActivity", "Ad loading timeout - no response after 15 seconds")
-                        adView!!.setBackgroundColor(android.graphics.Color.parseColor("#9C27B0")) // Purple for timeout
-                    }
-                }, 15000)
-                
-                // Load the ad
-                AdManager.loadAd(adView!!)
-                android.util.Log.d("MainActivity", "AdView configured and ad loading started")
-            } else {
-                android.util.Log.e("MainActivity", "adView not found in binding")
-            }
-        } catch (e: Exception) {
-            android.util.Log.e("MainActivity", "Error in initializeAdView: ${e.message}", e)
-        }
-    }
-    
-    private var hasAdLoaded = false
-    
-    /**
-     * Configure the AdView with proper settings and listeners
-     */
-    private fun configureAdView(adView: com.google.android.gms.ads.AdView) {
-        android.util.Log.d("MainActivity", "Configuring AdView...")
-        
-        // Set ad listener for debugging
-        adView.adListener = object : com.google.android.gms.ads.AdListener() {
-            override fun onAdFailedToLoad(adError: com.google.android.gms.ads.LoadAdError) {
-                android.util.Log.e("MainActivity", "Ad failed to load: ${adError.message}")
-                hasAdLoaded = true
-                adView.setBackgroundColor(android.graphics.Color.parseColor("#FF9800")) // Orange for error
-            }
-            
-            override fun onAdLoaded() {
-                android.util.Log.d("MainActivity", "*** AD LOADED SUCCESSFULLY! ***")
-                hasAdLoaded = true
-                adView.setBackgroundColor(android.graphics.Color.parseColor("#4CAF50")) // Green for success
-            }
-            
-            override fun onAdClicked() {
-                android.util.Log.d("MainActivity", "Ad clicked")
+    private fun observeStats() {
+        lifecycleScope.launch {
+            viewModel.gameStats.collect { stats ->
+                binding.tvTotalGames.text = getString(R.string.total_games, stats.totalGames)
+                binding.tvLoanedGames.text = getString(R.string.loaned_count, stats.loanedGames)
+                binding.tvAvailableGames.text = getString(R.string.available_count, stats.availableGames)
             }
         }
     }
     
-    override fun onResume() {
-        super.onResume()
-        viewModel.refreshStats()
-        AdManager.resumeAd(adView)
+    private fun showExportImportScreen() {
+        val intent = Intent(this, ExportImportActivity::class.java)
+        startActivity(intent)
     }
     
-    override fun onPause() {
-        super.onPause()
-        AdManager.pauseAd(adView)
-    }
-    
-    override fun onDestroy() {
-        super.onDestroy()
-        AdManager.destroyAd(adView)
+    private fun showDeveloperModeActivated() {
+        AlertDialog.Builder(this)
+            .setTitle("Developer Mode Activated")
+            .setMessage("Developer mode is now active for 30 minutes.\n\nDatabase Management and other developer tools are now accessible.")
+            .setPositiveButton("Developer Settings") { _, _ ->
+                startActivity(Intent(this, DeveloperSettingsActivity::class.java))
+            }
+            .setNeutralButton("Database Management") { _, _ ->
+                startActivity(Intent(this, DatabaseManagementActivity::class.java))
+            }
+            .setNegativeButton("OK", null)
+            .show()
     }
     
     private fun setupClickListeners() {
@@ -272,32 +225,19 @@ class MainActivity : BaseAdActivity() {
         }
     }
     
-    private fun observeStats() {
-        lifecycleScope.launch {
-            viewModel.gameStats.collect { stats ->
-                binding.tvTotalGames.text = getString(R.string.total_games, stats.totalGames)
-                binding.tvLoanedGames.text = getString(R.string.loaned_count, stats.loanedGames)
-                binding.tvAvailableGames.text = getString(R.string.available_count, stats.availableGames)
-            }
-        }
+    override fun onResume() {
+        super.onResume()
+        viewModel.refreshStats()
+        AdManager.resumeAd(adView)
     }
     
-    private fun showExportImportScreen() {
-        val intent = Intent(this, ExportImportActivity::class.java)
-        startActivity(intent)
+    override fun onPause() {
+        super.onPause()
+        AdManager.pauseAd(adView)
     }
     
-    private fun showDeveloperModeActivated() {
-        AlertDialog.Builder(this)
-            .setTitle("Developer Mode Activated")
-            .setMessage("Developer mode is now active for 30 minutes.\n\nDatabase Management and other developer tools are now accessible.")
-            .setPositiveButton("Developer Settings") { _, _ ->
-                startActivity(Intent(this, DeveloperSettingsActivity::class.java))
-            }
-            .setNeutralButton("Database Management") { _, _ ->
-                startActivity(Intent(this, DatabaseManagementActivity::class.java))
-            }
-            .setNegativeButton("OK", null)
-            .show()
+    override fun onDestroy() {
+        super.onDestroy()
+        AdManager.destroyAd(adView)
     }
 }

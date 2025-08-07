@@ -25,10 +25,11 @@ object EncryptedDatabaseHelper {
      * @param callback Optional database callback
      * @return An instance of the Room database with encryption enabled
      */
-    inline fun <reified T : RoomDatabase> createEncrypted(
+    fun <T : RoomDatabase> createEncrypted(
         context: Context,
         databaseName: String,
-        crossinline callback: (SupportSQLiteDatabase) -> Unit = {}
+        databaseClass: Class<T>,
+        callback: (SupportSQLiteDatabase) -> Unit = {}
     ): T {
         try {
             // Get encryption key from SecurityManager
@@ -38,7 +39,7 @@ object EncryptedDatabaseHelper {
             // Create SQLCipher factory with the encryption key
             val factory = SupportFactory(passphrase.toByteArray())
 
-            return Room.databaseBuilder(context, T::class.java, databaseName)
+            return Room.databaseBuilder(context, databaseClass, databaseName)
                 .openHelperFactory(factory)
                 .fallbackToDestructiveMigration() // You might want to implement proper migrations
                 .addCallback(object : RoomDatabase.Callback() {
@@ -58,7 +59,7 @@ object EncryptedDatabaseHelper {
             // In production, you might want to handle this differently
             Log.e(TAG, "Failed to create encrypted database: ${e.message}", e)
 
-            return Room.databaseBuilder(context, T::class.java, databaseName)
+            return Room.databaseBuilder(context, databaseClass, databaseName)
                 .fallbackToDestructiveMigration()
                 .build()
         }

@@ -116,7 +116,7 @@ class ConsentManager(private val context: Context) : DefaultLifecycleObserver {
                 Log.d(TAG, "Consent form available: ${consentInformation.isConsentFormAvailable}")
             },
             { error -> // Consent information update failed
-                Log.e(TAG, "Error requesting consent info: ${error.message}", error)
+                Log.e(TAG, "Error requesting consent info: ${error.message}")
                 // Initialize MobileAds even if consent check fails to prevent app from being unusable
                 initializeMobileAds()
             }
@@ -136,7 +136,7 @@ class ConsentManager(private val context: Context) : DefaultLifecycleObserver {
                 }
             },
             { error -> // Error loading form
-                Log.e(TAG, "Error loading consent form: ${error.message}", error)
+                Log.e(TAG, "Error loading consent form: ${error.message}")
                 // Initialize MobileAds even if consent form fails to load
                 initializeMobileAds()
             }

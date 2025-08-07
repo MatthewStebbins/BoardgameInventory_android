@@ -52,9 +52,10 @@ abstract class AppDatabase : RoomDatabase() {
                 } else {
                     // Use encrypted database in release builds for security
                     Log.d(TAG, "Creating encrypted database (RELEASE mode)")
-                    EncryptedDatabaseHelper.createEncrypted<AppDatabase>(
+                    EncryptedDatabaseHelper.createEncrypted(
                         context.applicationContext,
-                        DATABASE_NAME
+                        DATABASE_NAME,
+                        AppDatabase::class.java
                     ) { db ->
                         Log.d(TAG, "Encrypted database created with version ${db.version}")
                     }

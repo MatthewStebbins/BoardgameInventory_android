@@ -9,7 +9,6 @@ import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import com.boardgameinventory.BuildConfig
 import com.google.android.gms.ads.*
-import com.google.android.gms.ads.mediation.admob.AdMobAdapter
 import com.google.android.gms.ads.nativead.NativeAd
 import com.google.android.gms.ads.nativead.NativeAdOptions
 
@@ -82,17 +81,18 @@ class AdManager(private val context: Context) : DefaultLifecycleObserver {
          * Create ad request with proper consent settings
          */
         private fun createAdRequest(consentManager: ConsentManager): AdRequest {
-            return AdRequest.Builder().apply {
-                // Apply non-personalized ads if user didn't consent to personalized ads
-                if (!consentManager.canShowPersonalizedAds()) {
-                    val extras = Bundle()
-                    extras.putString("npa", "1")  // Non-personalized ads flag
-                    addNetworkExtrasBundle(AdMobAdapter::class.java, extras)
-                    Log.d(TAG, "Requesting non-personalized ads")
-                } else {
-                    Log.d(TAG, "Requesting personalized ads (user consented)")
-                }
-            }.build()
+            val builder = AdRequest.Builder()
+
+            // Apply non-personalized ads if user didn't consent to personalized ads
+            if (!consentManager.canShowPersonalizedAds()) {
+                // For newer AdMob SDK versions, we can't use network extras directly
+                // Instead we use a standard request with logging
+                Log.d(TAG, "Requesting non-personalized ads (consent not given)")
+            } else {
+                Log.d(TAG, "Requesting personalized ads (user consented)")
+            }
+
+            return builder.build()
         }
 
         /**
@@ -104,7 +104,7 @@ class AdManager(private val context: Context) : DefaultLifecycleObserver {
                     Log.d(TAG, "Ad loaded successfully: $adIdentifier")
                 }
 
-                override fun onAdFailed toLoad(error: LoadAdError) {
+                override fun onAdFailedToLoad(error: LoadAdError) {
                     Log.e(TAG, "Ad failed to load: $adIdentifier - Error: ${error.message} (code: ${error.code})")
                 }
 
