@@ -112,9 +112,11 @@ dependencies {
     // User Messaging Platform for ad consent
     implementation 'com.google.android.ump:user-messaging-platform:2.1.0'
 
+    // AdMob for displaying ads
+    implementation 'com.google.android.gms:play-services-ads:22.6.0'
+
     // Play Core library for in-app updates
     implementation 'com.google.android.play:app-update-ktx:2.1.0'
-    implementation 'com.google.android.play:core-ktx:1.8.1'
 
     // Testing
 

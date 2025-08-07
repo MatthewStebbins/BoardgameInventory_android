@@ -160,8 +160,6 @@
     <string name="contrast_fixed_message">Fixed %d contrast issues. The changes are temporary and will be lost when you restart the app.</string>
     <string name="run_contrast_check">Check Contrast Ratios</string>
     <string name="accessibility_test_mode">Accessibility Test Mode</string>
-    <string name="cancel">Cancel</string>
-    <string name="ok">OK</string>
 
     <!-- Bulk Upload -->
     <string name="bulk_upload_title">Bulk Upload Games</string>
