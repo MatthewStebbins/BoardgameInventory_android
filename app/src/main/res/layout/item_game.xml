@@ -22,6 +22,8 @@
             android:layout_height="60dp"
             android:scaleType="centerCrop"
             android:background="@color/border"
+            android:contentDescription="@string/game_image_description"
+            android:importantForAccessibility="no"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             tools:src="@android:drawable/ic_menu_gallery" />
@@ -37,6 +39,7 @@
             android:textColor="@color/text_primary"
             android:maxLines="2"
             android:ellipsize="end"
+            android:accessibilityHeading="true"
             app:layout_constraintStart_toEndOf="@id/ivGameImage"
             app:layout_constraintEnd_toStartOf="@id/btnMenu"
             app:layout_constraintTop_toTopOf="@id/ivGameImage"
@@ -51,7 +54,7 @@
             android:textSize="14sp"
             android:textColor="@color/text_secondary"
             app:layout_constraintStart_toEndOf="@id/ivGameImage"
-            app:layout_constraintEnd_toEndOf="@id/tvGameName"
+            app:layout_constraintEnd_toStartOf="@id/btnMenu"
             app:layout_constraintTop_toBottomOf="@id/tvGameName"
             tools:text="Barcode: 123456789" />
 
@@ -60,37 +63,38 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
-            android:layout_marginTop="2dp"
+            android:layout_marginTop="4dp"
             android:textSize="14sp"
             android:textColor="@color/text_secondary"
             app:layout_constraintStart_toEndOf="@id/ivGameImage"
-            app:layout_constraintEnd_toEndOf="@id/tvGameName"
+            app:layout_constraintEnd_toStartOf="@id/btnMenu"
             app:layout_constraintTop_toBottomOf="@id/tvBarcode"
-            app:layout_constraintBottom_toBottomOf="@id/ivGameImage"
-            tools:text="Location: A, Shelf 1" />
+            tools:text="Location: A-1" />
 
         <ImageButton
             android:id="@+id/btnMenu"
             android:layout_width="48dp"
             android:layout_height="48dp"
-            android:background="?attr/selectableItemBackgroundBorderless"
             android:src="@drawable/ic_more_vert"
-            android:contentDescription="More options"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="@string/game_options_menu"
+            android:padding="12dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <!-- Loan status indicator -->
-        <com.google.android.material.chip.Chip
-            android:id="@+id/chipLoanStatus"
+        <TextView
+            android:id="@+id/tvLoanStatus"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:text="Loaned to John"
-            android:textSize="12sp"
+            android:textSize="14sp"
+            android:textStyle="italic"
+            android:textColor="@color/accent"
             android:visibility="gone"
-            app:chipBackgroundColor="@color/warning"
-            app:layout_constraintStart_toStartOf="@id/tvGameName"
+            android:contentDescription="@string/loan_status_description"
+            app:layout_constraintStart_toStartOf="@id/tvLocation"
             app:layout_constraintTop_toBottomOf="@id/tvLocation"
+            tools:text="Loaned to: John Doe"
             tools:visibility="visible" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>

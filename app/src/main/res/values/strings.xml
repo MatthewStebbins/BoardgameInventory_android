@@ -126,6 +126,43 @@
     <string name="later">Later</string>
     <string name="check_for_updates">Check for Updates</string>
 
+    <!-- Accessibility Strings -->
+    <string name="main_screen_content">Board Game Inventory main screen</string>
+    <string name="main_title_description">Board Game Tracker heading</string>
+    <string name="stats_card_description">Collection statistics</string>
+    <string name="total_games_description">Total number of games in collection</string>
+    <string name="loaned_games_description">Number of games currently loaned out</string>
+    <string name="available_games_description">Number of games currently available</string>
+    <string name="add_game_description">Add a new game using barcode scanning</string>
+    <string name="bulk_upload_description">Add multiple games at once</string>
+    <string name="list_games_description">View your full game collection</string>
+    <string name="loan_game_description">Record loaning a game to someone</string>
+    <string name="return_game_description">Record returning a loaned game</string>
+    <string name="delete_game_description">Remove a game from your collection</string>
+    <string name="export_import_games_description">Export or import your game collection</string>
+    <string name="settings_description">Open application settings</string>
+    <string name="version_info_description">Application version information</string>
+    <string name="ad_container_description">Advertisement area</string>
+    <string name="game_image_description">Game box image</string>
+    <string name="game_options_menu">Game options menu</string>
+    <string name="loan_status_description">Loan status information</string>
+    <string name="camera_permission_rational">Camera access is needed to scan barcodes</string>
+    <string name="storage_permission_rational">Storage access is needed to import and export data</string>
+    <string name="error_screen_reader">Error. %s</string>
+    <string name="success_screen_reader">Success. %s</string>
+
+    <!-- Accessibility Contrast Checker -->
+    <string name="contrast_check_title">Accessibility Contrast Check</string>
+    <string name="contrast_check_no_issues">Great! No contrast issues found.</string>
+    <string name="contrast_check_issues_found">Found %d text elements with insufficient contrast.</string>
+    <string name="fix_all_issues">Fix All Issues</string>
+    <string name="contrast_fixed_title">Contrast Issues Fixed</string>
+    <string name="contrast_fixed_message">Fixed %d contrast issues. The changes are temporary and will be lost when you restart the app.</string>
+    <string name="run_contrast_check">Check Contrast Ratios</string>
+    <string name="accessibility_test_mode">Accessibility Test Mode</string>
+    <string name="cancel">Cancel</string>
+    <string name="ok">OK</string>
+
     <!-- Bulk Upload -->
     <string name="bulk_upload_title">Bulk Upload Games</string>
     <string name="scanned_barcodes">Scanned Barcodes:</string>

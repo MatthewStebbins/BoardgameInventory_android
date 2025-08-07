@@ -3,8 +3,9 @@ package com.boardgameinventory.ui
 import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AlertDialog
-import androidx.appcompat.app.AppCompatActivity
+import com.boardgameinventory.R
 import com.boardgameinventory.databinding.ActivityDeveloperSettingsBinding
+import com.boardgameinventory.utils.ContrastChecker
 import com.boardgameinventory.utils.DeveloperMode
 
 /**
@@ -60,6 +61,33 @@ class DeveloperSettingsActivity : BaseAdActivity() {
         binding.btnRefreshInfo.setOnClickListener {
             updateDeveloperInfo()
         }
+
+        // Add accessibility testing option
+        binding.btnAccessibilityTest.setOnClickListener {
+            showAccessibilityTestOptions()
+        }
+    }
+
+    private fun showAccessibilityTestOptions() {
+        val options = arrayOf(
+            getString(R.string.run_contrast_check)
+        )
+
+        AlertDialog.Builder(this)
+            .setTitle(R.string.accessibility_test_mode)
+            .setItems(options) { _, which ->
+                when (which) {
+                    0 -> runContrastCheck()
+                }
+            }
+            .setNegativeButton(R.string.cancel, null)
+            .show()
+    }
+
+    private fun runContrastCheck() {
+        // Run contrast check on the current activity's root view
+        val rootView = window.decorView.findViewById<android.view.View>(android.R.id.content)
+        ContrastChecker.quickCheck(this, rootView)
     }
     
     private fun updateDeveloperInfo() {
