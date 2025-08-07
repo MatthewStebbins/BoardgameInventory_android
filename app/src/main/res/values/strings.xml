@@ -99,13 +99,23 @@
     <string name="no_games_loaned_out">No games are currently loaned out</string>
     <string name="update_location_optional">Update Location (Optional)</string>
     <string name="location_barcode_format">Format: XX-XX (Bookcase-Shelf)</string>
-    <string name="bookcase">Bookcase</string>
-    <string name="shelf">Shelf</string>
-    <string name="game_returned_success">Game \'%1$s\' returned successfully to %2$s, Shelf %3$s</string>
-    <string name="error_return_game">Failed to return game: %s</string>
-    <string name="error_game_not_loaned">Game is not currently loaned out</string>
-    <string name="error_invalid_location_format">Invalid location barcode format. Use XX-XX</string>
-    
+
+    <!-- Notification Channels -->
+    <string name="notification_group_game_management">Game Management</string>
+    <string name="notification_group_data_operations">Data Operations</string>
+
+    <string name="channel_loans_name">Game Loans</string>
+    <string name="channel_loans_description">Notifications about loaned games and loan reminders</string>
+
+    <string name="channel_updates_name">Game Updates</string>
+    <string name="channel_updates_description">Notifications about game updates and collection changes</string>
+
+    <string name="channel_imports_name">Import &amp; Export</string>
+    <string name="channel_imports_description">Notifications about importing and exporting game data</string>
+
+    <string name="channel_sync_name">Synchronization</string>
+    <string name="channel_sync_description">Notifications about data synchronization operations</string>
+
     <!-- Bulk Upload -->
     <string name="bulk_upload_title">Bulk Upload Games</string>
     <string name="scanned_barcodes">Scanned Barcodes:</string>
