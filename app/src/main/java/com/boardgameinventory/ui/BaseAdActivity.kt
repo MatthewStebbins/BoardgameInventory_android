@@ -256,7 +256,7 @@ abstract class BaseAdActivity : AppCompatActivity() {
      * Refresh the ad (useful for activities that stay open for long periods)
      */
     protected fun refreshAd() {
-        adView?.let { AdManager.loadAd(it) }
+        adView?.let { AdHelper.loadAd(this, it, javaClass.simpleName) }
     }
     
     /**
