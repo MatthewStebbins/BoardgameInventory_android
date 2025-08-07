@@ -99,9 +99,18 @@
                 style="@style/Widget.Material3.Button.OutlinedButton"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="16dp"
+                android:layout_marginBottom="8dp"
                 android:text="Developer Information"
                 app:icon="@android:drawable/ic_menu_info_details" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnAccessibilityTest"
+                style="@style/Widget.Material3.Button.OutlinedButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:text="@string/accessibility_test_mode"
+                app:icon="@android:drawable/ic_menu_view" />
 
             <!-- App Version and Build Info -->
             <com.google.android.material.button.MaterialButton

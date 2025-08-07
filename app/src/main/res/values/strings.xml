@@ -49,6 +49,10 @@
     <string name="from_date">From Date</string>
     <string name="to_date">To Date</string>
     <string name="apply_filters">Apply Filters</string>
+    <string name="sort_by">Sort By</string>
+    <string name="sort_by_name">Name</string>
+    <string name="sort_by_date_added">Date Added</string>
+    <string name="sort_by_bookcase">Bookcase</string>
 
     <!-- Settings and Privacy -->
     <string name="settings">Settings</string>
@@ -99,6 +103,8 @@
     <string name="no_games_loaned_out">No games are currently loaned out</string>
     <string name="update_location_optional">Update Location (Optional)</string>
     <string name="location_barcode_format">Format: XX-XX (Bookcase-Shelf)</string>
+    <string name="bookcase">Bookcase</string>
+    <string name="shelf">Shelf</string>
 
     <!-- Notification Channels -->
     <string name="notification_group_game_management">Game Management</string>
@@ -189,9 +195,11 @@
     <string name="game_added">Game \'%s\' added successfully</string>
     <string name="game_loaned">Game loaned to %s</string>
     <string name="game_returned">Game returned successfully</string>
+    <string name="game_returned_success">Game \'%s\' returned successfully</string>
     <string name="game_deleted">Game deleted successfully</string>
     <string name="delete_confirmation">Are you sure you want to delete \'%s\'?</string>
     <string name="invalid_location_format">Invalid location barcode format. Use xx-xx</string>
+    <string name="error_return_game">Failed to return game: %s</string>
     <string name="export_success">Games exported successfully</string>
     <string name="import_success">Imported %d games successfully</string>
     <string name="import_error">Failed to import games</string>
