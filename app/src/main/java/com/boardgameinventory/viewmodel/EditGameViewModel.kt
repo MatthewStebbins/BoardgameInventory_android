@@ -33,7 +33,7 @@ class EditGameViewModel(application: Application) : AndroidViewModel(application
     constructor(repository: GameRepository) : this(Application()) {
         // Repository is already set in the primary constructor
     }
-    
+
     fun updateGame(game: Game) {
         viewModelScope.launch {
             try {
