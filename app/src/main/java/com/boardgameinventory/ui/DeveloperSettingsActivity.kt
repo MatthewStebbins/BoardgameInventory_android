@@ -5,6 +5,7 @@ import android.os.Bundle
 import androidx.appcompat.app.AlertDialog
 import com.boardgameinventory.R
 import com.boardgameinventory.databinding.ActivityDeveloperSettingsBinding
+import com.boardgameinventory.utils.AccessibilityUtils
 import com.boardgameinventory.utils.ContrastChecker
 import com.boardgameinventory.utils.DeveloperMode
 
