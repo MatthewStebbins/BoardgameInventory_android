@@ -45,6 +45,12 @@ class GameListActivity : BaseAdActivity() {
         setupViewPager()
         setupSearchAndFilter()
         setupAdsManually()
+
+        // Add click listener for fabAddGame
+        binding.fabAddGame.setOnClickListener {
+            val intent = Intent(this, AddGameActivity::class.java)
+            startActivity(intent)
+        }
     }
     
     private fun setupAdsManually() {
