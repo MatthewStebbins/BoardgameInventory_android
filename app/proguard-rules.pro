@@ -49,66 +49,88 @@
 # ZXing (Barcode scanning)
 -keep class com.google.zxing.** { *; }
 -dontwarn com.google.zxing.**
--keep class com.journeyapps.barcodescanner.** { *; }
--dontwarn com.journeyapps.barcodescanner.**
 
-# Glide
+# Glide - Comprehensive rules for production
 -keep public class * implements com.bumptech.glide.module.GlideModule
--keep class * extends com.bumptech.glide.module.AppGlideModule {
- <init>(...);
-}
+-keep class * extends com.bumptech.glide.module.AppGlideModule
 -keep public enum com.bumptech.glide.load.ImageHeaderParser$** {
   **[] $VALUES;
   public *;
 }
+# For DexGuard only
+# -keepresourcexmlelements manifest/application/meta-data@value=GlideModule
+-dontwarn com.bumptech.glide.load.engine.bitmap_recycle.LruBitmapPool
 -dontwarn com.bumptech.glide.load.resource.bitmap.VideoDecoder
+-dontwarn com.bumptech.glide.manager.RequestManagerRetriever
 
-# OpenCSV
+# OpenCSV - Complete rules for production
 -keep class com.opencsv.** { *; }
--dontwarn com.opencsv.**
-
-# Apache POI
--keep class org.apache.poi.** { *; }
--dontwarn org.apache.poi.**
--keep class org.openxmlformats.** { *; }
--keep class org.xml.** { *; }
--dontwarn org.w3c.**
-
-# Kotlin Coroutines
--keepnames class kotlinx.coroutines.internal.MainDispatcherFactory {}
--keepnames class kotlinx.coroutines.CoroutineExceptionHandler {}
--keepclassmembernames class kotlinx.** {
-    volatile <fields>;
+-keepattributes InnerClasses
+# Needed for reflection used in OpenCSV
+-keepclassmembers class * {
+    @com.opencsv.bean.CsvBindByName *;
+    @com.opencsv.bean.CsvCustomBindByName *;
+    @com.opencsv.bean.CsvBindByPosition *;
+    @com.opencsv.bean.CsvCustomBindByPosition *;
+    @com.opencsv.bean.CsvBindAndSplitByName *;
+    @com.opencsv.bean.CsvBindAndSplitByPosition *;
+    @com.opencsv.bean.CsvDate *;
+    @com.opencsv.bean.CsvNumber *;
+    @com.opencsv.bean.CsvIgnore *;
 }
+-dontwarn com.opencsv.**
+-dontwarn com.sun.beans.**
+-dontwarn java.beans.**
 
-# Google AdMob
--keep class com.google.android.gms.ads.** { *; }
--dontwarn com.google.android.gms.ads.**
+# Apache POI - Comprehensive rules for Excel file handling
+-keep class org.apache.poi.** { *; }
+-keep class org.apache.xmlbeans.** { *; }
+-keep class org.openxmlformats.schemas.** { *; }
+-keep class org.etsi.uri.x01903.v13.** { *; }
+-keep class org.w3.x2000.x09.xmldsig.** { *; }
+-keep class schemaorg_apache_xmlbeans.system.** { *; }
+-keep class schemasMicrosoftComOfficeExcel.** { *; }
+-keep class schemasMicrosoftComOfficeOffice.** { *; }
 
-# AndroidX
+# Specific Apache POI warnings to ignore
+-dontwarn org.apache.poi.**
+-dontwarn org.apache.commons.collections4.**
+-dontwarn org.apache.xmlbeans.**
+-dontwarn schemaorg_apache_xmlbeans.**
+-dontwarn org.w3c.dom.**
+-dontwarn javax.xml.**
+-dontwarn org.slf4j.**
+-dontwarn org.apache.log4j.**
+
+# Android support libraries
 -keep class androidx.** { *; }
 -keep interface androidx.** { *; }
+-keep class com.google.android.material.** { *; }
+-dontwarn androidx.**
+-dontwarn com.google.android.material.**
 
 # Keep ViewModels
 -keepclassmembers public class * extends androidx.lifecycle.ViewModel {
     public <init>(...);
 }
 
-# Keep View Binding
--keep class * implements androidx.viewbinding.ViewBinding {
-    public static ** bind(android.view.View);
-    public static ** inflate(android.view.LayoutInflater, android.view.ViewGroup, boolean);
+# Kotlin coroutines
+-keepnames class kotlinx.coroutines.internal.MainDispatcherFactory {}
+-keepnames class kotlinx.coroutines.CoroutineExceptionHandler {}
+-keepclassmembernames class kotlinx.** {
+    volatile <fields>;
 }
+-dontwarn kotlinx.coroutines.**
 
-# Keep enum names
+# Ensure serialization libraries work properly
+-keepattributes *Annotation*, Signature, Exception
+
+# AdMob (important if using ads)
+-keep class com.google.android.gms.ads.** { *; }
+-dontwarn com.google.android.gms.ads.**
+
+# Keep enum fields for serialization
 -keepclassmembers enum * {
     public static **[] values();
     public static ** valueOf(java.lang.String);
-}
-
-# Remove Log statements in release build
--assumenosideeffects class android.util.Log {
-    public static *** d(...);
-    public static *** v(...);
-    public static *** i(...);
 }
