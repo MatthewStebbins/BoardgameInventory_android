@@ -149,7 +149,7 @@ class ConsentManager(private val context: Context) : DefaultLifecycleObserver {
     fun showConsentForm() {
         consentForm?.show(context as Activity) { formError ->
             if (formError != null) {
-                Log.e(TAG, "Error showing consent form: ${formError.message}", formError)
+                Log.e(TAG, "Error showing consent form: ${formError.message}")
             }
 
             // Update consent status

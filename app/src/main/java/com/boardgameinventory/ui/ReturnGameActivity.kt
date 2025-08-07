@@ -107,7 +107,7 @@ class ReturnGameActivity : BaseAdActivity() {
         if (locationBarcode.isEmpty()) return
         
         if (!locationBarcode.contains("-") || locationBarcode.split("-").size != 2) {
-            Utils.showToast(this, getString(R.string.error_invalid_location_format))
+            Utils.showToast(this, getString(R.string.invalid_location_format))
             return
         }
         
@@ -116,7 +116,7 @@ class ReturnGameActivity : BaseAdActivity() {
         val shelf = parts[1].trim()
         
         if (bookcase.isEmpty() || shelf.isEmpty()) {
-            Utils.showToast(this, getString(R.string.error_invalid_location_format))
+            Utils.showToast(this, getString(R.string.invalid_location_format))
             return
         }
         

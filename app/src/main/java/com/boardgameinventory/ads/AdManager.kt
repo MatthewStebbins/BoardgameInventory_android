@@ -1,6 +1,7 @@
 package com.boardgameinventory.ads
 
 import android.content.Context
+import android.os.Bundle
 import android.util.Log
 import android.view.ViewGroup
 import android.widget.LinearLayout
@@ -8,6 +9,7 @@ import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import com.boardgameinventory.BuildConfig
 import com.google.android.gms.ads.*
+import com.google.android.gms.ads.mediation.admob.AdMobAdapter
 import com.google.android.gms.ads.nativead.NativeAd
 import com.google.android.gms.ads.nativead.NativeAdOptions
 
@@ -83,9 +85,8 @@ class AdManager(private val context: Context) : DefaultLifecycleObserver {
             return AdRequest.Builder().apply {
                 // Apply non-personalized ads if user didn't consent to personalized ads
                 if (!consentManager.canShowPersonalizedAds()) {
-                    val extras = Bundle().apply {
-                        putString("npa", "1")  // Non-personalized ads flag
-                    }
+                    val extras = Bundle()
+                    extras.putString("npa", "1")  // Non-personalized ads flag
                     addNetworkExtrasBundle(AdMobAdapter::class.java, extras)
                     Log.d(TAG, "Requesting non-personalized ads")
                 } else {
@@ -103,7 +104,7 @@ class AdManager(private val context: Context) : DefaultLifecycleObserver {
                     Log.d(TAG, "Ad loaded successfully: $adIdentifier")
                 }
 
-                override fun onAdFailedToLoad(error: LoadAdError) {
+                override fun onAdFailed toLoad(error: LoadAdError) {
                     Log.e(TAG, "Ad failed to load: $adIdentifier - Error: ${error.message} (code: ${error.code})")
                 }
 

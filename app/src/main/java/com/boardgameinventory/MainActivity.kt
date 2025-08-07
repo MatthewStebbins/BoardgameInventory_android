@@ -25,6 +25,9 @@ class MainActivity : BaseAdActivity() {
     private lateinit var binding: ActivityMainBinding
     private val viewModel: MainViewModel by viewModels()
     
+    // Since BaseAdActivity already has adView property, we need to use override
+    override var adView: AdView? = null
+
     // Update manager for handling in-app updates
     private lateinit var updateManager: UpdateManager
 
@@ -112,9 +115,10 @@ class MainActivity : BaseAdActivity() {
     }
     
     /**
-     * Override to use data binding for ad view access
+     * Initialize ad view with data binding
+     * Note: This is not overriding a parent method, it's a local implementation
      */
-    override fun initializeAdView() {
+    private fun initializeAdView() {
         try {
             android.util.Log.d("MainActivity", "Initializing AdView using data binding...")
             
@@ -159,8 +163,6 @@ class MainActivity : BaseAdActivity() {
             }
         } catch (e: Exception) {
             android.util.Log.e("MainActivity", "Error in initializeAdView: ${e.message}", e)
-            // Fall back to parent implementation
-            super.initializeAdView()
         }
     }
     

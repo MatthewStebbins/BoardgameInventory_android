@@ -75,11 +75,11 @@ class GamePagingAdapter(
                 // Show loaned info if applicable
                 if (game.loanedTo != null && showLoanedTo) {
                     tvLocation.text = "Loaned to: ${game.loanedTo}"
-                    chipLoanStatus.visibility = View.VISIBLE
-                    chipLoanStatus.text = "Loaned to ${game.loanedTo}"
+                    tvLoanStatus.visibility = View.VISIBLE
+                    tvLoanStatus.text = "Loaned to ${game.loanedTo}"
                 } else {
                     tvLocation.text = "Location: ${game.bookcase}, Shelf ${game.shelf}"
-                    chipLoanStatus.visibility = View.GONE
+                    tvLoanStatus.visibility = View.GONE
                 }
                 
                 // Load game image
