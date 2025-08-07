@@ -116,6 +116,16 @@
     <string name="channel_sync_name">Synchronization</string>
     <string name="channel_sync_description">Notifications about data synchronization operations</string>
 
+    <!-- In-app Updates -->
+    <string name="update_ready_to_install">An update has been downloaded and is ready to install</string>
+    <string name="update_downloading">Downloading update: %d%%</string>
+    <string name="update_failed">Update failed: %s</string>
+    <string name="restart">Restart</string>
+    <string name="update_available">Update Available</string>
+    <string name="update_now">Update Now</string>
+    <string name="later">Later</string>
+    <string name="check_for_updates">Check for Updates</string>
+
     <!-- Bulk Upload -->
     <string name="bulk_upload_title">Bulk Upload Games</string>
     <string name="scanned_barcodes">Scanned Barcodes:</string>

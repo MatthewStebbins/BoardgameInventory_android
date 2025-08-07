@@ -2,6 +2,7 @@ package com.boardgameinventory
 
 import android.content.Intent
 import android.os.Bundle
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
@@ -9,10 +10,14 @@ import androidx.lifecycle.lifecycleScope
 import com.boardgameinventory.databinding.ActivityMainBinding
 import com.boardgameinventory.ui.*
 import com.boardgameinventory.ui.ExportImportActivity
+import com.boardgameinventory.updates.UpdateManager
+import com.boardgameinventory.updates.UpdateState
 import com.boardgameinventory.utils.AdManager
 import com.boardgameinventory.utils.DeveloperMode
 import com.boardgameinventory.viewmodel.MainViewModel
 import com.google.android.gms.ads.AdView
+import com.google.android.material.snackbar.Snackbar
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
 class MainActivity : BaseAdActivity() {
@@ -20,19 +25,84 @@ class MainActivity : BaseAdActivity() {
     private lateinit var binding: ActivityMainBinding
     private val viewModel: MainViewModel by viewModels()
     
+    // Update manager for handling in-app updates
+    private lateinit var updateManager: UpdateManager
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
         
+        // Initialize the update manager
+        updateManager = UpdateManager.getInstance(this)
+        lifecycle.addObserver(updateManager)
+
         setupClickListeners()
         setupVersionInfo()
         observeStats()
-        
+        observeUpdateState()
+
         // Setup ads manually since BaseAdActivity isn't finding the views
         setupAdsManually()
     }
     
+    private fun observeUpdateState() {
+        lifecycleScope.launch {
+            updateManager.updateState.collect { state ->
+                when (state) {
+                    is UpdateState.Downloaded -> {
+                        // Show a snackbar that an update has been downloaded
+                        Snackbar.make(
+                            binding.root,
+                            R.string.update_ready_to_install,
+                            Snackbar.LENGTH_INDEFINITE
+                        ).setAction(R.string.restart) {
+                            // Complete the update
+                            updateManager.completeUpdate()
+                        }.show()
+                    }
+                    is UpdateState.Downloading -> {
+                        // Optionally show download progress
+                        if (state.progress % 20 == 0) { // Show every 20%
+                            Snackbar.make(
+                                binding.root,
+                                getString(R.string.update_downloading, state.progress),
+                                Snackbar.LENGTH_SHORT
+                            ).show()
+                        }
+                    }
+                    is UpdateState.Failed -> {
+                        // Show error message
+                        Snackbar.make(
+                            binding.root,
+                            getString(R.string.update_failed, state.reason),
+                            Snackbar.LENGTH_LONG
+                        ).show()
+                    }
+                    is UpdateState.InProgress -> {
+                        // Update in progress, no UI needed as the Play Core handles it
+                    }
+                    is UpdateState.Completed -> {
+                        // Update completed, app will restart automatically
+                    }
+                    is UpdateState.Canceled -> {
+                        // User canceled the update - no action needed
+                    }
+                    else -> {
+                        // Idle, Checking, NotAvailable - no UI action needed
+                    }
+                }
+            }
+        }
+    }
+
+    // Process activity results, including update flow results
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        // Pass the result to the update manager
+        updateManager.onActivityResult(requestCode, resultCode)
+    }
+
     private fun setupAdsManually() {
         try {
             setupAdsWithBinding(binding.adContainer, binding.adView, "MainActivity")
