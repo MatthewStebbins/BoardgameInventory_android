@@ -145,8 +145,9 @@ object AccessibilityUtils {
                 info: AccessibilityNodeInfoCompat
             ) {
                 super.onInitializeAccessibilityNodeInfo(host, info)
+                // Use the correct constructor for ActionCompat
                 info.addAction(
-                    AccessibilityNodeInfoCompat.ActionCompat(
+                    AccessibilityNodeInfoCompat.AccessibilityActionCompat(
                         AccessibilityNodeInfoCompat.ACTION_CLICK,
                         actionDescription
                     )
