@@ -10,13 +10,14 @@ import androidx.lifecycle.lifecycleScope
 import com.boardgameinventory.databinding.ActivityMainBinding
 import com.boardgameinventory.ui.*
 import com.boardgameinventory.ui.ExportImportActivity
-import com.boardgameinventory.updates.UpdateManager
-import com.boardgameinventory.updates.UpdateState
+import com.boardgameinventory.update.AppUpdateManager
+import com.boardgameinventory.update.UpdateState
 import com.boardgameinventory.utils.AdManager
 import com.boardgameinventory.utils.DeveloperMode
 import com.boardgameinventory.viewmodel.MainViewModel
 import com.google.android.gms.ads.AdView
 import com.google.android.material.snackbar.Snackbar
+import com.google.android.play.core.install.model.AppUpdateType
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
@@ -26,21 +27,36 @@ class MainActivity : BaseAdActivity() {
     private val viewModel: MainViewModel by viewModels()
     
     // Update manager for handling in-app updates
-    private lateinit var updateManager: UpdateManager
+    private lateinit var appUpdateManager: AppUpdateManager
+
+    // Register for update result
+    private val updateResultLauncher = registerForActivityResult(
+        ActivityResultContracts.StartIntentSenderForResult()
+    ) { result ->
+        // Handle update result if needed
+        if (result.resultCode != RESULT_OK) {
+            showSnackbar(getString(R.string.update_failed, "User cancelled"))
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
         
-        // Initialize the update manager
-        updateManager = UpdateManager.getInstance(this)
-        lifecycle.addObserver(updateManager)
+        // Get the update manager from the application
+        appUpdateManager = (application as BoardGameInventoryApp).updateManager
 
         setupClickListeners()
         setupVersionInfo()
         observeStats()
         observeUpdateState()
+
+        // Check for pending updates
+        appUpdateManager.checkPendingUpdates(this)
+
+        // Check for new updates
+        appUpdateManager.checkForUpdates(this, AppUpdateType.FLEXIBLE)
 
         // Setup ads manually since BaseAdActivity isn't finding the views
         setupAdsManually()
@@ -48,59 +64,60 @@ class MainActivity : BaseAdActivity() {
     
     private fun observeUpdateState() {
         lifecycleScope.launch {
-            updateManager.updateState.collect { state ->
+            appUpdateManager.updateState.collect { state ->
                 when (state) {
                     is UpdateState.Downloaded -> {
-                        // Show a snackbar that an update has been downloaded
-                        Snackbar.make(
-                            binding.root,
-                            R.string.update_ready_to_install,
-                            Snackbar.LENGTH_INDEFINITE
-                        ).setAction(R.string.restart) {
-                            // Complete the update
-                            updateManager.completeUpdate()
-                        }.show()
+                        showUpdateReadyDialog()
                     }
                     is UpdateState.Downloading -> {
-                        // Optionally show download progress
-                        if (state.progress % 20 == 0) { // Show every 20%
-                            Snackbar.make(
-                                binding.root,
-                                getString(R.string.update_downloading, state.progress),
-                                Snackbar.LENGTH_SHORT
-                            ).show()
-                        }
+                        showSnackbar(getString(R.string.update_downloading, state.progress))
                     }
                     is UpdateState.Failed -> {
-                        // Show error message
-                        Snackbar.make(
-                            binding.root,
-                            getString(R.string.update_failed, state.reason),
-                            Snackbar.LENGTH_LONG
-                        ).show()
+                        showSnackbar(getString(R.string.update_failed, state.reason))
                     }
                     is UpdateState.InProgress -> {
-                        // Update in progress, no UI needed as the Play Core handles it
+                        // Update in progress, no UI needed
                     }
-                    is UpdateState.Completed -> {
-                        // Update completed, app will restart automatically
+                    is UpdateState.Idle, is UpdateState.NoUpdateAvailable -> {
+                        // No action needed
                     }
-                    is UpdateState.Canceled -> {
-                        // User canceled the update - no action needed
-                    }
-                    else -> {
-                        // Idle, Checking, NotAvailable - no UI action needed
+                    is UpdateState.UserRejected -> {
+                        // User rejected the update, could show reminder later
                     }
                 }
             }
         }
     }
 
+    private fun showUpdateReadyDialog() {
+        AlertDialog.Builder(this)
+            .setTitle(R.string.update_available)
+            .setMessage(R.string.update_ready_to_install)
+            .setPositiveButton(R.string.restart) { _, _ ->
+                appUpdateManager.completeUpdate()
+            }
+            .setNegativeButton(R.string.later, null)
+            .setCancelable(false)
+            .show()
+    }
+
+    private fun showSnackbar(message: String) {
+        Snackbar.make(
+            binding.root,
+            message,
+            Snackbar.LENGTH_LONG
+        ).show()
+    }
+
     // Process activity results, including update flow results
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         // Pass the result to the update manager
-        updateManager.onActivityResult(requestCode, resultCode)
+        if (requestCode == AppUpdateManager.APP_UPDATE_REQUEST_CODE) {
+            if (resultCode != RESULT_OK) {
+                showSnackbar(getString(R.string.update_failed, "Update flow canceled"))
+            }
+        }
     }
 
     private fun setupAdsManually() {

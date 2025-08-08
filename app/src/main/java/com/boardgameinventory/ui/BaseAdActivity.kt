@@ -20,7 +20,7 @@ abstract class BaseAdActivity : AppCompatActivity() {
 
     // References to the consent and ad managers
     protected lateinit var consentManager: ConsentManager
-    protected lateinit var adManager: AdManager
+    protected lateinit var adManager: com.boardgameinventory.ads.AdManager
 
     /**
      * Helper function for activities using data binding to setup ads securely
@@ -37,9 +37,10 @@ abstract class BaseAdActivity : AppCompatActivity() {
             // Store reference to the AdView
             this.adView = adView
 
-            // Get references to the consent and ad managers
-            consentManager = BoardGameInventoryApp.consentManager
-            adManager = BoardGameInventoryApp.adManager
+            // Get references to the consent and ad managers from the application instance
+            val app = application as BoardGameInventoryApp
+            consentManager = app.consentManager
+            adManager = app.adManager
 
             // Only show ads if consent requirements are met
             if (consentManager.canShowAds()) {
@@ -58,9 +59,10 @@ abstract class BaseAdActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        // Get references to the consent and ad managers
-        consentManager = BoardGameInventoryApp.consentManager
-        adManager = BoardGameInventoryApp.adManager
+        // Get references to the consent and ad managers from the application instance
+        val app = application as BoardGameInventoryApp
+        consentManager = app.consentManager
+        adManager = app.adManager
 
         // Setup ads after content view is set
         // Note: Specific ad setup will be done in the setupAds() method
@@ -68,17 +70,17 @@ abstract class BaseAdActivity : AppCompatActivity() {
     
     override fun onResume() {
         super.onResume()
-        AdManager.resumeAd(adView)
+        com.boardgameinventory.utils.AdManager.resumeAd(adView)
     }
     
     override fun onPause() {
         super.onPause()
-        AdManager.pauseAd(adView)
+        com.boardgameinventory.utils.AdManager.pauseAd(adView)
     }
     
     override fun onDestroy() {
         super.onDestroy()
-        AdManager.destroyAd(adView)
+        com.boardgameinventory.utils.AdManager.destroyAd(adView)
     }
     
     /**

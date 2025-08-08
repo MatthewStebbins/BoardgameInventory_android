@@ -14,6 +14,7 @@ import androidx.lifecycle.ProcessLifecycleOwner
 import com.boardgameinventory.ads.AdManager
 import com.boardgameinventory.ads.ConsentManager
 import com.boardgameinventory.api.ApiClient
+import com.boardgameinventory.update.AppUpdateManager
 import com.boardgameinventory.utils.SecureApiKeyManager
 import com.google.android.gms.ads.MobileAds
 import com.google.android.gms.ads.initialization.AdapterStatus
@@ -44,6 +45,10 @@ class BoardGameInventoryApp : Application() {
     lateinit var adManager: AdManager
         private set
 
+    // Add AppUpdateManager instance
+    lateinit var updateManager: AppUpdateManager
+        private set
+
     override fun onCreate() {
         super.onCreate()
 
@@ -55,6 +60,9 @@ class BoardGameInventoryApp : Application() {
 
         // Initialize consent and ad management
         initializeAdConsent()
+
+        // Initialize in-app update manager
+        initializeUpdateManager()
 
         // Create notification channels for Android 8.0+
         createNotificationChannels()
@@ -237,6 +245,32 @@ class BoardGameInventoryApp : Application() {
         } catch (e: Exception) {
             Log.e(TAG, "Failed to initialize AdMob: ${e.message}", e)
         }
+    }
+
+    /**
+     * Initialize the in-app update manager
+     */
+    private fun initializeUpdateManager() {
+        try {
+            // Create update manager instance
+            updateManager = AppUpdateManager(this)
+
+            // Add lifecycle observer to process lifecycle owner to manage updates across app lifecycle
+            ProcessLifecycleOwner.get().lifecycle.addObserver(updateManager)
+
+            Log.d(TAG, "Update manager initialized successfully")
+        } catch (e: Exception) {
+            Log.e(TAG, "Error initializing update manager", e)
+        }
+    }
+
+    /**
+     * Clean up resources when the application is terminated
+     */
+    override fun onTerminate() {
+        // Clean up update manager resources
+        updateManager.cleanup()
+        super.onTerminate()
     }
 
     /**

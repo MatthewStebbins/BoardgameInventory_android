@@ -7,7 +7,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import com.boardgameinventory.BoardGameInventoryApp
 import com.boardgameinventory.R
-import com.boardgameinventory.ads.ConsentManager
 
 /**
  * Activity for app settings and information including privacy policy and ad consent
@@ -18,8 +17,8 @@ class SettingsActivity : BaseAdActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_settings)
 
-        // Get reference to ConsentManager
-        consentManager = BoardGameInventoryApp.consentManager
+        // ConsentManager is already initialized in the BaseAdActivity.onCreate()
+        // No need to re-initialize it here
 
         // Setup toolbar
         val toolbar = findViewById<Toolbar>(R.id.toolbar)
@@ -39,7 +38,7 @@ class SettingsActivity : BaseAdActivity() {
         val adConsentButton = findViewById<Button>(R.id.ad_consent_button)
         adConsentButton.setOnClickListener {
             // Show the consent form to let user review/update choices
-            consentManager.showConsentForm()
+            showConsentForm()
         }
 
         // Manually setup ads
