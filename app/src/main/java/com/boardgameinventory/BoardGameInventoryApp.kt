@@ -5,6 +5,7 @@ import android.app.NotificationChannel
 import android.app.NotificationChannelGroup
 import android.app.NotificationManager
 import android.content.Context
+import android.content.pm.PackageManager
 import android.graphics.Color
 import android.os.Build
 import android.util.Log
@@ -15,9 +16,7 @@ import com.boardgameinventory.ads.ConsentManager
 import com.boardgameinventory.api.ApiClient
 import com.boardgameinventory.utils.SecureApiKeyManager
 import com.google.android.gms.ads.MobileAds
-import com.google.android.gms.ads.RequestConfiguration
-import com.google.android.gms.ads.initialization.InitializationStatus
-import com.google.android.gms.ads.initialization.OnInitializationCompleteListener
+import com.google.android.gms.ads.initialization.AdapterStatus
 
 /**
  * Main application class for BoardgameInventory
@@ -28,13 +27,6 @@ class BoardGameInventoryApp : Application() {
     companion object {
         private const val TAG = "BoardGameInventoryApp"
 
-        // Store managers as singletons for access throughout the app
-        lateinit var consentManager: ConsentManager
-            private set
-
-        lateinit var adManager: AdManager
-            private set
-
         // Notification channel constants
         const val CHANNEL_ID_LOANS = "channel_loans"
         const val CHANNEL_ID_UPDATES = "channel_updates"
@@ -44,6 +36,13 @@ class BoardGameInventoryApp : Application() {
         const val NOTIFICATION_GROUP_GAME_MANAGEMENT = "group_game_management"
         const val NOTIFICATION_GROUP_DATA = "group_data_operations"
     }
+
+    // Instance managers - moved from static to instance variables
+    lateinit var consentManager: ConsentManager
+        private set
+
+    lateinit var adManager: AdManager
+        private set
 
     override fun onCreate() {
         super.onCreate()
@@ -59,6 +58,9 @@ class BoardGameInventoryApp : Application() {
 
         // Create notification channels for Android 8.0+
         createNotificationChannels()
+
+        // Initialize AdMob
+        initializeAdMob()
     }
 
     private fun initializeApiKeys() {
@@ -207,6 +209,32 @@ class BoardGameInventoryApp : Application() {
 
         val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         notificationManager.createNotificationChannel(channel)
+    }
+
+    /**
+     * Initialize AdMob with the app ID from BuildConfig
+     */
+    private fun initializeAdMob() {
+        try {
+            // Initialize AdMob with the app ID from BuildConfig
+            MobileAds.initialize(this) { initializationStatus ->
+                val statusMap = initializationStatus.adapterStatusMap
+                val areAllAdaptersReady = statusMap?.all {
+                    it.value.initializationState == AdapterStatus.State.READY
+                } ?: false
+
+                Log.d(TAG, "AdMob initialization complete. All adapters ready: $areAllAdaptersReady")
+
+                // Set the real app ID programmatically
+                val applicationInfo = packageManager.getApplicationInfo(packageName, PackageManager.GET_META_DATA)
+                val metaData = applicationInfo.metaData
+                metaData.putString("com.google.android.gms.ads.APPLICATION_ID", BuildConfig.ADMOB_APP_ID)
+
+                Log.d(TAG, "AdMob App ID set to: ${BuildConfig.ADMOB_APP_ID}")
+            }
+        } catch (e: Exception) {
+            Log.e(TAG, "Failed to initialize AdMob: ${e.message}", e)
+        }
     }
 
     /**

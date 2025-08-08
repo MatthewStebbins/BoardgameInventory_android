@@ -1,7 +1,6 @@
 package com.boardgameinventory.ads
 
 import android.content.Context
-import android.os.Bundle
 import android.util.Log
 import android.view.ViewGroup
 import android.widget.LinearLayout
@@ -9,14 +8,12 @@ import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import com.boardgameinventory.BuildConfig
 import com.google.android.gms.ads.*
-import com.google.android.gms.ads.nativead.NativeAd
-import com.google.android.gms.ads.nativead.NativeAdOptions
 
 /**
  * Ad manager for handling all AdMob-related functionality.
  * Ensures compliance with AdMob policies and proper ad handling.
  */
-class AdManager(private val context: Context) : DefaultLifecycleObserver {
+class AdManager(private val applicationContext: Context) : DefaultLifecycleObserver {
 
     companion object {
         private const val TAG = "AdManager"
@@ -27,14 +24,9 @@ class AdManager(private val context: Context) : DefaultLifecycleObserver {
         // Real ad IDs from BuildConfig (loaded from local.properties)
         private val REAL_BANNER_AD_UNIT_ID = BuildConfig.ADMOB_BANNER_ID
 
-        // Singleton instance
-        @Volatile
-        private var INSTANCE: AdManager? = null
-
+        // Safe getInstance method that doesn't store Context in static field
         fun getInstance(context: Context): AdManager {
-            return INSTANCE ?: synchronized(this) {
-                INSTANCE ?: AdManager(context.applicationContext).also { INSTANCE = it }
-            }
+            return AdManager(context.applicationContext)
         }
 
         /**

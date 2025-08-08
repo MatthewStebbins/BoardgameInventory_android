@@ -39,7 +39,7 @@
         <!-- AdMob App ID placeholder - real value will be set programmatically -->
         <meta-data
             android:name="com.google.android.gms.ads.APPLICATION_ID"
-            android:value="ca-app-pub-0000000000000000~0000000000" />
+            android:value="ca-app-pub-3259150145941701~7087301806" />
 
         <!-- Custom CaptureActivity for ZXing barcode scanning -->
         <activity
