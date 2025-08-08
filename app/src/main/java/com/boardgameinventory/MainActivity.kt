@@ -185,9 +185,7 @@ class MainActivity : BaseAdActivity() {
         }
         
         binding.btnDeleteGame.setOnClickListener {
-            startActivity(Intent(this, GameListActivity::class.java).apply {
-                putExtra("mode", "delete")
-            })
+            startActivity(Intent(this, DeleteGameActivity::class.java))
         }
         
         binding.btnExportImportGames.setOnClickListener {

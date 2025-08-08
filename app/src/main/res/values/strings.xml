@@ -311,4 +311,16 @@
     
     <string name="validation_failed">Please fix the errors and try again</string>
     <string name="admob_banner_ad_unit_id">ca-app-pub-3940256099942544/6300978111</string>
+
+    <!-- Delete Game -->
+    <string name="delete_game_title">Delete Game</string>
+    <string name="delete_game_instructions">Scan a barcode or select a game from the list to delete it</string>
+    <string name="no_games_to_delete">No games in your collection</string>
+    <string name="delete_warning">Warning: This action cannot be undone. The game will be permanently removed from your collection.</string>
+    <string name="confirm_delete_title">Confirm Deletion</string>
+    <string name="confirm_delete_message">Are you sure you want to delete \'%s\'? This action cannot be undone.</string>
+    <string name="game_deleted_success">Game \'%s\' was successfully deleted</string>
+    <string name="error_deleting_game">Failed to delete game: %s</string>
+    <string name="scan_to_delete_title">Scan to Delete</string>
+    <string name="quick_select_by_barcode">Quick Select by Barcode</string>
 </resources>
