@@ -323,4 +323,21 @@
     <string name="error_deleting_game">Failed to delete game: %s</string>
     <string name="scan_to_delete_title">Scan to Delete</string>
     <string name="quick_select_by_barcode">Quick Select by Barcode</string>
+
+    <!-- Permission Dialog Strings -->
+    <string name="grant_permission">Grant Permission</string>
+    <string name="permission_denied_message">This feature requires permissions that have been denied. Please enable them in app settings to use this feature.</string>
+    <string name="go_to_settings">Go to Settings</string>
+
+    <!-- Camera Permission -->
+    <string name="camera_permission_title">Camera Permission Required</string>
+    <string name="camera_permission_rationale">The camera permission is needed to scan barcodes and take photos of your board games. Without this permission, you won\'t be able to use the barcode scanning feature.</string>
+
+    <!-- Storage Permission -->
+    <string name="storage_permission_title">Storage Access Required</string>
+    <string name="storage_permission_rationale">Storage permission is needed to save and load game images, and to import/export your collection data. Without this permission, some features may not work properly.</string>
+
+    <!-- Internet Permission -->
+    <string name="internet_permission_title">Internet Access</string>
+    <string name="internet_permission_rationale">Internet access is needed to look up game information and synchronize your collection. You can still use most features offline.</string>
 </resources>
