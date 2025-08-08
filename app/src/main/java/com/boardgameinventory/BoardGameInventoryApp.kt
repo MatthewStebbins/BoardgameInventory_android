@@ -219,18 +219,20 @@ class BoardGameInventoryApp : Application() {
             // Initialize AdMob with the app ID from BuildConfig
             MobileAds.initialize(this) { initializationStatus ->
                 val statusMap = initializationStatus.adapterStatusMap
-                val areAllAdaptersReady = statusMap?.all {
+                val areAllAdaptersReady = statusMap.all {
                     it.value.initializationState == AdapterStatus.State.READY
-                } ?: false
+                }
 
                 Log.d(TAG, "AdMob initialization complete. All adapters ready: $areAllAdaptersReady")
 
-                // Set the real app ID programmatically
-                val applicationInfo = packageManager.getApplicationInfo(packageName, PackageManager.GET_META_DATA)
-                val metaData = applicationInfo.metaData
-                metaData.putString("com.google.android.gms.ads.APPLICATION_ID", BuildConfig.ADMOB_APP_ID)
-
-                Log.d(TAG, "AdMob App ID set to: ${BuildConfig.ADMOB_APP_ID}")
+                try {
+                    // Set the real app ID programmatically
+                    val applicationInfo = packageManager.getApplicationInfo(packageName, PackageManager.GET_META_DATA)
+                    applicationInfo.metaData?.putString("com.google.android.gms.ads.APPLICATION_ID", BuildConfig.ADMOB_APP_ID)
+                    Log.d(TAG, "AdMob App ID set to: ${BuildConfig.ADMOB_APP_ID}")
+                } catch (e: Exception) {
+                    Log.e(TAG, "Error setting AdMob App ID: ${e.message}", e)
+                }
             }
         } catch (e: Exception) {
             Log.e(TAG, "Failed to initialize AdMob: ${e.message}", e)

@@ -3,6 +3,7 @@ package com.boardgameinventory.ui
 import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AlertDialog
+import com.boardgameinventory.BuildConfig
 import com.boardgameinventory.R
 import com.boardgameinventory.databinding.ActivityDeveloperSettingsBinding
 import com.boardgameinventory.utils.AccessibilityUtils
@@ -12,8 +13,10 @@ import com.boardgameinventory.utils.DeveloperMode
 /**
  * Developer Settings Activity
  * 
- * Only accessible when developer mode is active.
+ * Only accessible when developer mode is active AND in debug builds.
  * Provides access to developer tools and database management.
+ *
+ * This activity is automatically disabled in release builds for Google Play Store compliance.
  */
 class DeveloperSettingsActivity : BaseAdActivity() {
     
@@ -21,6 +24,13 @@ class DeveloperSettingsActivity : BaseAdActivity() {
     
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        // Block access in release builds for Google Play Store compliance
+        if (!BuildConfig.DEBUG) {
+            finish() // Close the activity in release builds
+            return
+        }
+
         binding = ActivityDeveloperSettingsBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
