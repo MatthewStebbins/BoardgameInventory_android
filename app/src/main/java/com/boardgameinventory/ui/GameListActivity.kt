@@ -55,7 +55,30 @@ class GameListActivity : BaseAdActivity() {
     
     private fun setupAdsManually() {
         try {
-            setupAdsWithBinding(binding.adContainer, binding.adView, "GameListActivity")
+            // Find the AdView directly from the layout rather than using binding
+            val localAdView = binding.adView
+
+            // Set the class-level adView property
+            adView = localAdView
+
+            if (localAdView != null) {
+                // Set up the ad container
+                val adContainer = binding.adContainer
+
+                // Configure the listener
+                localAdView.adListener = object : com.google.android.gms.ads.AdListener() {
+                    override fun onAdLoaded() {
+                        android.util.Log.d("GameListActivity", "Ad loaded successfully")
+                    }
+
+                    override fun onAdFailedToLoad(error: com.google.android.gms.ads.LoadAdError) {
+                        android.util.Log.e("GameListActivity", "Ad failed to load: ${error.message}")
+                    }
+                }
+
+                // Load the ad
+                com.boardgameinventory.utils.AdManager.loadAd(localAdView)
+            }
         } catch (e: Exception) {
             android.util.Log.e("GameListActivity", "Error in ad setup: ${e.message}", e)
         }

@@ -227,7 +227,34 @@ class EditGameActivity : BaseAdActivity() {
     }
     
     private fun setupAdsManually() {
-        setupAdsWithBinding(binding.adContainer, binding.adView, "EditGameActivity")
+        try {
+            // Find the AdView directly from the layout rather than using binding
+            val localAdView = binding.adView
+
+            // Set the class-level adView property
+            adView = localAdView
+
+            if (localAdView != null) {
+                // Set up the ad container
+                val adContainer = binding.adContainer
+
+                // Configure the listener
+                localAdView.adListener = object : com.google.android.gms.ads.AdListener() {
+                    override fun onAdLoaded() {
+                        android.util.Log.d("EditGameActivity", "Ad loaded successfully")
+                    }
+
+                    override fun onAdFailedToLoad(error: com.google.android.gms.ads.LoadAdError) {
+                        android.util.Log.e("EditGameActivity", "Ad failed to load: ${error.message}")
+                    }
+                }
+
+                // Load the ad
+                com.boardgameinventory.utils.AdManager.loadAd(localAdView)
+            }
+        } catch (e: Exception) {
+            android.util.Log.e("EditGameActivity", "Error in ad setup: ${e.message}", e)
+        }
     }
     
     override fun onSupportNavigateUp(): Boolean {

@@ -41,6 +41,40 @@ class SettingsActivity : BaseAdActivity() {
             // Show the consent form to let user review/update choices
             consentManager.showConsentForm()
         }
+
+        // Manually setup ads
+        setupAdsManually()
+    }
+
+    private fun setupAdsManually() {
+        try {
+            // Find the AdView directly using findViewById since this activity doesn't use view binding
+            val localAdView = findViewById<com.google.android.gms.ads.AdView>(R.id.adView)
+
+            // Set the class-level adView property
+            adView = localAdView
+
+            if (localAdView != null) {
+                // Set up the ad container
+                val adContainer = findViewById<android.view.ViewGroup>(R.id.adContainer)
+
+                // Configure the listener
+                localAdView.adListener = object : com.google.android.gms.ads.AdListener() {
+                    override fun onAdLoaded() {
+                        android.util.Log.d("SettingsActivity", "Ad loaded successfully")
+                    }
+
+                    override fun onAdFailedToLoad(error: com.google.android.gms.ads.LoadAdError) {
+                        android.util.Log.e("SettingsActivity", "Ad failed to load: ${error.message}")
+                    }
+                }
+
+                // Load the ad
+                com.boardgameinventory.utils.AdManager.loadAd(localAdView)
+            }
+        } catch (e: Exception) {
+            android.util.Log.e("SettingsActivity", "Error in ad setup: ${e.message}", e)
+        }
     }
 
     override fun onSupportNavigateUp(): Boolean {
