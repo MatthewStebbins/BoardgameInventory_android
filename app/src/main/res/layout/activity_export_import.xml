@@ -1,361 +1,370 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <LinearLayout
+    <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:padding="16dp">
+        android:layout_height="0dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/adContainer">
 
-        <!-- Export Section -->
-        <com.google.android.material.card.MaterialCardView
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="16dp"
-            app:cardCornerRadius="8dp"
-            app:cardElevation="2dp">
+            android:orientation="vertical"
+            android:padding="16dp">
 
-            <LinearLayout
+            <!-- Export Section -->
+            <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:padding="16dp">
+                android:layout_marginBottom="16dp"
+                app:cardCornerRadius="8dp"
+                app:cardElevation="2dp">
 
-                <TextView
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Export Games"
-                    android:textAppearance="?attr/textAppearanceHeadline6"
-                    android:textColor="?attr/colorPrimary"
-                    android:layout_marginBottom="8dp"
-                    app:drawableStartCompat="@drawable/ic_upload"
-                    android:drawablePadding="8dp" />
+                    android:orientation="vertical"
+                    android:padding="16dp">
 
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Export your game collection to CSV or Excel format"
-                    android:textAppearance="?attr/textAppearanceBodyMedium"
-                    android:textColor="?attr/colorOnSurfaceVariant"
-                    android:layout_marginBottom="16dp" />
-
-                <!-- Export Format Selection -->
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Export Format:"
-                    android:textAppearance="?attr/textAppearanceBodyMedium"
-                    android:textStyle="bold"
-                    android:layout_marginBottom="8dp" />
-
-                <com.google.android.material.button.MaterialButtonToggleGroup
-                    android:id="@+id/toggleGroupExportFormat"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="16dp"
-                    app:selectionRequired="true"
-                    app:singleSelection="true">
-
-                    <com.google.android.material.button.MaterialButton
-                        android:id="@+id/btnExportCSV"
-                        android:layout_width="0dp"
+                    <TextView
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="CSV"
-                        style="@style/Widget.Material3.Button.OutlinedButton"
-                        app:icon="@drawable/ic_description" />
+                        android:text="Export Games"
+                        android:textAppearance="?attr/textAppearanceHeadline6"
+                        android:textColor="?attr/colorPrimary"
+                        android:layout_marginBottom="8dp"
+                        app:drawableStartCompat="@drawable/ic_upload"
+                        android:drawablePadding="8dp" />
 
-                    <com.google.android.material.button.MaterialButton
-                        android:id="@+id/btnExportExcel"
-                        android:layout_width="0dp"
+                    <TextView
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="Excel"
-                        style="@style/Widget.Material3.Button.OutlinedButton"
-                        app:icon="@drawable/ic_description" />
+                        android:text="Export your game collection to CSV or Excel format"
+                        android:textAppearance="?attr/textAppearanceBodyMedium"
+                        android:textColor="?attr/colorOnSurfaceVariant"
+                        android:layout_marginBottom="16dp" />
 
-                </com.google.android.material.button.MaterialButtonToggleGroup>
+                    <!-- Export Format Selection -->
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Export Format:"
+                        android:textAppearance="?attr/textAppearanceBodyMedium"
+                        android:textStyle="bold"
+                        android:layout_marginBottom="8dp" />
 
-                <!-- Export Progress -->
-                <com.google.android.material.progressindicator.LinearProgressIndicator
-                    android:id="@+id/progressExport"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="8dp"
-                    android:visibility="gone"
-                    app:indicatorColor="?attr/colorPrimary" />
+                    <com.google.android.material.button.MaterialButtonToggleGroup
+                        android:id="@+id/toggleGroupExportFormat"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="16dp"
+                        app:selectionRequired="true"
+                        app:singleSelection="true">
 
-                <TextView
-                    android:id="@+id/tvExportStatus"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:textAppearance="?attr/textAppearanceBodySmall"
-                    android:textColor="?attr/colorOnSurfaceVariant"
-                    android:layout_marginBottom="16dp"
-                    android:visibility="gone"
-                    tools:text="Exporting 150 games..." />
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/btnExportCSV"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="CSV"
+                            style="@style/Widget.Material3.Button.OutlinedButton"
+                            app:icon="@drawable/ic_description" />
 
-                <!-- Export Action Button -->
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/btnStartExport"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Export Games"
-                    app:icon="@drawable/ic_upload" />
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/btnExportExcel"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="Excel"
+                            style="@style/Widget.Material3.Button.OutlinedButton"
+                            app:icon="@drawable/ic_description" />
 
-            </LinearLayout>
+                    </com.google.android.material.button.MaterialButtonToggleGroup>
 
-        </com.google.android.material.card.MaterialCardView>
+                    <!-- Export Progress -->
+                    <com.google.android.material.progressindicator.LinearProgressIndicator
+                        android:id="@+id/progressExport"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="8dp"
+                        android:visibility="gone"
+                        app:indicatorColor="?attr/colorPrimary" />
 
-        <!-- Import Section -->
-        <com.google.android.material.card.MaterialCardView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="16dp"
-            app:cardCornerRadius="8dp"
-            app:cardElevation="2dp">
+                    <TextView
+                        android:id="@+id/tvExportStatus"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="?attr/textAppearanceBodySmall"
+                        android:textColor="?attr/colorOnSurfaceVariant"
+                        android:layout_marginBottom="16dp"
+                        android:visibility="gone"
+                        tools:text="Exporting 150 games..." />
 
-            <LinearLayout
+                    <!-- Export Action Button -->
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btnStartExport"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Export Games"
+                        app:icon="@drawable/ic_upload" />
+
+                </LinearLayout>
+
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- Import Section -->
+            <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:padding="16dp">
+                android:layout_marginBottom="16dp"
+                app:cardCornerRadius="8dp"
+                app:cardElevation="2dp">
 
-                <TextView
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Import Games"
-                    android:textAppearance="?attr/textAppearanceHeadline6"
-                    android:textColor="?attr/colorPrimary"
-                    android:layout_marginBottom="8dp"
-                    app:drawableStartCompat="@drawable/ic_download"
-                    android:drawablePadding="8dp" />
+                    android:orientation="vertical"
+                    android:padding="16dp">
 
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Import games from CSV or Excel files"
-                    android:textAppearance="?attr/textAppearanceBodyMedium"
-                    android:textColor="?attr/colorOnSurfaceVariant"
-                    android:layout_marginBottom="16dp" />
-
-                <!-- Import Format Selection -->
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Import Format:"
-                    android:textAppearance="?attr/textAppearanceBodyMedium"
-                    android:textStyle="bold"
-                    android:layout_marginBottom="8dp" />
-
-                <com.google.android.material.button.MaterialButtonToggleGroup
-                    android:id="@+id/toggleGroupImportFormat"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="16dp"
-                    app:selectionRequired="true"
-                    app:singleSelection="true">
-
-                    <com.google.android.material.button.MaterialButton
-                        android:id="@+id/btnImportCSV"
-                        android:layout_width="0dp"
+                    <TextView
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="CSV"
-                        style="@style/Widget.Material3.Button.OutlinedButton"
-                        app:icon="@drawable/ic_description" />
+                        android:text="Import Games"
+                        android:textAppearance="?attr/textAppearanceHeadline6"
+                        android:textColor="?attr/colorPrimary"
+                        android:layout_marginBottom="8dp"
+                        app:drawableStartCompat="@drawable/ic_download"
+                        android:drawablePadding="8dp" />
 
-                    <com.google.android.material.button.MaterialButton
-                        android:id="@+id/btnImportExcel"
-                        android:layout_width="0dp"
+                    <TextView
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="Excel"
-                        style="@style/Widget.Material3.Button.OutlinedButton"
-                        app:icon="@drawable/ic_description" />
+                        android:text="Import games from CSV or Excel files"
+                        android:textAppearance="?attr/textAppearanceBodyMedium"
+                        android:textColor="?attr/colorOnSurfaceVariant"
+                        android:layout_marginBottom="16dp" />
 
-                </com.google.android.material.button.MaterialButtonToggleGroup>
+                    <!-- Import Format Selection -->
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Import Format:"
+                        android:textAppearance="?attr/textAppearanceBodyMedium"
+                        android:textStyle="bold"
+                        android:layout_marginBottom="8dp" />
 
-                <!-- Import Options -->
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Import Options:"
-                    android:textAppearance="?attr/textAppearanceBodyMedium"
-                    android:textStyle="bold"
-                    android:layout_marginBottom="8dp" />
+                    <com.google.android.material.button.MaterialButtonToggleGroup
+                        android:id="@+id/toggleGroupImportFormat"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="16dp"
+                        app:selectionRequired="true"
+                        app:singleSelection="true">
 
-                <com.google.android.material.checkbox.MaterialCheckBox
-                    android:id="@+id/cbOverwriteDatabase"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Replace all existing games (clear database first)"
-                    android:layout_marginBottom="8dp" />
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/btnImportCSV"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="CSV"
+                            style="@style/Widget.Material3.Button.OutlinedButton"
+                            app:icon="@drawable/ic_description" />
 
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="If unchecked, duplicate games (same barcode) will be skipped"
-                    android:textAppearance="?attr/textAppearanceBodySmall"
-                    android:textColor="?attr/colorOnSurfaceVariant"
-                    android:layout_marginBottom="16dp"
-                    android:paddingStart="32dp"
-                    android:paddingEnd="8dp" />
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/btnImportExcel"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="Excel"
+                            style="@style/Widget.Material3.Button.OutlinedButton"
+                            app:icon="@drawable/ic_description" />
 
-                <!-- Selected File Display -->
-                <com.google.android.material.card.MaterialCardView
-                    android:id="@+id/cardSelectedFile"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="16dp"
-                    android:visibility="gone"
-                    app:cardCornerRadius="4dp"
-                    app:cardBackgroundColor="?attr/colorSurfaceVariant"
-                    app:cardElevation="0dp">
+                    </com.google.android.material.button.MaterialButtonToggleGroup>
 
+                    <!-- Import Options -->
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Import Options:"
+                        android:textAppearance="?attr/textAppearanceBodyMedium"
+                        android:textStyle="bold"
+                        android:layout_marginBottom="8dp" />
+
+                    <com.google.android.material.checkbox.MaterialCheckBox
+                        android:id="@+id/cbOverwriteDatabase"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Replace all existing games (clear database first)"
+                        android:layout_marginBottom="8dp" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="If unchecked, duplicate games (same barcode) will be skipped"
+                        android:textAppearance="?attr/textAppearanceBodySmall"
+                        android:textColor="?attr/colorOnSurfaceVariant"
+                        android:layout_marginBottom="16dp"
+                        android:paddingStart="32dp"
+                        android:paddingEnd="8dp" />
+
+                    <!-- Selected File Display -->
+                    <com.google.android.material.card.MaterialCardView
+                        android:id="@+id/cardSelectedFile"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="16dp"
+                        android:visibility="gone"
+                        app:cardCornerRadius="4dp"
+                        app:cardBackgroundColor="?attr/colorSurfaceVariant"
+                        app:cardElevation="0dp">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:padding="12dp"
+                            android:gravity="center_vertical">
+
+                            <ImageView
+                                android:layout_width="24dp"
+                                android:layout_height="24dp"
+                                android:src="@drawable/ic_description"
+                                android:layout_marginEnd="8dp"
+                                app:tint="?attr/colorPrimary" />
+
+                            <TextView
+                                android:id="@+id/tvSelectedFileName"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:textAppearance="?attr/textAppearanceBodyMedium"
+                                tools:text="games_backup_2024.csv" />
+
+                            <com.google.android.material.button.MaterialButton
+                                android:id="@+id/btnClearFile"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Clear"
+                                style="@style/Widget.Material3.Button.TextButton"
+                                app:icon="@drawable/ic_close" />
+
+                        </LinearLayout>
+
+                    </com.google.android.material.card.MaterialCardView>
+
+                    <!-- Import Progress -->
+                    <com.google.android.material.progressindicator.LinearProgressIndicator
+                        android:id="@+id/progressImport"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="8dp"
+                        android:visibility="gone"
+                        app:indicatorColor="?attr/colorPrimary" />
+
+                    <TextView
+                        android:id="@+id/tvImportStatus"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="?attr/textAppearanceBodySmall"
+                        android:textColor="?attr/colorOnSurfaceVariant"
+                        android:layout_marginBottom="16dp"
+                        android:visibility="gone"
+                        tools:text="Importing games..." />
+
+                    <!-- Import Action Buttons -->
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="horizontal"
-                        android:padding="12dp"
-                        android:gravity="center_vertical">
+                        android:gravity="end">
 
-                        <ImageView
-                            android:layout_width="24dp"
-                            android:layout_height="24dp"
-                            android:src="@drawable/ic_description"
-                            android:layout_marginEnd="8dp"
-                            app:tint="?attr/colorPrimary" />
-
-                        <TextView
-                            android:id="@+id/tvSelectedFileName"
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/btnSelectFile"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:textAppearance="?attr/textAppearanceBodyMedium"
-                            tools:text="games_backup_2024.csv" />
+                            android:layout_marginEnd="8dp"
+                            android:text="Select File"
+                            style="@style/Widget.Material3.Button.OutlinedButton"
+                            app:icon="@drawable/ic_folder_open" />
 
                         <com.google.android.material.button.MaterialButton
-                            android:id="@+id/btnClearFile"
-                            android:layout_width="wrap_content"
+                            android:id="@+id/btnStartImport"
+                            android:layout_width="0dp"
                             android:layout_height="wrap_content"
-                            android:text="Clear"
-                            style="@style/Widget.Material3.Button.TextButton"
-                            app:icon="@drawable/ic_close" />
+                            android:layout_weight="1"
+                            android:text="Import"
+                            android:enabled="false"
+                            app:icon="@drawable/ic_download" />
 
                     </LinearLayout>
 
-                </com.google.android.material.card.MaterialCardView>
+                </LinearLayout>
 
-                <!-- Import Progress -->
-                <com.google.android.material.progressindicator.LinearProgressIndicator
-                    android:id="@+id/progressImport"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="8dp"
-                    android:visibility="gone"
-                    app:indicatorColor="?attr/colorPrimary" />
+            </com.google.android.material.card.MaterialCardView>
 
-                <TextView
-                    android:id="@+id/tvImportStatus"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:textAppearance="?attr/textAppearanceBodySmall"
-                    android:textColor="?attr/colorOnSurfaceVariant"
-                    android:layout_marginBottom="16dp"
-                    android:visibility="gone"
-                    tools:text="Importing games..." />
+            <!-- Results Section -->
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/cardResults"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                android:visibility="gone"
+                app:cardCornerRadius="8dp"
+                app:cardElevation="2dp">
 
-                <!-- Import Action Buttons -->
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:gravity="end">
+                    android:orientation="vertical"
+                    android:padding="16dp">
 
-                    <com.google.android.material.button.MaterialButton
-                        android:id="@+id/btnSelectFile"
-                        android:layout_width="0dp"
+                    <TextView
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:layout_marginEnd="8dp"
-                        android:text="Select File"
-                        style="@style/Widget.Material3.Button.OutlinedButton"
-                        app:icon="@drawable/ic_folder_open" />
+                        android:text="Operation Results"
+                        android:textAppearance="?attr/textAppearanceHeadline6"
+                        android:textColor="?attr/colorPrimary"
+                        android:layout_marginBottom="8dp"
+                        app:drawableStartCompat="@drawable/ic_check_circle"
+                        android:drawablePadding="8dp" />
 
-                    <com.google.android.material.button.MaterialButton
-                        android:id="@+id/btnStartImport"
-                        android:layout_width="0dp"
+                    <TextView
+                        android:id="@+id/tvResults"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="Import"
-                        android:enabled="false"
-                        app:icon="@drawable/ic_download" />
+                        android:textAppearance="?attr/textAppearanceBodyMedium"
+                        tools:text="Successfully exported 150 games to CSV file" />
 
                 </LinearLayout>
 
-            </LinearLayout>
-
-        </com.google.android.material.card.MaterialCardView>
-
-        <!-- Results Section -->
-        <com.google.android.material.card.MaterialCardView
-            android:id="@+id/cardResults"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="16dp"
-            android:visibility="gone"
-            app:cardCornerRadius="8dp"
-            app:cardElevation="2dp">
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:padding="16dp">
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Operation Results"
-                    android:textAppearance="?attr/textAppearanceHeadline6"
-                    android:textColor="?attr/colorPrimary"
-                    android:layout_marginBottom="8dp"
-                    app:drawableStartCompat="@drawable/ic_check_circle"
-                    android:drawablePadding="8dp" />
-
-                <TextView
-                    android:id="@+id/tvResults"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:textAppearance="?attr/textAppearanceBodyMedium"
-                    tools:text="Successfully exported 150 games to CSV file" />
-
-            </LinearLayout>
-
-        </com.google.android.material.card.MaterialCardView>
-
-        <!-- AdMob Banner Ad -->
-        <LinearLayout
-            android:id="@+id/adContainer"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:gravity="center">
-
-            <com.google.android.gms.ads.AdView
-                android:id="@+id/adView"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:adSize="BANNER"
-                app:adUnitId="@string/admob_banner_ad_unit_id" />
+            </com.google.android.material.card.MaterialCardView>
 
         </LinearLayout>
 
+    </androidx.core.widget.NestedScrollView>
+
+    <!-- AdMob Banner Ad - Moved outside of scrollable content -->
+    <LinearLayout
+        android:id="@+id/adContainer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:gravity="center"
+        app:layout_constraintBottom_toBottomOf="parent">
+
+        <com.google.android.gms.ads.AdView
+            android:id="@+id/adView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:adSize="BANNER"
+            app:adUnitId="@string/admob_banner_ad_unit_id" />
+
     </LinearLayout>
 
-</androidx.core.widget.NestedScrollView>
+</androidx.constraintlayout.widget.ConstraintLayout>

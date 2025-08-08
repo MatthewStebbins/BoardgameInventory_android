@@ -42,7 +42,7 @@ class BulkUploadActivity : BaseAdActivity() {
         setContentView(binding.root)
 
         viewModel = ViewModelProvider(this)[BulkUploadViewModel::class.java]
-        setupAdsWithBinding(binding.adContainer, binding.adView, "BulkUploadActivity")
+        setupAdsManually()
         setupUI()
         observeViewModel()
     }
@@ -205,16 +205,13 @@ class BulkUploadActivity : BaseAdActivity() {
 
     private fun setupAdsManually() {
         try {
-            // Find the AdView directly from the layout rather than using binding
-            val localAdView = binding.adView
+            // Find the AdView directly using findViewById since this activity doesn't use view binding properly
+            val localAdView = findViewById<com.google.android.gms.ads.AdView>(R.id.adView)
 
             // Set the class-level adView property
             adView = localAdView
 
             if (localAdView != null) {
-                // Set up the ad container
-                val adContainer = binding.adContainer
-
                 // Configure the listener
                 localAdView.adListener = object : com.google.android.gms.ads.AdListener() {
                     override fun onAdLoaded() {
