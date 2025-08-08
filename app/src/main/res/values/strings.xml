@@ -340,4 +340,46 @@
     <!-- Internet Permission -->
     <string name="internet_permission_title">Internet Access</string>
     <string name="internet_permission_rationale">Internet access is needed to look up game information and synchronize your collection. You can still use most features offline.</string>
+
+    <!-- Accessibility Checker Strings -->
+    <string name="accessibility_checker_title">Accessibility Checker</string>
+    <string name="accessibility_checker_description">Use this tool to check accessibility compliance of your app and fix common accessibility issues.</string>
+    <string name="check_content_descriptions">Check Content Descriptions</string>
+    <string name="check_contrast_ratios">Check Contrast Ratios</string>
+    <string name="apply_content_descriptions">Apply Default Content Descriptions</string>
+    <string name="run_all_checks">Run All Accessibility Checks</string>
+    <string name="accessibility_summary_placeholder">Run checks to see accessibility summary</string>
+    <string name="accessibility_issues_found">Issues Found:</string>
+    <string name="fix">Fix</string>
+    <string name="fix_accessibility_issue">Fix this accessibility issue</string>
+    <string name="accessibility_check_passed">All accessibility checks passed</string>
+    <string name="accessibility_no_issues">No accessibility issues found</string>
+
+    <!-- Board Game List Screen Accessibility Descriptions -->
+    <string name="game_card_content_description">Board game: %1$s. %2$s</string>
+    <string name="game_image_content_description">Image of %1$s board game</string>
+    <string name="game_loan_status_content_description">%1$s is %2$s</string>
+    <string name="game_available_status">available</string>
+    <string name="game_loaned_status">loaned to %1$s</string>
+    <string name="search_games_content_description">Search for games in your collection</string>
+    <string name="filter_button_content_description">Filter your game collection</string>
+    <string name="sort_button_content_description">Sort your game collection</string>
+    <string name="add_game_button_content_description">Add a new game to your collection</string>
+
+    <!-- Add/Edit Game Screen Accessibility Descriptions -->
+    <string name="barcode_field_content_description">Barcode input field for game</string>
+    <string name="scan_barcode_content_description">Scan a barcode using the camera</string>
+    <string name="bookcase_field_content_description">Bookcase location for game</string>
+    <string name="shelf_field_content_description">Shelf location for game</string>
+    <string name="location_barcode_content_description">Location barcode input field</string>
+    <string name="scan_location_content_description">Scan location barcode</string>
+    <string name="submit_button_content_description">Save game to collection</string>
+    <string name="cancel_button_content_description">Cancel and return without saving</string>
+
+    <!-- Loan/Return Game Screen Accessibility Descriptions -->
+    <string name="select_game_content_description">Select %1$s from your collection</string>
+    <string name="borrower_name_content_description">Input field for borrower\'s name</string>
+    <string name="loan_button_content_description">Loan the selected game</string>
+    <string name="return_button_content_description">Return the selected game</string>
+    <string name="select_loaned_game_content_description">Select loaned game to return</string>
 </resources>

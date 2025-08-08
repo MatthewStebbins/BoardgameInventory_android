@@ -1,165 +1,213 @@
 package com.boardgameinventory.utils
 
-import android.content.Context
-import android.graphics.Color
+import android.app.Activity
 import android.view.View
+import android.view.ViewGroup
+import android.widget.Button
+import android.widget.EditText
+import android.widget.ImageButton
+import android.widget.ImageView
 import android.widget.TextView
-import com.google.android.material.snackbar.Snackbar
-import kotlin.math.max
-import kotlin.math.min
+import androidx.core.view.AccessibilityDelegateCompat
+import androidx.core.view.ViewCompat
+import androidx.core.view.accessibility.AccessibilityNodeInfoCompat
+import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.google.android.material.textfield.TextInputLayout
 
 /**
- * Utility class for accessibility features and checks
+ * Utility class for accessibility improvements and verification.
+ * Provides methods to enhance accessibility features across the app.
  */
 object AccessibilityUtils {
 
     /**
-     * Minimum contrast ratios as per WCAG 2.0 guidelines
+     * Content description types for different UI elements
      */
-    const val MIN_CONTRAST_NORMAL_TEXT = 4.5
-    const val MIN_CONTRAST_LARGE_TEXT = 3.0  // 18pt or 14pt bold
-
-    /**
-     * Announce a message for accessibility services (screen readers)
-     * @param view The view to use as anchor for the announcement
-     * @param text The text to announce
-     */
-    fun announceForAccessibility(view: View, text: String) {
-        view.announceForAccessibility(text)
+    enum class DescriptionType {
+        BUTTON,
+        IMAGE,
+        INPUT_FIELD,
+        STATUS_INDICATOR,
+        HEADER,
+        CARD
     }
 
     /**
-     * Announce a success message with appropriate prefix for screen readers
-     * @param view The view to use as anchor
-     * @param message The success message
+     * Audit a single activity for missing content descriptions
+     * @return Pair of (total elements checked, number of missing descriptions)
      */
-    fun announceSuccess(view: View, message: String) {
-        val accessibilityMessage = view.context.getString(com.boardgameinventory.R.string.success_screen_reader, message)
-        view.announceForAccessibility(accessibilityMessage)
+    fun auditActivityForContentDescriptions(activity: Activity): Pair<Int, List<View>> {
+        val rootView = activity.findViewById<ViewGroup>(android.R.id.content)
+        val viewsWithoutDescriptions = mutableListOf<View>()
+        var totalCheckedElements = 0
+
+        scanViewHierarchyForContentDescriptions(rootView, viewsWithoutDescriptions, totalCheckedElements)
+        return Pair(totalCheckedElements, viewsWithoutDescriptions)
     }
 
     /**
-     * Announce an error message with appropriate prefix for screen readers
-     * @param view The view to use as anchor
-     * @param message The error message
+     * Recursively scan view hierarchy to find elements without content descriptions
      */
-    fun announceError(view: View, message: String) {
-        val accessibilityMessage = view.context.getString(com.boardgameinventory.R.string.error_screen_reader, message)
-        view.announceForAccessibility(accessibilityMessage)
+    private fun scanViewHierarchyForContentDescriptions(
+        view: View,
+        viewsWithoutDescriptions: MutableList<View>,
+        totalChecked: Int
+    ): Int {
+        var checked = totalChecked
+
+        // Check if this view needs a content description
+        if (viewNeedsContentDescription(view) && view.contentDescription.isNullOrBlank()) {
+            viewsWithoutDescriptions.add(view)
+        }
+
+        if (viewNeedsContentDescription(view)) {
+            checked++
+        }
+
+        // Recursively check child views if this is a ViewGroup
+        if (view is ViewGroup) {
+            for (i in 0 until view.childCount) {
+                checked = scanViewHierarchyForContentDescriptions(
+                    view.getChildAt(i),
+                    viewsWithoutDescriptions,
+                    checked
+                )
+            }
+        }
+
+        return checked
     }
 
     /**
-     * Show an accessibility-friendly snackbar
-     * @param view The view to anchor the snackbar to
-     * @param message The message to show
-     * @param duration The duration to show the snackbar
-     * @param announce Whether to announce the message to screen readers
+     * Determine if a view needs a content description based on its type
      */
-    fun showAccessibleSnackbar(view: View, message: String, duration: Int = Snackbar.LENGTH_LONG, announce: Boolean = true) {
-        Snackbar.make(view, message, duration).show()
-        if (announce) {
-            view.announceForAccessibility(message)
+    private fun viewNeedsContentDescription(view: View): Boolean {
+        return view is Button ||
+               view is ImageButton ||
+               view is FloatingActionButton ||
+               view is ImageView ||
+               (view is TextView && view.isClickable)
+    }
+
+    /**
+     * Add appropriate content descriptions to common views in the layout
+     */
+    fun applyStandardContentDescriptions(rootView: View) {
+        if (rootView is ViewGroup) {
+            for (i in 0 until rootView.childCount) {
+                val child = rootView.getChildAt(i)
+
+                // Apply content descriptions based on view type
+                when (child) {
+                    is Button -> {
+                        if (child.contentDescription.isNullOrBlank() && !child.text.isNullOrBlank()) {
+                            child.contentDescription = child.text
+                        }
+                    }
+
+                    is ImageButton -> {
+                        if (child.contentDescription.isNullOrBlank()) {
+                            // Try to infer from tag or drawable resource name
+                            val resourceName = child.context.resources.getResourceName(
+                                child.id
+                            ).substringAfterLast("/")
+
+                            child.contentDescription = resourceName
+                                .replace("_", " ")
+                                .replace("btn", "")
+                                .replace("img", "")
+                                .trim()
+                                .capitalize()
+                        }
+                    }
+
+                    is TextInputLayout -> {
+                        val hint = child.hint
+                        if (child.editText?.contentDescription.isNullOrBlank() && hint != null) {
+                            child.editText?.contentDescription = hint
+                        }
+                    }
+                }
+
+                // Recursively apply to children
+                applyStandardContentDescriptions(child)
+            }
         }
     }
 
     /**
-     * Calculate the contrast ratio between two colors
-     * @param foregroundColor The text/foreground color
-     * @param backgroundColor The background color
-     * @return The contrast ratio (higher is better)
+     * Add custom action descriptions to improve TalkBack experience
      */
-    fun calculateContrastRatio(foregroundColor: Int, backgroundColor: Int): Double {
-        val foregroundLuminance = calculateLuminance(foregroundColor)
-        val backgroundLuminance = calculateLuminance(backgroundColor)
-
-        // Calculate contrast ratio as per WCAG formula
-        val lighter = max(foregroundLuminance, backgroundLuminance)
-        val darker = min(foregroundLuminance, backgroundLuminance)
-
-        return (lighter + 0.05) / (darker + 0.05)
+    fun addCustomActionDescription(view: View, actionDescription: String) {
+        ViewCompat.setAccessibilityDelegate(view, object : AccessibilityDelegateCompat() {
+            override fun onInitializeAccessibilityNodeInfo(
+                host: View,
+                info: AccessibilityNodeInfoCompat
+            ) {
+                super.onInitializeAccessibilityNodeInfo(host, info)
+                info.addAction(
+                    AccessibilityNodeInfoCompat.ActionCompat(
+                        AccessibilityNodeInfoCompat.ACTION_CLICK,
+                        actionDescription
+                    )
+                )
+            }
+        })
     }
 
     /**
-     * Calculate the luminance of a color as per WCAG formula
-     * @param color The color to calculate luminance for
-     * @return The luminance value (0 to 1)
+     * Helper method to set content description based on type
      */
-    private fun calculateLuminance(color: Int): Double {
-        val r = Color.red(color) / 255.0
-        val g = Color.green(color) / 255.0
-        val b = Color.blue(color) / 255.0
+    fun setDescription(view: View, text: String, type: DescriptionType) {
+        val prefix = when (type) {
+            DescriptionType.BUTTON -> "Button: "
+            DescriptionType.IMAGE -> "Image: "
+            DescriptionType.INPUT_FIELD -> "Input field for "
+            DescriptionType.STATUS_INDICATOR -> "Status: "
+            DescriptionType.HEADER -> "Heading: "
+            DescriptionType.CARD -> "Card: "
+        }
 
-        val r1 = if (r <= 0.03928) r / 12.92 else Math.pow((r + 0.055) / 1.055, 2.4)
-        val g1 = if (g <= 0.03928) g / 12.92 else Math.pow((g + 0.055) / 1.055, 2.4)
-        val b1 = if (b <= 0.03928) b / 12.92 else Math.pow((b + 0.055) / 1.055, 2.4)
-
-        return 0.2126 * r1 + 0.7152 * g1 + 0.0722 * b1
+        view.contentDescription = "$prefix$text"
     }
 
     /**
-     * Check if the contrast ratio between two colors meets accessibility standards
-     * @param foregroundColor The text/foreground color
-     * @param backgroundColor The background color
-     * @param isLargeText Whether the text is large (18pt or 14pt bold)
-     * @return true if the contrast ratio meets standards, false otherwise
+     * Check contrast ratio between foreground and background colors
+     * @return true if contrast ratio meets WCAG AA standard (4.5:1 for normal text)
      */
-    fun hasAdequateContrast(foregroundColor: Int, backgroundColor: Int, isLargeText: Boolean = false): Boolean {
-        val ratio = calculateContrastRatio(foregroundColor, backgroundColor)
-        return if (isLargeText) {
-            ratio >= MIN_CONTRAST_LARGE_TEXT
-        } else {
-            ratio >= MIN_CONTRAST_NORMAL_TEXT
-        }
+    fun hasAdequateContrast(foregroundColor: Int, backgroundColor: Int): Boolean {
+        val luminance1 = calculateRelativeLuminance(foregroundColor)
+        val luminance2 = calculateRelativeLuminance(backgroundColor)
+
+        val lighter = Math.max(luminance1, luminance2)
+        val darker = Math.min(luminance1, luminance2)
+
+        // Calculate contrast ratio: (L1 + 0.05) / (L2 + 0.05)
+        val contrastRatio = (lighter + 0.05) / (darker + 0.05)
+
+        // WCAG AA requires 4.5:1 for normal text, 3:1 for large text
+        return contrastRatio >= 4.5
     }
 
     /**
-     * Check if a TextView has adequate contrast against its background
-     * @param textView The TextView to check
-     * @return true if contrast is adequate, false otherwise
+     * Calculate the relative luminance of a color per WCAG formula
      */
-    fun hasAdequateTextContrast(textView: TextView): Boolean {
-        val textColor = textView.currentTextColor
-        val background = textView.background
+    private fun calculateRelativeLuminance(color: Int): Double {
+        val red = ((color shr 16) and 0xFF) / 255.0
+        val green = ((color shr 8) and 0xFF) / 255.0
+        val blue = (color and 0xFF) / 255.0
 
-        // If the TextView has no background, check the parent's background
-        val backgroundColor = if (background != null) {
-            // This is simplified; in real-world you'd need to get the actual background color
-            // from the drawable which might be more complex
-            Color.TRANSPARENT
-        } else {
-            // Try to get parent background
-            Color.WHITE // Default fallback
-        }
+        val r = if (red <= 0.03928) red / 12.92 else Math.pow((red + 0.055) / 1.055, 2.4)
+        val g = if (green <= 0.03928) green / 12.92 else Math.pow((green + 0.055) / 1.055, 2.4)
+        val b = if (blue <= 0.03928) blue / 12.92 else Math.pow((blue + 0.055) / 1.055, 2.4)
 
-        val isLargeText = textView.textSize >= 18.0f ||
-                (textView.textSize >= 14.0f && textView.typeface?.isBold == true)
-
-        return hasAdequateContrast(textColor, backgroundColor, isLargeText)
+        return 0.2126 * r + 0.7152 * g + 0.0722 * b
     }
 
     /**
-     * Suggest a more accessible color that meets contrast requirements
-     * @param backgroundColor The background color
-     * @param preferredTextColor The preferred text color that might not meet contrast requirements
-     * @param isLargeText Whether the text is large (18pt or 14pt bold)
-     * @return A new text color with adequate contrast
+     * Announce a message to screen readers
      */
-    fun suggestAccessibleTextColor(backgroundColor: Int, preferredTextColor: Int, isLargeText: Boolean = false): Int {
-        // If the contrast is already adequate, return the preferred color
-        if (hasAdequateContrast(preferredTextColor, backgroundColor, isLargeText)) {
-            return preferredTextColor
-        }
-
-        // Otherwise, adjust the color to meet contrast requirements
-        val backgroundLuminance = calculateLuminance(backgroundColor)
-
-        // Decide whether to go lighter or darker based on background luminance
-        return if (backgroundLuminance > 0.5) {
-            // Dark text on light background
-            Color.BLACK
-        } else {
-            // Light text on dark background
-            Color.WHITE
-        }
+    fun announceForAccessibility(view: View, message: String) {
+        view.announceForAccessibility(message)
     }
 }

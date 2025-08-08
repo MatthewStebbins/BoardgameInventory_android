@@ -16,6 +16,7 @@ import com.boardgameinventory.databinding.ActivityAddGameBinding
 import com.boardgameinventory.utils.AdManager
 import com.boardgameinventory.utils.Utils
 import com.boardgameinventory.utils.BarcodeUtils
+import com.boardgameinventory.utils.PermissionUtils
 import com.boardgameinventory.viewmodel.AddGameViewModel
 import com.boardgameinventory.validation.GameInputValidation
 import com.boardgameinventory.validation.ValidationUtils
@@ -36,10 +37,12 @@ class AddGameActivity : BaseAdActivity() {
         }
     }
     
+    // Register for permission results using Activity Result API
     private val cameraPermissionLauncher = registerForActivityResult(
-        ActivityResultContracts.RequestPermission()
-    ) { isGranted ->
-        if (isGranted) {
+        ActivityResultContracts.RequestMultiplePermissions()
+    ) { permissions ->
+        // Check if all required permissions are granted
+        if (permissions.all { it.value }) {
             startBarcodeScan()
         } else {
             Utils.showToast(this, getString(R.string.camera_permission_required))
@@ -157,22 +160,26 @@ class AddGameActivity : BaseAdActivity() {
     }
     
     private fun checkCameraPermissionAndScan() {
-        when {
-            ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) == 
-                    PackageManager.PERMISSION_GRANTED -> {
+        // Use the new PermissionUtils class for permission handling
+        PermissionUtils.requestPermissions(
+            this,
+            PermissionUtils.PermissionType.CAMERA,
+            cameraPermissionLauncher
+        ) { granted ->
+            if (granted) {
                 startBarcodeScan()
-            }
-            ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.CAMERA) -> {
-                Utils.showToast(this, getString(R.string.camera_permission_required))
-                cameraPermissionLauncher.launch(Manifest.permission.CAMERA)
-            }
-            else -> {
-                cameraPermissionLauncher.launch(Manifest.permission.CAMERA)
+            } else {
+                // Permission was denied - show the permission denied dialog
+                PermissionUtils.showPermissionDeniedDialog(
+                    this,
+                    PermissionUtils.PermissionType.CAMERA
+                )
             }
         }
     }
     
     private fun startBarcodeScan() {
+        // Set up barcode scanning options with orientation handling
         val options = BarcodeUtils.createGameBarcodeScanOptions()
         scanLauncher.launch(options)
     }

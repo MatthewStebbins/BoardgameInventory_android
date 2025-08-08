@@ -5,12 +5,14 @@ import android.text.Editable
 import android.text.TextWatcher
 import android.widget.EditText
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.boardgameinventory.R
 import com.boardgameinventory.databinding.ActivityBulkUploadBinding
 import com.boardgameinventory.utils.BarcodeUtils
+import com.boardgameinventory.utils.PermissionUtils
 import com.boardgameinventory.viewmodel.BulkUploadViewModel
 import com.journeyapps.barcodescanner.ScanContract
 
@@ -35,6 +37,29 @@ class BulkUploadActivity : BaseAdActivity() {
             addGameBarcode(result.contents)
         }
     }
+
+    // Permission launcher using the Activity Result API
+    private val cameraPermissionLauncher = registerForActivityResult(
+        ActivityResultContracts.RequestMultiplePermissions()
+    ) { permissions ->
+        if (permissions.all { it.value }) {
+            // Determine which scanner to launch based on the current request type
+            when (currentScanType) {
+                ScanType.LOCATION -> launchLocationBarcodeScanner()
+                ScanType.GAME -> launchGameBarcodeScanner()
+            }
+        } else {
+            Toast.makeText(this, R.string.camera_permission_required, Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    // Enum to track which scanner should be launched after permission check
+    private enum class ScanType {
+        LOCATION, GAME
+    }
+
+    // Track the current scan type
+    private var currentScanType = ScanType.GAME
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -70,18 +95,14 @@ class BulkUploadActivity : BaseAdActivity() {
         })
 
         // Button listeners
-        // Example: Toggle orientation lock and torch for demonstration
         binding.btnScanLocationBarcode.setOnClickListener {
-            isOrientationLocked = !isOrientationLocked
-            isTorchOn = !isTorchOn
             scanLocationBarcode()
         }
         
         binding.btnScanGameBarcode.setOnClickListener {
-            isOrientationLocked = !isOrientationLocked
-            isTorchOn = !isTorchOn
             scanGameBarcode()
         }
+
         binding.btnAddManually.setOnClickListener {
             showManualBarcodeDialog()
         }
@@ -93,6 +114,48 @@ class BulkUploadActivity : BaseAdActivity() {
         binding.btnCancel.setOnClickListener {
             finish()
         }
+    }
+
+    private fun scanLocationBarcode() {
+        currentScanType = ScanType.LOCATION
+        checkCameraPermission()
+    }
+
+    private fun scanGameBarcode() {
+        currentScanType = ScanType.GAME
+        checkCameraPermission()
+    }
+
+    private fun checkCameraPermission() {
+        // Use the PermissionUtils class for systematic permission handling
+        PermissionUtils.requestPermissions(
+            this,
+            PermissionUtils.PermissionType.CAMERA,
+            cameraPermissionLauncher
+        ) { granted ->
+            if (granted) {
+                when (currentScanType) {
+                    ScanType.LOCATION -> launchLocationBarcodeScanner()
+                    ScanType.GAME -> launchGameBarcodeScanner()
+                }
+            } else {
+                // Show the permission denied dialog to guide the user to app settings
+                PermissionUtils.showPermissionDeniedDialog(
+                    this,
+                    PermissionUtils.PermissionType.CAMERA
+                )
+            }
+        }
+    }
+
+    private fun launchLocationBarcodeScanner() {
+        val options = BarcodeUtils.createLocationBarcodeScanOptions()
+        scanLocationBarcodeLauncher.launch(options)
+    }
+
+    private fun launchGameBarcodeScanner() {
+        val options = BarcodeUtils.createGameBarcodeScanOptions()
+        scanGameBarcodeLauncher.launch(options)
     }
 
     private fun observeViewModel() {
@@ -122,22 +185,6 @@ class BulkUploadActivity : BaseAdActivity() {
                 binding.etShelf.setText(parts[1].trim())
             }
         }
-    }
-
-    private fun scanLocationBarcode() {
-        val options = BarcodeUtils.createLocationBarcodeScanOptions(
-            orientationLocked = isOrientationLocked,
-            torchOn = isTorchOn
-        )
-        scanLocationBarcodeLauncher.launch(options)
-    }
-
-    private fun scanGameBarcode() {
-        val options = BarcodeUtils.createBulkScanOptions(
-            orientationLocked = isOrientationLocked,
-            torchOn = isTorchOn
-        )
-        scanGameBarcodeLauncher.launch(options)
     }
 
     private fun showManualBarcodeDialog() {
