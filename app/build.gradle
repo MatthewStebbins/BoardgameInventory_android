@@ -55,14 +55,15 @@ android {
             applicationIdSuffix ".debug"
             versionNameSuffix "-debug"
             debuggable true
-            minifyEnabled false
+            minifyEnabled = false
+            shrinkResources = false
             buildConfigField "boolean", "DEVELOPER_MODE_ENABLED", "true"
             resValue "string", "app_name", "BGI Debug"
         }
 
         release {
-            minifyEnabled true
-            shrinkResources true
+            minifyEnabled = true
+            shrinkResources = true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
             debuggable false
             buildConfigField "boolean", "DEVELOPER_MODE_ENABLED", "false"

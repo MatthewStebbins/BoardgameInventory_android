@@ -190,10 +190,6 @@ class GameDetailActivity : BaseAdActivity() {
 
                 // Only set content descriptions for views that exist in the binding
                 btnEditGame.contentDescription = getString(R.string.edit_game_description, game.name)
-                // Guard btnDeleteGame reference
-                try {
-                    btnDeleteGame.contentDescription = getString(R.string.delete_game_description, game.name)
-                } catch (_: Exception) {}
                 // Loan status button accessibility
                 if (game.loanedTo != null) {
                     btnLoanReturn.contentDescription = getString(
@@ -205,7 +201,7 @@ class GameDetailActivity : BaseAdActivity() {
                     btnLoanReturn.contentDescription = getString(R.string.loan_game_description_with_name, game.name)
                 }
                 // Set heading for game name using accessibilityPaneTitle for best compatibility
-                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.P) {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
                     tvGameName.accessibilityPaneTitle = game.name
                 }
                 // Group related information for better screen reader experience
