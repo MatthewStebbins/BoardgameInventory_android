@@ -40,7 +40,7 @@ data class ProductInfo(
     @SerializedName("features")
     val features: List<String>?,
     @SerializedName("category")
-    val category: String?,
+    val category: List<String>?,
     @SerializedName("manufacturer")
     val manufacturer: String?,
     @SerializedName("brand")

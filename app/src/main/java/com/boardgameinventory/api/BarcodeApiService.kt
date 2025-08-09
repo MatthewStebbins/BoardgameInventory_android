@@ -1,17 +1,15 @@
 package com.boardgameinventory.api
 
 import retrofit2.http.GET
-import retrofit2.http.Header
-import retrofit2.http.Path
 import retrofit2.http.Query
 
 /**
  * Interface for barcode API service
  */
 interface BarcodeApiService {
-    @GET("barcode/{barcode}")
+    @GET("/")
     suspend fun lookupBarcode(
-        @Path("barcode") barcode: String
+        @Query("barcode") barcode: String
     ): BarcodeResponse
 
     @GET("search")

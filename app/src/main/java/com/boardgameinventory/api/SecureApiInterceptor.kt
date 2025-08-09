@@ -1,6 +1,7 @@
 package com.boardgameinventory.api
 
 import android.content.Context
+import com.boardgameinventory.BuildConfig
 import com.boardgameinventory.utils.SecureApiKeyManager
 import okhttp3.Interceptor
 import okhttp3.Response
@@ -28,6 +29,18 @@ class SecureApiInterceptor(private val context: Context) : Interceptor {
             if (apiKey.isNotBlank() && apiHost.isNotBlank()) {
                 requestBuilder.addHeader("X-RapidAPI-Key", apiKey)
                 requestBuilder.addHeader("X-RapidAPI-Host", apiHost)
+            }
+
+            // Debug logging for API requests (disabled in release)
+            if (BuildConfig.DEBUG) {
+                android.util.Log.d(
+                    "SecureApiInterceptor",
+                    "Request URL: ${originalRequest.url}"
+                )
+                android.util.Log.d(
+                    "SecureApiInterceptor",
+                    "Headers: X-RapidAPI-Key=${apiKey}, X-RapidAPI-Host=${apiHost}"
+                )
             }
 
             return chain.proceed(requestBuilder.build())
