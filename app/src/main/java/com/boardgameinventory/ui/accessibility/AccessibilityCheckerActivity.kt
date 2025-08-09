@@ -299,15 +299,15 @@ class AccessibilityCheckerActivity : AppCompatActivity() {
                             // Generate a default content description
                             val defaultDescription = when {
                                 issue.viewId.contains("btn", ignoreCase = true) ->
-                                    issue.viewId.replace("btn", "", ignoreCase = true).replace("_", " ").trim().capitalize()
+                                    issue.viewId.replace("btn", "", ignoreCase = true).replace("_", " ").trim().replaceFirstChar { it.uppercase() }
                                 issue.viewId.contains("img", ignoreCase = true) ->
-                                    issue.viewId.replace("img", "", ignoreCase = true).replace("_", " ").trim().capitalize()
-                                else -> issue.viewId.replace("_", " ").trim().capitalize()
+                                    issue.viewId.replace("img", "", ignoreCase = true).replace("_", " ").trim().replaceFirstChar { it.uppercase() }
+                                else -> issue.viewId.replace("_", " ").trim().replaceFirstChar { it.uppercase() }
                             }
 
                             issue.view.contentDescription = defaultDescription
-                            issues.removeAt(adapterPosition)
-                            notifyItemRemoved(adapterPosition)
+                            issues.removeAt(bindingAdapterPosition)
+                            notifyItemRemoved(bindingAdapterPosition)
 
                             // Update the count
                             val activityName = issue.activityName
@@ -322,8 +322,8 @@ class AccessibilityCheckerActivity : AppCompatActivity() {
                                 // Increase contrast by setting a more accessible color
                                 issue.view.setTextColor(Color.BLACK)
                                 issue.view.backgroundTintList = ColorStateList.valueOf(Color.WHITE)
-                                issues.removeAt(adapterPosition)
-                                notifyItemRemoved(adapterPosition)
+                                issues.removeAt(bindingAdapterPosition)
+                                notifyItemRemoved(bindingAdapterPosition)
                             }
                         }
                     }

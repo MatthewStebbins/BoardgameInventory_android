@@ -244,24 +244,22 @@ class ExportImportActivity : BaseAdActivity() {
             // Set the class-level adView property
             adView = localAdView
 
-            if (localAdView != null) {
-                // Set up the ad container
-                val adContainer = binding.adContainer
+            // Set up the ad container
+            val adContainer = binding.adContainer
 
-                // Configure the listener
-                localAdView.adListener = object : com.google.android.gms.ads.AdListener() {
-                    override fun onAdLoaded() {
-                        android.util.Log.d("ExportImportActivity", "Ad loaded successfully")
-                    }
-
-                    override fun onAdFailedToLoad(error: com.google.android.gms.ads.LoadAdError) {
-                        android.util.Log.e("ExportImportActivity", "Ad failed to load: ${error.message}")
-                    }
+            // Configure the listener
+            localAdView.adListener = object : com.google.android.gms.ads.AdListener() {
+                override fun onAdLoaded() {
+                    android.util.Log.d("ExportImportActivity", "Ad loaded successfully")
                 }
 
-                // Load the ad
-                com.boardgameinventory.utils.AdManager.loadAd(localAdView)
+                override fun onAdFailedToLoad(error: com.google.android.gms.ads.LoadAdError) {
+                    android.util.Log.e("ExportImportActivity", "Ad failed to load: ${error.message}")
+                }
             }
+
+            // Load the ad
+            com.boardgameinventory.utils.AdManager.loadAd(localAdView)
         } catch (e: Exception) {
             android.util.Log.e("ExportImportActivity", "Error in ad setup: ${e.message}", e)
         }

@@ -404,7 +404,7 @@ object ScopedStorageUtils {
             val actualMimeType = mimeType ?: getMimeType(filename)
 
             val file = directory?.createFile(actualMimeType, filename)
-            if (file != null && file.uri != null) {
+            if (file != null) {
                 StorageResult.Success(file.uri)
             } else {
                 StorageResult.Error(
@@ -432,7 +432,7 @@ object ScopedStorageUtils {
             val parentDir = DocumentFile.fromTreeUri(context, parentUri)
             val subDir = parentDir?.createDirectory(directoryName)
 
-            if (subDir != null && subDir.uri != null) {
+            if (subDir != null) {
                 StorageResult.Success(subDir.uri)
             } else {
                 StorageResult.Error(

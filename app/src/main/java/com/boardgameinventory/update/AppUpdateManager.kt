@@ -168,7 +168,7 @@ class AppUpdateManager(private val context: Context) : DefaultLifecycleObserver 
      */
     private fun startImmediateUpdate(appUpdateInfo: AppUpdateInfo, activity: Activity) {
         try {
-            updateManager.startUpdateFlowForResult(
+            updateManager.startUpdateFlow(
                 appUpdateInfo,
                 AppUpdateType.IMMEDIATE,
                 activity,
@@ -189,7 +189,7 @@ class AppUpdateManager(private val context: Context) : DefaultLifecycleObserver 
      */
     private fun startFlexibleUpdate(appUpdateInfo: AppUpdateInfo, activity: Activity) {
         try {
-            updateManager.startUpdateFlowForResult(
+            updateManager.startUpdateFlow(
                 appUpdateInfo,
                 AppUpdateType.FLEXIBLE,
                 activity,
@@ -209,7 +209,7 @@ class AppUpdateManager(private val context: Context) : DefaultLifecycleObserver 
      */
     private fun resumeUpdate(appUpdateInfo: AppUpdateInfo, activity: Activity) {
         try {
-            updateManager.startUpdateFlowForResult(
+            updateManager.startUpdateFlow(
                 appUpdateInfo,
                 AppUpdateType.IMMEDIATE,
                 activity,
