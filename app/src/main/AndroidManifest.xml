@@ -126,18 +126,21 @@
         <activity
             android:name=".ui.DeveloperSettingsActivity"
             android:exported="false"
-            android:enabled="true"
+            android:enabled="false"
             android:excludeFromRecents="true"
             android:theme="@style/Theme.BoardgameInventory"
             android:parentActivityName=".MainActivity"
-            android:label="Developer Settings" />
+            android:label="Developer Settings"
+            tools:node="remove" />
 
         <!-- Accessibility Checker Activity -->
         <activity
             android:name=".ui.accessibility.AccessibilityCheckerActivity"
             android:exported="false"
+            android:enabled="false"
             android:parentActivityName=".ui.DeveloperSettingsActivity"
-            android:label="@string/accessibility_checker_title" />
+            android:label="@string/accessibility_checker_title"
+            tools:node="remove" />
 
         <!-- Database maintenance service -->
         <service
