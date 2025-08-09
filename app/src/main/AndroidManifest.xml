@@ -132,6 +132,13 @@
             android:parentActivityName=".MainActivity"
             android:label="Developer Settings" />
 
+        <!-- Accessibility Checker Activity -->
+        <activity
+            android:name=".ui.accessibility.AccessibilityCheckerActivity"
+            android:exported="false"
+            android:parentActivityName=".ui.DeveloperSettingsActivity"
+            android:label="@string/accessibility_checker_title" />
+
         <!-- Database maintenance service -->
         <service
             android:name=".service.DatabaseMaintenanceService"

@@ -2,10 +2,8 @@ package com.boardgameinventory
 
 import android.content.Intent
 import android.os.Bundle
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
-import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import com.boardgameinventory.databinding.ActivityMainBinding
 import com.boardgameinventory.ui.*
@@ -15,10 +13,9 @@ import com.boardgameinventory.update.UpdateState
 import com.boardgameinventory.utils.AdManager
 import com.boardgameinventory.utils.DeveloperMode
 import com.boardgameinventory.viewmodel.MainViewModel
-import com.google.android.gms.ads.AdView
 import com.google.android.material.snackbar.Snackbar
-import com.google.android.play.core.install.model.AppUpdateType
-import kotlinx.coroutines.flow.collect
+import com.google.android.gms.ads.AdView
+import com.google.android.play.core.install.model.AppUpdateType // Correct import for AppUpdateType
 import kotlinx.coroutines.launch
 
 class MainActivity : BaseAdActivity() {
@@ -28,16 +25,6 @@ class MainActivity : BaseAdActivity() {
     
     // Update manager for handling in-app updates
     private lateinit var appUpdateManager: AppUpdateManager
-
-    // Register for update result
-    private val updateResultLauncher = registerForActivityResult(
-        ActivityResultContracts.StartIntentSenderForResult()
-    ) { result ->
-        // Handle update result if needed
-        if (result.resultCode != RESULT_OK) {
-            showSnackbar(getString(R.string.update_failed, "User cancelled"))
-        }
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -49,6 +36,7 @@ class MainActivity : BaseAdActivity() {
 
         setupClickListeners()
         setupVersionInfo()
+        setupAccessibility() // Add accessibility support
         observeStats()
         observeUpdateState()
 
@@ -62,6 +50,23 @@ class MainActivity : BaseAdActivity() {
         setupAdsManually()
     }
     
+    /**
+     * Setup accessibility features for all UI elements
+     */
+    private fun setupAccessibility() {
+        // Main action buttons
+        binding.btnAddGame.contentDescription = getString(R.string.add_game_description)
+        binding.btnBulkUpload.contentDescription = getString(R.string.bulk_upload_description)
+        binding.btnListGames.contentDescription = getString(R.string.list_games_description)
+        binding.btnLoanGame.contentDescription = getString(R.string.loan_game_description)
+        binding.btnReturnGame.contentDescription = getString(R.string.return_game_description)
+        
+        // Make stats elements individually focusable for screen readers
+        binding.tvTotalGames.isFocusable = true
+        binding.tvLoanedGames.isFocusable = true
+        binding.tvAvailableGames.isFocusable = true
+    }
+
     private fun observeUpdateState() {
         lifecycleScope.launch {
             appUpdateManager.updateState.collect { state ->
@@ -122,30 +127,17 @@ class MainActivity : BaseAdActivity() {
 
     private fun setupAdsManually() {
         try {
-            // Find the AdView directly from the layout rather than using binding
-            val localAdView = findViewById<com.google.android.gms.ads.AdView>(R.id.adView)
-
-            // Set the class-level adView property
+            val localAdView = findViewById<AdView>(R.id.adView)
             adView = localAdView
-
-            if (localAdView != null) {
-                // Set up the ad container
-                val adContainer = findViewById<android.view.ViewGroup>(R.id.adContainer)
-
-                // Configure the listener
-                localAdView.adListener = object : com.google.android.gms.ads.AdListener() {
-                    override fun onAdLoaded() {
-                        android.util.Log.d("MainActivity", "Ad loaded successfully")
-                    }
-
-                    override fun onAdFailedToLoad(error: com.google.android.gms.ads.LoadAdError) {
-                        android.util.Log.e("MainActivity", "Ad failed to load: ${error.message}")
-                    }
+            localAdView.adListener = object : com.google.android.gms.ads.AdListener() {
+                override fun onAdLoaded() {
+                    android.util.Log.d("MainActivity", "Ad loaded successfully")
                 }
-
-                // Load the ad
-                com.boardgameinventory.utils.AdManager.loadAd(localAdView)
+                override fun onAdFailedToLoad(error: com.google.android.gms.ads.LoadAdError) {
+                    android.util.Log.e("MainActivity", "Ad failed to load: ${error.message}")
+                }
             }
+            AdManager.loadAd(localAdView)
         } catch (e: Exception) {
             android.util.Log.e("MainActivity", "Error in ad setup: ${e.message}", e)
         }
@@ -159,11 +151,6 @@ class MainActivity : BaseAdActivity() {
                 binding.tvAvailableGames.text = getString(R.string.available_count, stats.availableGames)
             }
         }
-    }
-    
-    private fun showExportImportScreen() {
-        val intent = Intent(this, ExportImportActivity::class.java)
-        startActivity(intent)
     }
     
     private fun showDeveloperModeActivated() {
@@ -219,23 +206,15 @@ class MainActivity : BaseAdActivity() {
         // Display version information
         val versionName = BuildConfig.VERSION_NAME
         val versionCode = BuildConfig.VERSION_CODE
-        
-        // Find the TextView by ID - using a try-catch in case R.id is not updated yet
         try {
-            val versionTextView = findViewById<android.widget.TextView>(
-                resources.getIdentifier("tvVersionInfo", "id", packageName)
-            )
-            versionTextView?.text = "Board Game Inventory v$versionName ($versionCode)"
-            
-            // Set up developer mode activation (7 taps on version)
+            val versionTextView = findViewById<android.widget.TextView>(R.id.tvVersionInfo)
+            versionTextView?.text = getString(R.string.version_info, versionName, versionCode)
             versionTextView?.setOnClickListener {
                 if (DeveloperMode.handleVersionTap(this)) {
-                    // Developer mode activated, show database management option
                     showDeveloperModeActivated()
                 }
             }
         } catch (e: Exception) {
-            // If the view is not found, just continue without version info
             android.util.Log.w("MainActivity", "Version TextView not found: ${e.message}")
         }
     }

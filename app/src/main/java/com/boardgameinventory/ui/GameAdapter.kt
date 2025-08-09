@@ -57,14 +57,17 @@ class GameAdapter(
         fun bind(game: Game) {
             binding.apply {
                 tvGameName.text = game.name
-                tvBarcode.text = "Barcode: ${game.barcode}"
-                
+                tvBarcode.text = itemView.context.getString(R.string.barcode_format, game.barcode)
+
+                // Set loan status and location information
                 if (game.loanedTo != null && showLoanedTo) {
-                    tvLocation.text = "Loaned to: ${game.loanedTo}"
+                    val loanedToText = itemView.context.getString(R.string.loaned_to_format, game.loanedTo)
+                    tvLocation.text = loanedToText
                     tvLoanStatus.visibility = View.VISIBLE
-                    tvLoanStatus.text = "Loaned to ${game.loanedTo}"
+                    tvLoanStatus.text = itemView.context.getString(R.string.loaned_to_format, game.loanedTo)
                 } else {
-                    tvLocation.text = "Location: ${game.bookcase}, Shelf ${game.shelf}"
+                    val locationText = itemView.context.getString(R.string.location_format, game.bookcase, game.shelf)
+                    tvLocation.text = locationText
                     tvLoanStatus.visibility = View.GONE
                 }
                 
@@ -79,6 +82,33 @@ class GameAdapter(
                     ivGameImage.setImageResource(R.drawable.ic_game_placeholder)
                 }
                 
+                // Apply content descriptions for accessibility
+                val loanStatus = if (game.loanedTo != null) {
+                    itemView.context.getString(R.string.game_loaned_status, game.loanedTo)
+                } else {
+                    itemView.context.getString(R.string.game_available_status)
+                }
+
+                // Set content description on the whole card
+                root.contentDescription = itemView.context.getString(
+                    R.string.game_card_content_description,
+                    game.name,
+                    loanStatus
+                )
+
+                // Set specific content description on the game image
+                ivGameImage.contentDescription = itemView.context.getString(
+                    R.string.game_image_content_description,
+                    game.name
+                )
+
+                // Add custom action descriptions for the menu button
+                // btnMenu.contentDescription = itemView.context.getString(
+                //     R.string.game_options_menu_description,
+                //     game.name
+                // )
+                btnMenu.contentDescription = game.name // fallback for missing string resource
+
                 // Set click listeners
                 root.setOnClickListener {
                     onItemAction(game, ACTION_CLICK)

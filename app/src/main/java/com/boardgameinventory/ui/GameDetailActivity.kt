@@ -5,7 +5,6 @@ import android.os.Build
 import android.os.Bundle
 import android.view.View
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import com.bumptech.glide.Glide
 import com.boardgameinventory.R
@@ -67,6 +66,7 @@ class GameDetailActivity : BaseAdActivity() {
         setupActionBar()
         displayGameDetails()
         setupClickListeners()
+        setupAccessibility() // Add accessibility setup
         setupAdsManually()
     }
     
@@ -179,32 +179,78 @@ class GameDetailActivity : BaseAdActivity() {
         }
     }
     
+    /**
+     * Setup accessibility features for the game detail screen
+     */
+    private fun setupAccessibility() {
+        game?.let { game ->
+            binding.apply {
+                // Set content descriptions for images
+                ivGameImage.contentDescription = getString(R.string.game_image_content_description, game.name)
+
+                // Only set content descriptions for views that exist in the binding
+                btnEditGame.contentDescription = getString(R.string.edit_game_description, game.name)
+                // Guard btnDeleteGame reference
+                try {
+                    btnDeleteGame.contentDescription = getString(R.string.delete_game_description, game.name)
+                } catch (_: Exception) {}
+                // Loan status button accessibility
+                if (game.loanedTo != null) {
+                    btnLoanReturn.contentDescription = getString(
+                        R.string.return_loaned_game_description,
+                        game.name,
+                        game.loanedTo
+                    )
+                } else {
+                    btnLoanReturn.contentDescription = getString(R.string.loan_game_description_with_name, game.name)
+                }
+                // Set heading for game name using accessibilityPaneTitle for best compatibility
+                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.P) {
+                    tvGameName.accessibilityPaneTitle = game.name
+                }
+                // Group related information for better screen reader experience
+                val locationInfo = getString(R.string.location_group_description,
+                    game.bookcase,
+                    game.shelf
+                )
+                tvLocation.contentDescription = locationInfo
+
+                // Loan status needs a comprehensive description for screen readers
+                val loanStatusDescription = if (game.loanedTo != null) {
+                    getString(
+                        R.string.loan_status_loaned_description,
+                        game.name,
+                        game.loanedTo,
+                        SimpleDateFormat("MMMM dd, yyyy", Locale.getDefault())
+                            .format(Date(System.currentTimeMillis()))
+                    )
+                } else {
+                    getString(R.string.loan_status_available_description, game.name)
+                }
+                layoutLoanStatus.contentDescription = loanStatusDescription
+                layoutLoanStatus.importantForAccessibility = View.IMPORTANT_FOR_ACCESSIBILITY_YES
+
+                // Description text needs proper focus handling for screen readers
+                if (!game.description.isNullOrBlank()) {
+                    tvDescription.isFocusable = true
+                }
+            }
+        }
+    }
+
     private fun setupAdsManually() {
         try {
-            // Find the AdView directly from the layout rather than using binding
             val localAdView = binding.adView
-
-            // Set the class-level adView property
             adView = localAdView
-
-            if (localAdView != null) {
-                // Set up the ad container
-                val adContainer = binding.adContainer
-
-                // Configure the listener
-                localAdView.adListener = object : com.google.android.gms.ads.AdListener() {
-                    override fun onAdLoaded() {
-                        android.util.Log.d("GameDetailActivity", "Ad loaded successfully")
-                    }
-
-                    override fun onAdFailedToLoad(error: com.google.android.gms.ads.LoadAdError) {
-                        android.util.Log.e("GameDetailActivity", "Ad failed to load: ${error.message}")
-                    }
+            localAdView.adListener = object : com.google.android.gms.ads.AdListener() {
+                override fun onAdLoaded() {
+                    android.util.Log.d("GameDetailActivity", "Ad loaded successfully")
                 }
-
-                // Load the ad
-                com.boardgameinventory.utils.AdManager.loadAd(localAdView)
+                override fun onAdFailedToLoad(error: com.google.android.gms.ads.LoadAdError) {
+                    android.util.Log.e("GameDetailActivity", "Ad failed to load: ${error.message}")
+                }
             }
+            com.boardgameinventory.utils.AdManager.loadAd(localAdView)
         } catch (e: Exception) {
             android.util.Log.e("GameDetailActivity", "Error in ad setup: ${e.message}", e)
         }

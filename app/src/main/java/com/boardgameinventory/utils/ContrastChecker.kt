@@ -53,7 +53,6 @@ object ContrastChecker {
                 issues.add(
                     ContrastIssue(
                         view,
-                        view.text.toString(),
                         textColor,
                         backgroundColor,
                         contrastRatio,
@@ -68,6 +67,30 @@ object ContrastChecker {
         if (view is ViewGroup) {
             for (i in 0 until view.childCount) {
                 findTextViewsWithContrastIssues(view.getChildAt(i), issues)
+            }
+        }
+    }
+
+    /**
+     * Find text elements with contrast issues and report them via callback
+     * This method is used by AccessibilityUtils to audit contrast issues
+     */
+    fun findTextContrastIssues(rootView: View, onIssueFound: (View, Float) -> Unit) {
+        if (rootView is TextView) {
+            val textColor = rootView.currentTextColor
+            val backgroundColor = getEffectiveBackgroundColor(rootView)
+            val contrastRatio = calculateContrastRatio(textColor, backgroundColor)
+            val minRequiredRatio = if (rootView.textSize >= 24f) MIN_CONTRAST_RATIO_LARGE else MIN_CONTRAST_RATIO
+
+            if (contrastRatio < minRequiredRatio) {
+                onIssueFound(rootView, contrastRatio)
+            }
+        }
+
+        // Recursively check child views
+        if (rootView is ViewGroup) {
+            for (i in 0 until rootView.childCount) {
+                findTextContrastIssues(rootView.getChildAt(i), onIssueFound)
             }
         }
     }
@@ -191,7 +214,6 @@ object ContrastChecker {
      */
     data class ContrastIssue(
         val view: TextView,
-        val text: String,
         val textColor: Int,
         val backgroundColor: Int,
         val contrastRatio: Float,

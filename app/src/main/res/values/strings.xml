@@ -226,7 +226,17 @@
     <!-- Edit Game -->
     <string name="edit_game_title">Edit Game</string>
     <string name="game_name_hint">Game Name</string>
-    <string name="description_hint">Description (Optional)</string>
+    <string name="description_hint_optional">Description (optional)</string>
+    <string name="scan_barcode_description">Scan the barcode of the game</string>
+    <string name="save_game_description">Save the game to your collection</string>
+    <string name="game_name_error">Please enter a valid game name</string>
+    <string name="barcode_error">Please enter a valid barcode</string>
+    <string name="bookcase_error">Please enter a valid bookcase</string>
+    <string name="shelf_error">Please enter a valid shelf</string>
+    <string name="field_required_error">This field is required</string>
+    <string name="game_image_placeholder_description">Game image placeholder</string>
+    <string name="add_game_image_description">Add an image for the game</string>
+    <string name="validation_failed">Validation failed. Please check your inputs.</string>
     <string name="save">Save</string>
     <string name="game_name_required">Game name is required</string>
     <string name="barcode_already_exists">A game with this barcode already exists</string>
@@ -382,4 +392,18 @@
     <string name="loan_button_content_description">Loan the selected game</string>
     <string name="return_button_content_description">Return the selected game</string>
     <string name="select_loaned_game_content_description">Select loaned game to return</string>
+
+    <string name="edit_game_description">Edit game: %1$s</string>
+    <string name="delete_game_description">Delete game: %1$s</string>
+    <string name="return_loaned_game_description">Return game: %1$s loaned to %2$s</string>
+    <string name="cannot_loan_game_description">Cannot loan game: already loaned</string>
+    <string name="loan_game_description_with_name">Loan game: %1$s</string>
+    <string name="cannot_return_game_description">Cannot return game: not loaned</string>
+    <string name="location_group_description">Location: Bookcase %1$s, Shelf %2$s</string>
+    <string name="loan_status_loaned_description">%1$s is loaned to %2$s since %3$s</string>
+    <string name="loan_status_available_description">%1$s is available</string>
+
+    <string name="barcode_format">Barcode: %1$s</string>
+    <string name="loaned_to_format">Loaned to %1$s</string>
+    <string name="location_format">Location: %1$s-%2$s</string>
 </resources>

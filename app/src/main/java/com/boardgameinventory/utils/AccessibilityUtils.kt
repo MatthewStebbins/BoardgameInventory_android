@@ -99,53 +99,95 @@ object AccessibilityUtils {
 
                 // Apply content descriptions based on view type
                 when (child) {
+                    is ImageButton -> {
+                        if (child.contentDescription.isNullOrBlank()) {
+                            child.contentDescription = deriveContentDescription(child)
+                        }
+                    }
                     is Button -> {
                         if (child.contentDescription.isNullOrBlank() && !child.text.isNullOrBlank()) {
                             child.contentDescription = child.text
                         }
                     }
-
-                    is ImageButton -> {
+                    is ImageView -> {
                         if (child.contentDescription.isNullOrBlank()) {
-                            // Try to infer from tag or drawable resource name
-                            val resourceName = child.context.resources.getResourceName(
-                                child.id
-                            ).substringAfterLast("/")
-
-                            child.contentDescription = resourceName
-                                .replace("_", " ")
-                                .replace("btn", "")
-                                .replace("img", "")
-                                .trim()
-                                .capitalize()
-                        }
-                    }
-
-                    is TextInputLayout -> {
-                        val hint = child.hint
-                        if (child.editText?.contentDescription.isNullOrBlank() && hint != null) {
-                            child.editText?.contentDescription = hint
+                            child.contentDescription = "Image"
                         }
                     }
                 }
 
-                // Recursively apply to children
-                applyStandardContentDescriptions(child)
+                // Recursively check child views
+                if (child is ViewGroup) {
+                    applyStandardContentDescriptions(child)
+                }
             }
         }
     }
 
     /**
-     * Add custom action descriptions to improve TalkBack experience
+     * Attempt to derive a content description from view properties or parent
+     */
+    private fun deriveContentDescription(view: View): String {
+        // Try to derive from ID name
+        val idResourceName = try {
+            view.resources.getResourceEntryName(view.id)
+        } catch (e: Exception) {
+            null
+        }
+
+        return when {
+            idResourceName != null -> formatIdAsDescription(idResourceName)
+            view.parent is TextView -> (view.parent as TextView).text.toString() + " button"
+            else -> "Interactive element"
+        }
+    }
+
+    /**
+     * Format ID resource name into readable content description
+     */
+    private fun formatIdAsDescription(idName: String): String {
+        return idName
+            .replace("btn", "")
+            .replace("iv", "")
+            .replace("_", " ")
+            .split("(?=[A-Z])".toRegex())
+            .joinToString(" ") { it.lowercase() }
+            .trim()
+            .replaceFirstChar { it.uppercase() }
+    }
+
+    /**
+     * Set appropriate content description based on view type and context
+     */
+    fun setDescription(view: View, description: String, type: DescriptionType = DescriptionType.BUTTON) {
+        view.contentDescription = description
+
+        // Add additional accessibility traits based on element type
+        when (type) {
+            DescriptionType.BUTTON -> {
+                if (!view.isClickable) {
+                    view.isClickable = true
+                }
+            }
+            DescriptionType.HEADER -> {
+                ViewCompat.setAccessibilityHeading(view, true)
+            }
+            DescriptionType.STATUS_INDICATOR -> {
+                view.accessibilityLiveRegion = View.ACCESSIBILITY_LIVE_REGION_POLITE
+            }
+            else -> { /* No additional properties needed */ }
+        }
+    }
+
+    /**
+     * Add custom action description to a view for improved accessibility
      */
     fun addCustomActionDescription(view: View, actionDescription: String) {
         ViewCompat.setAccessibilityDelegate(view, object : AccessibilityDelegateCompat() {
-            override fun onInitializeAccessibilityNodeInfo(
-                host: View,
-                info: AccessibilityNodeInfoCompat
-            ) {
+            override fun onInitializeAccessibilityNodeInfo(host: View, info: AccessibilityNodeInfoCompat) {
                 super.onInitializeAccessibilityNodeInfo(host, info)
-                // Use the correct constructor for ActionCompat
+
+                // Add custom action description to the accessibility info
                 info.addAction(
                     AccessibilityNodeInfoCompat.AccessibilityActionCompat(
                         AccessibilityNodeInfoCompat.ACTION_CLICK,
@@ -154,61 +196,151 @@ object AccessibilityUtils {
                 )
             }
         })
+
+        // Set content description if not already present
+        if (view.contentDescription.isNullOrBlank()) {
+            view.contentDescription = actionDescription
+        }
     }
 
     /**
-     * Helper method to set content description based on type
+     * Setup logical traversal order for form elements
+     * This helps screen readers navigate in a logical sequence
      */
-    fun setDescription(view: View, text: String, type: DescriptionType) {
-        val prefix = when (type) {
-            DescriptionType.BUTTON -> "Button: "
-            DescriptionType.IMAGE -> "Image: "
-            DescriptionType.INPUT_FIELD -> "Input field for "
-            DescriptionType.STATUS_INDICATOR -> "Status: "
-            DescriptionType.HEADER -> "Heading: "
-            DescriptionType.CARD -> "Card: "
+    fun setupTraversalOrder(vararg viewPairs: Pair<View, View>) {
+        viewPairs.forEach { (before, after) ->
+            before.accessibilityTraversalBefore = after.id
+            after.accessibilityTraversalAfter = before.id
+        }
+    }
+
+    /**
+     * Make important announcement for screen readers
+     */
+    fun announceForAccessibility(view: View, announcement: String) {
+        view.announceForAccessibility(announcement)
+    }
+
+    /**
+     * Mark a view as a heading for screen reader navigation
+     */
+    fun markAsHeading(view: View) {
+        ViewCompat.setAccessibilityHeading(view, true)
+    }
+
+    /**
+     * Set up input fields with proper accessibility support
+     */
+    fun setupAccessibleInputField(textInputLayout: TextInputLayout, labelText: String, errorText: String? = null) {
+        textInputLayout.hint = labelText
+
+        val editText = textInputLayout.editText ?: return
+
+        // Ensure edit text has proper input type information for screen readers
+        editText.importantForAccessibility = View.IMPORTANT_FOR_ACCESSIBILITY_YES
+
+        // Handle error state accessibility
+        if (!errorText.isNullOrBlank() && textInputLayout.isErrorEnabled) {
+            textInputLayout.error = errorText
+            editText.setAccessibilityError(errorText)
+        }
+    }
+
+    /**
+     * Set accessibility error message on TextView or EditText
+     */
+    private fun TextView.setAccessibilityError(errorText: String) {
+        ViewCompat.setAccessibilityDelegate(this, object : AccessibilityDelegateCompat() {
+            override fun onInitializeAccessibilityNodeInfo(host: View, info: AccessibilityNodeInfoCompat) {
+                super.onInitializeAccessibilityNodeInfo(host, info)
+                info.setError(errorText)
+            }
+        })
+    }
+
+    /**
+     * Perform an accessibility audit on an entire screen and report issues
+     */
+    fun performAccessibilityAudit(activity: Activity): List<AccessibilityIssue> {
+        val issues = mutableListOf<AccessibilityIssue>()
+        val rootView = activity.findViewById<ViewGroup>(android.R.id.content)
+
+        // Check for missing content descriptions
+        val (_, viewsWithoutDescriptions) = auditActivityForContentDescriptions(activity)
+
+        viewsWithoutDescriptions.forEach { view ->
+            issues.add(
+                AccessibilityIssue(
+                    view = view,
+                    type = AccessibilityIssueType.MISSING_CONTENT_DESCRIPTION,
+                    description = "Missing content description"
+                )
+            )
         }
 
-        view.contentDescription = "$prefix$text"
+        // Check for contrast issues using ContrastChecker
+        ContrastChecker.findTextContrastIssues(rootView) { view, contrastRatio ->
+            issues.add(
+                AccessibilityIssue(
+                    view = view,
+                    type = AccessibilityIssueType.LOW_CONTRAST,
+                    description = "Low contrast ratio: $contrastRatio"
+                )
+            )
+        }
+
+        // Check for touch target size issues (minimum 48dp)
+        findSmallTouchTargets(rootView) { view, size ->
+            issues.add(
+                AccessibilityIssue(
+                    view = view,
+                    type = AccessibilityIssueType.SMALL_TOUCH_TARGET,
+                    description = "Touch target too small: $size dp"
+                )
+            )
+        }
+
+        return issues
     }
 
     /**
-     * Check contrast ratio between foreground and background colors
-     * @return true if contrast ratio meets WCAG AA standard (4.5:1 for normal text)
+     * Find interactive elements with too small touch targets
      */
-    fun hasAdequateContrast(foregroundColor: Int, backgroundColor: Int): Boolean {
-        val luminance1 = calculateRelativeLuminance(foregroundColor)
-        val luminance2 = calculateRelativeLuminance(backgroundColor)
+    private fun findSmallTouchTargets(view: View, onFound: (View, Int) -> Unit) {
+        val minTouchSize = 48 // dp
 
-        val lighter = Math.max(luminance1, luminance2)
-        val darker = Math.min(luminance1, luminance2)
+        if (view.isClickable || view.isLongClickable) {
+            val widthDp = view.width / view.resources.displayMetrics.density
+            val heightDp = view.height / view.resources.displayMetrics.density
 
-        // Calculate contrast ratio: (L1 + 0.05) / (L2 + 0.05)
-        val contrastRatio = (lighter + 0.05) / (darker + 0.05)
+            if (widthDp < minTouchSize || heightDp < minTouchSize) {
+                onFound(view, kotlin.math.min(widthDp.toInt(), heightDp.toInt()))
+            }
+        }
 
-        // WCAG AA requires 4.5:1 for normal text, 3:1 for large text
-        return contrastRatio >= 4.5
+        if (view is ViewGroup) {
+            for (i in 0 until view.childCount) {
+                findSmallTouchTargets(view.getChildAt(i), onFound)
+            }
+        }
     }
 
     /**
-     * Calculate the relative luminance of a color per WCAG formula
+     * Data class to represent accessibility issues
      */
-    private fun calculateRelativeLuminance(color: Int): Double {
-        val red = ((color shr 16) and 0xFF) / 255.0
-        val green = ((color shr 8) and 0xFF) / 255.0
-        val blue = (color and 0xFF) / 255.0
-
-        val r = if (red <= 0.03928) red / 12.92 else Math.pow((red + 0.055) / 1.055, 2.4)
-        val g = if (green <= 0.03928) green / 12.92 else Math.pow((green + 0.055) / 1.055, 2.4)
-        val b = if (blue <= 0.03928) blue / 12.92 else Math.pow((blue + 0.055) / 1.055, 2.4)
-
-        return 0.2126 * r + 0.7152 * g + 0.0722 * b
-    }
+    data class AccessibilityIssue(
+        val view: View,
+        val type: AccessibilityIssueType,
+        val description: String
+    )
 
     /**
-     * Announce a message to screen readers
+     * Types of accessibility issues
      */
-    fun announceForAccessibility(view: View, message: String) {
-        view.announceForAccessibility(message)
+    enum class AccessibilityIssueType {
+        MISSING_CONTENT_DESCRIPTION,
+        LOW_CONTRAST,
+        SMALL_TOUCH_TARGET,
+        MISSING_LABEL
     }
 }

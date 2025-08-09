@@ -1,19 +1,13 @@
 package com.boardgameinventory.ui
 
-import android.Manifest
-import android.content.pm.PackageManager
 import android.os.Bundle
 import android.view.View
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
-import androidx.appcompat.app.AppCompatActivity
-import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
 import androidx.core.widget.addTextChangedListener
 import androidx.lifecycle.lifecycleScope
 import com.boardgameinventory.R
 import com.boardgameinventory.databinding.ActivityAddGameBinding
-import com.boardgameinventory.utils.AdManager
 import com.boardgameinventory.utils.Utils
 import com.boardgameinventory.utils.BarcodeUtils
 import com.boardgameinventory.utils.PermissionUtils
@@ -23,7 +17,6 @@ import com.boardgameinventory.validation.ValidationUtils
 import com.boardgameinventory.validation.validateMultipleInputs
 import com.boardgameinventory.validation.areAllInputsValid
 import com.journeyapps.barcodescanner.ScanContract
-import com.journeyapps.barcodescanner.ScanOptions
 import kotlinx.coroutines.launch
 
 class AddGameActivity : BaseAdActivity() {
@@ -57,10 +50,69 @@ class AddGameActivity : BaseAdActivity() {
         setupToolbar()
         setupClickListeners()
         setupTextWatchers()
+        setupAccessibility() // Add accessibility setup
         observeViewModel()
         setupAdsManually()
     }
     
+    /**
+     * Setup accessibility features for the add game form
+     */
+    private fun setupAccessibility() {
+        binding.apply {
+            tilGameName.hint = getString(R.string.game_name_hint)
+            tilBarcode.hint = getString(R.string.barcode_hint)
+            tilBookcase.hint = getString(R.string.bookcase_hint)
+            tilShelf.hint = getString(R.string.shelf_hint)
+            tilDescription.hint = getString(R.string.description_hint_optional)
+
+            // Button descriptions
+            btnScanBarcode.contentDescription = getString(R.string.scan_barcode_description)
+            btnSubmit.contentDescription = getString(R.string.save_game_description)
+
+            // Set traversal order for logical form navigation with screen readers
+            etGameName.accessibilityTraversalBefore = btnScanBarcode.id
+            etBarcode.accessibilityTraversalAfter = etGameName.id
+            etBookcase.accessibilityTraversalAfter = etBarcode.id
+            etShelf.accessibilityTraversalAfter = etBookcase.id
+            etDescription.accessibilityTraversalAfter = etShelf.id
+            btnSubmit.accessibilityTraversalAfter = etDescription.id
+
+            etGameName.setOnFocusChangeListener { _, hasFocus ->
+                if (!hasFocus) {
+                    val isValid = GameInputValidation.validateGameName(etGameName.text.toString())
+                    if (!isValid) {
+                        tilGameName.error = getString(R.string.game_name_error)
+                        root.announceForAccessibility(getString(R.string.game_name_error))
+                    } else {
+                        tilGameName.error = null
+                    }
+                }
+            }
+        }
+
+        // Make validation errors accessible to screen readers
+        lifecycleScope.launch {
+            viewModel.validationResults.collect { results ->
+                results.forEach { result ->
+                    val fieldId = result.first
+                    val isValid = result.second
+                    if (!isValid) {
+                        val errorMessage = when (fieldId) {
+                            R.id.etGameName -> getString(R.string.game_name_error)
+                            R.id.etBarcode -> getString(R.string.barcode_error)
+                            R.id.etBookcase -> getString(R.string.bookcase_error)
+                            R.id.etShelf -> getString(R.string.shelf_error)
+                            else -> getString(R.string.field_required_error)
+                        }
+                        binding.root.announceForAccessibility(errorMessage)
+                        return@forEach
+                    }
+                }
+            }
+        }
+    }
+
     private fun setupAdsManually() {
         try {
             // Find the AdView directly from the layout rather than using binding
@@ -69,60 +121,54 @@ class AddGameActivity : BaseAdActivity() {
             // Set the class-level adView property
             adView = localAdView
 
-            if (localAdView != null) {
-                // Set up the ad container
-                val adContainer = binding.adContainer
-
-                // Configure the listener
-                localAdView.adListener = object : com.google.android.gms.ads.AdListener() {
-                    override fun onAdLoaded() {
-                        android.util.Log.d("AddGameActivity", "Ad loaded successfully")
-                    }
-
-                    override fun onAdFailedToLoad(error: com.google.android.gms.ads.LoadAdError) {
-                        android.util.Log.e("AddGameActivity", "Ad failed to load: ${error.message}")
-                    }
+            // Configure the listener and load the ad only if localAdView is not null
+            localAdView.adListener = object : com.google.android.gms.ads.AdListener() {
+                override fun onAdLoaded() {
+                    android.util.Log.d("AddGameActivity", "Ad loaded successfully")
                 }
 
-                // Load the ad
-                com.boardgameinventory.utils.AdManager.loadAd(localAdView)
+                override fun onAdFailedToLoad(error: com.google.android.gms.ads.LoadAdError) {
+                    android.util.Log.e("AddGameActivity", "Ad failed to load: ${error.message}")
+                }
             }
+
+            com.boardgameinventory.utils.AdManager.loadAd(localAdView)
         } catch (e: Exception) {
             android.util.Log.e("AddGameActivity", "Error in ad setup: ${e.message}", e)
         }
     }
-    
+
     private fun setupToolbar() {
         supportActionBar?.apply {
             setDisplayHomeAsUpEnabled(true)
             title = getString(R.string.add_game_title)
         }
     }
-    
+
     private fun setupClickListeners() {
         binding.btnScanBarcode.setOnClickListener {
             checkCameraPermissionAndScan()
         }
-        
+
         binding.tilBarcode.setEndIconOnClickListener {
             checkCameraPermissionAndScan()
         }
-        
+
         binding.btnSubmit.setOnClickListener {
             submitGame()
         }
-        
+
         binding.btnCancel.setOnClickListener {
             finish()
         }
     }
-    
+
     private fun setupTextWatchers() {
         // Setup validation for all input fields
         GameInputValidation.setupBarcodeValidation(binding.tilBarcode, this)
         GameInputValidation.setupBookcaseValidation(binding.tilBookcase, this)
         GameInputValidation.setupShelfValidation(binding.tilShelf, this)
-        
+
         // Location barcode helper
         binding.etLocationBarcode.addTextChangedListener { text ->
             val barcode = text.toString()

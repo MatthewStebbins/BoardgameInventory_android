@@ -22,7 +22,10 @@ class AddGameViewModel(application: Application) : AndroidViewModel(application)
     
     private val _gameAdded = MutableStateFlow(false)
     val gameAdded: StateFlow<Boolean> = _gameAdded
-    
+
+    private val _validationResults = MutableStateFlow<List<Pair<Int, Boolean>>>(emptyList())
+    val validationResults: StateFlow<List<Pair<Int, Boolean>>> = _validationResults
+
     init {
         val database = AppDatabase.getDatabase(application)
         repository = GameRepository(database.gameDao(), application.applicationContext)
@@ -64,5 +67,9 @@ class AddGameViewModel(application: Application) : AndroidViewModel(application)
                 _isLoading.value = false
             }
         }
+    }
+
+    fun updateValidationResults(results: List<Pair<Int, Boolean>>) {
+        _validationResults.value = results
     }
 }

@@ -57,6 +57,7 @@ class LoanGameActivity : BaseAdActivity() {
         setupRecyclerView()
         setupClickListeners()
         setupValidation()
+        setupAccessibility() // Add accessibility setup
         observeGames()
         setupAdsManually()
     }
@@ -239,6 +240,63 @@ class LoanGameActivity : BaseAdActivity() {
         }
     }
     
+    /**
+     * Setup accessibility features for the loan game screen
+     */
+    private fun setupAccessibility() {
+        binding.apply {
+            // Input field labels with clear descriptions
+            tilBorrowerName.hint = getString(R.string.borrower_name_hint)
+            tilGameBarcode.hint = getString(R.string.game_barcode_hint)
+
+            // Button descriptions
+            btnScanBarcode.contentDescription = getString(R.string.scan_game_barcode_description)
+            btnLoanGame.contentDescription = getString(R.string.loan_game_action_description)
+            btnCancel.contentDescription = getString(R.string.cancel_loan_description)
+
+            // Selected game section needs special handling for screen readers
+            tvSelectedGameLabel.accessibilityHeading = true
+
+            // Game list section
+            tvAvailableGamesLabel.accessibilityHeading = true
+
+            // Make game selection announcements for screen readers
+            recyclerViewGames.accessibilityLiveRegion = View.ACCESSIBILITY_LIVE_REGION_POLITE
+
+            // Set logical traversal order
+            tilGameBarcode.accessibilityTraversalBefore = btnScanBarcode.id
+            btnScanBarcode.accessibilityTraversalAfter = tilGameBarcode.id
+            recyclerViewGames.accessibilityTraversalAfter = btnScanBarcode.id
+            tilBorrowerName.accessibilityTraversalAfter = recyclerViewGames.id
+            btnLoanGame.accessibilityTraversalAfter = tilBorrowerName.id
+            btnCancel.accessibilityTraversalAfter = btnLoanGame.id
+        }
+
+        // Observe game selection for accessibility announcements
+        gameViewModel.selectedGame.observe(this) { game ->
+            if (game != null) {
+                val announcement = getString(R.string.game_selected_announcement, game.name)
+                binding.root.announceForAccessibility(announcement)
+
+                // Update selected game section for accessibility
+                binding.tvSelectedGame.contentDescription = getString(
+                    R.string.selected_game_description,
+                    game.name,
+                    game.barcode,
+                    game.bookcase,
+                    game.shelf
+                )
+            }
+        }
+
+        // Observe validation errors
+        gameViewModel.validationError.observe(this) { error ->
+            if (error.isNotEmpty()) {
+                binding.root.announceForAccessibility(error)
+            }
+        }
+    }
+
     override fun onSupportNavigateUp(): Boolean {
         finish()
         return true
