@@ -101,12 +101,13 @@ object AdManager {
     fun createBannerAd(context: Context): AdView {
         val adView = AdView(context)
         adView.setAdSize(AdSize.BANNER)
-        adView.adUnitId = if (BuildConfig.DEBUG) {
+        val adUnitId = if (BuildConfig.DEBUG) {
             TEST_BANNER_AD_UNIT_ID
         } else {
             PRODUCTION_BANNER_AD_UNIT_ID
         }
-        
+        adView.adUnitId = adUnitId
+
         // Set ad listener for debugging and error handling
         adView.adListener = object : AdListener() {
             override fun onAdFailedToLoad(adError: LoadAdError) {
@@ -215,12 +216,13 @@ object AdManager {
     fun createSmartBannerAd(context: Context): AdView {
         val adView = AdView(context)
         adView.setAdSize(AdSize.BANNER)
-        adView.adUnitId = if (BuildConfig.DEBUG) {
+        val adUnitId = if (BuildConfig.DEBUG) {
             TEST_BANNER_AD_UNIT_ID
         } else {
             PRODUCTION_BANNER_AD_UNIT_ID
         }
-        
+        adView.adUnitId = adUnitId
+
         adView.adListener = object : AdListener() {
             override fun onAdFailedToLoad(adError: LoadAdError) {
                 Log.e(TAG, "Smart banner ad failed to load: ${adError.message}")
