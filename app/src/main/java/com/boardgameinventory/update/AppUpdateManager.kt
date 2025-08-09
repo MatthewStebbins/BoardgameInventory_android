@@ -168,11 +168,11 @@ class AppUpdateManager(private val context: Context) : DefaultLifecycleObserver 
      */
     private fun startImmediateUpdate(appUpdateInfo: AppUpdateInfo, activity: Activity) {
         try {
+            val options = AppUpdateOptions.newBuilder(AppUpdateType.IMMEDIATE).build()
             updateManager.startUpdateFlow(
                 appUpdateInfo,
-                AppUpdateType.IMMEDIATE,
                 activity,
-                APP_UPDATE_REQUEST_CODE
+                options
             )
             updateInProgress.set(true)
             _updateState.value = UpdateState.InProgress(AppUpdateType.IMMEDIATE)
@@ -189,11 +189,11 @@ class AppUpdateManager(private val context: Context) : DefaultLifecycleObserver 
      */
     private fun startFlexibleUpdate(appUpdateInfo: AppUpdateInfo, activity: Activity) {
         try {
+            val options = AppUpdateOptions.newBuilder(AppUpdateType.FLEXIBLE).build()
             updateManager.startUpdateFlow(
                 appUpdateInfo,
-                AppUpdateType.FLEXIBLE,
                 activity,
-                APP_UPDATE_REQUEST_CODE
+                options
             )
             updateInProgress.set(true)
             _updateState.value = UpdateState.InProgress(AppUpdateType.FLEXIBLE)
@@ -209,11 +209,11 @@ class AppUpdateManager(private val context: Context) : DefaultLifecycleObserver 
      */
     private fun resumeUpdate(appUpdateInfo: AppUpdateInfo, activity: Activity) {
         try {
+            val options = AppUpdateOptions.newBuilder(AppUpdateType.IMMEDIATE).build()
             updateManager.startUpdateFlow(
                 appUpdateInfo,
-                AppUpdateType.IMMEDIATE,
                 activity,
-                APP_UPDATE_REQUEST_CODE
+                options
             )
             updateInProgress.set(true)
             _updateState.value = UpdateState.InProgress(AppUpdateType.IMMEDIATE)
