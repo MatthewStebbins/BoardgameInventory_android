@@ -415,4 +415,5 @@
     <string name="location_format">Location: %1$s-%2$s</string>
     <string name="selected_game_label">Selected Game</string>
     <string name="available_games_label">Available Games</string>
+    <string name="version_format">Version %s</string>
 </resources>

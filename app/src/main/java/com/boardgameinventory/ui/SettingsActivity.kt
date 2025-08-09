@@ -41,6 +41,15 @@ class SettingsActivity : BaseAdActivity() {
             showConsentForm()
         }
 
+        // Set app version dynamically
+        val appVersionTextView = findViewById<android.widget.TextView>(R.id.app_version)
+        val versionName = try {
+            packageManager.getPackageInfo(packageName, 0).versionName
+        } catch (e: Exception) {
+            "?"
+        }
+        appVersionTextView.text = getString(R.string.version_format, versionName)
+
         // Manually setup ads
         setupAdsManually()
     }

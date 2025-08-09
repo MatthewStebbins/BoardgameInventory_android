@@ -18,6 +18,8 @@
         <item name="android:statusBarColor">@color/primary</item>
         <!-- Navigation bar color. -->
         <item name="android:navigationBarColor">@color/primary</item>
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
     </style>
 
     <style name="ButtonStyle" parent="Widget.Material3.Button">
