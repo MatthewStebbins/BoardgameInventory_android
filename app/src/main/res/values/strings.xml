@@ -135,6 +135,7 @@
 
     <!-- Accessibility Strings -->
     <string name="main_screen_content">Board Game Inventory main screen</string>
+    <string name="description_hint">Enter a description</string>
     <string name="main_title_description">Board Game Tracker heading</string>
     <string name="stats_card_description">Collection statistics</string>
     <string name="total_games_description">Total number of games in collection</string>
@@ -145,7 +146,6 @@
     <string name="list_games_description">View your full game collection</string>
     <string name="loan_game_description">Record loaning a game to someone</string>
     <string name="return_game_description">Record returning a loaned game</string>
-    <string name="delete_game_description">Remove a game from your collection</string>
     <string name="export_import_games_description">Export or import your game collection</string>
     <string name="settings_description">Open application settings</string>
     <string name="version_info_description">Application version information</string>
@@ -319,7 +319,6 @@
     <string name="error_date_future">Date cannot be in the future</string>
     <string name="error_date_invalid">Invalid date</string>
     
-    <string name="validation_failed">Please fix the errors and try again</string>
     <string name="admob_banner_ad_unit_id">ca-app-pub-3940256099942544/6300978111</string>
 
     <!-- Delete Game -->
@@ -399,6 +398,7 @@
     <string name="cannot_loan_game_description">Cannot loan game: already loaned</string>
     <string name="loan_game_description_with_name">Loan game: %1$s</string>
     <string name="cannot_return_game_description">Cannot return game: not loaned</string>
+    <string name="delete_specific_game_description">Delete game: %1$s</string>
     <string name="location_group_description">Location: Bookcase %1$s, Shelf %2$s</string>
     <string name="loan_status_loaned_description">%1$s is loaned to %2$s since %3$s</string>
     <string name="loan_status_available_description">%1$s is available</string>
