@@ -6,6 +6,7 @@ import android.util.Log
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import com.boardgameinventory.BuildConfig
+import com.boardgameinventory.R
 import com.google.android.gms.ads.MobileAds
 import com.google.android.ump.*
 import com.google.android.ump.ConsentDebugSettings.DebugGeography
@@ -147,18 +148,24 @@ class ConsentManager(private val context: Context) : DefaultLifecycleObserver {
      * Show the consent form to the user
      */
     fun showConsentForm() {
-        consentForm?.show(context as Activity) { formError ->
-            if (formError != null) {
-                Log.e(TAG, "Error showing consent form: ${formError.message}")
+        if (consentForm != null) {
+            consentForm?.show(context as Activity) { formError ->
+                if (formError != null) {
+                    Log.e(TAG, "Error showing consent form: ${formError.message}")
+                }
+
+                // Update consent status
+                _consentStatusFlow.value = consentInformation.consentStatus
+
+                // Initialize MobileAds after showing form
+                initializeMobileAds()
+
+                Log.d(TAG, "Consent form closed. New consent status: ${consentInformation.consentStatus}")
             }
-
-            // Update consent status
-            _consentStatusFlow.value = consentInformation.consentStatus
-
-            // Initialize MobileAds after showing form
-            initializeMobileAds()
-
-            Log.d(TAG, "Consent form closed. New consent status: ${consentInformation.consentStatus}")
+        } else {
+            // Show a user-friendly message if the consent form is not available
+            android.widget.Toast.makeText(context, context.getString(R.string.ad_consent_form_unavailable), android.widget.Toast.LENGTH_LONG).show()
+            Log.w(TAG, "Consent form is not available to show.")
         }
     }
 

@@ -416,4 +416,12 @@
     <string name="selected_game_label">Selected Game</string>
     <string name="available_games_label">Available Games</string>
     <string name="version_format">Version %s</string>
+
+    <!-- Ad Consent -->
+    <string name="ad_consent_title">Ad Consent Required</string>
+    <string name="ad_consent_message">This app requires your consent to show personalized ads. Please review and accept the consent form to continue using all features of the app.</string>
+    <string name="ad_consent_button_accept">Accept</string>
+    <string name="ad_consent_button_decline">Decline</string>
+    <string name="ad_consent_button_learn_more">Learn More</string>
+    <string name="ad_consent_form_unavailable">Ad preferences are currently unavailable. Please try again later.</string>
 </resources>
