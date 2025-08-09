@@ -3,6 +3,7 @@ package com.boardgameinventory.viewmodel
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
@@ -48,6 +49,10 @@ class GameListViewModel : AndroidViewModel {
     val loanedGames: LiveData<List<Game>>
     val filteredAvailableGames: LiveData<List<Game>>
     val filteredLoanedGames: LiveData<List<Game>>
+
+    // Selected game and validation error (for LoanGameActivity)
+    val selectedGame = MutableLiveData<Game?>()
+    val validationError = MutableLiveData<String>()
 
     // Primary constructor with application parameter
     constructor(application: Application) : super(application) {

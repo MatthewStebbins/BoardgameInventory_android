@@ -114,6 +114,20 @@
         android:elevation="2dp"
         android:padding="16dp">
 
+        <!-- Selected Game Label -->
+        <TextView
+            android:id="@+id/tvSelectedGameLabel"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/selected_game_label"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:textColor="?attr/colorPrimary"
+            android:layout_marginBottom="4dp"
+            android:importantForAccessibility="yes"
+            android:accessibilityHeading="true"
+            tools:text="Selected Game" />
+
         <!-- Selected Game Display -->
         <TextView
             android:id="@+id/tvSelectedGame"
@@ -129,24 +143,55 @@
             tools:visibility="visible"
             tools:text="Selected: Monopoly (123456789)" />
 
+        <!-- Game Barcode Input -->
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/tilGameBarcode"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            android:hint="@string/game_barcode_hint"
+            app:startIconDrawable="@drawable/ic_barcode"
+            style="@style/Widget.Material3.TextInputLayout.OutlinedBox">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/etGameBarcode"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="text"
+                android:maxLines="1" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
         <!-- Borrower Name Input -->
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/tilBorrowerName"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="16dp"
-            android:hint="@string/borrower_name"
-            app:startIconDrawable="@drawable/ic_person"
-            style="@style/Widget.Material3.TextInputLayout.OutlinedBox">
+            android:hint="@string/borrower_name_hint"
+            android:layout_marginTop="16dp">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/etBorrowerName"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:inputType="textPersonName"
-                android:maxLines="1" />
-
+                android:importantForAccessibility="yes"
+                android:contentDescription="@string/borrower_name_hint" />
         </com.google.android.material.textfield.TextInputLayout>
+
+        <!-- Available Games Label -->
+        <TextView
+            android:id="@+id/tvAvailableGamesLabel"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/available_games_label"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:textColor="?attr/colorPrimary"
+            android:layout_marginBottom="4dp"
+            android:importantForAccessibility="yes"
+            android:accessibilityHeading="true"
+            tools:text="Available Games" />
 
         <!-- Action Buttons -->
         <LinearLayout

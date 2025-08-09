@@ -343,4 +343,23 @@ object AccessibilityUtils {
         SMALL_TOUCH_TARGET,
         MISSING_LABEL
     }
+
+    /**
+     * Checks if the contrast ratio between textColor and backgroundColor meets WCAG AA standards (>= 4.5:1 for normal text).
+     */
+    fun hasAdequateContrast(textColor: Int, backgroundColor: Int): Boolean {
+        fun luminance(color: Int): Double {
+            val r = ((color shr 16) and 0xff) / 255.0
+            val g = ((color shr 8) and 0xff) / 255.0
+            val b = (color and 0xff) / 255.0
+            val list = listOf(r, g, b).map {
+                if (it <= 0.03928) it / 12.92 else Math.pow((it + 0.055) / 1.055, 2.4)
+            }
+            return 0.2126 * list[0] + 0.7152 * list[1] + 0.0722 * list[2]
+        }
+        val lum1 = luminance(textColor) + 0.05
+        val lum2 = luminance(backgroundColor) + 0.05
+        val ratio = if (lum1 > lum2) lum1 / lum2 else lum2 / lum1
+        return ratio >= 4.5 // WCAG AA standard for normal text
+    }
 }

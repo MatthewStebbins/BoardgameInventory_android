@@ -10,6 +10,7 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.core.view.ViewCompat
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.boardgameinventory.R
@@ -255,10 +256,10 @@ class LoanGameActivity : BaseAdActivity() {
             btnCancel.contentDescription = getString(R.string.cancel_loan_description)
 
             // Selected game section needs special handling for screen readers
-            tvSelectedGameLabel.accessibilityHeading = true
+            ViewCompat.setAccessibilityHeading(tvSelectedGameLabel, true)
 
             // Game list section
-            tvAvailableGamesLabel.accessibilityHeading = true
+            ViewCompat.setAccessibilityHeading(tvAvailableGamesLabel, true)
 
             // Make game selection announcements for screen readers
             recyclerViewGames.accessibilityLiveRegion = View.ACCESSIBILITY_LIVE_REGION_POLITE
@@ -267,8 +268,8 @@ class LoanGameActivity : BaseAdActivity() {
             tilGameBarcode.accessibilityTraversalBefore = btnScanBarcode.id
             btnScanBarcode.accessibilityTraversalAfter = tilGameBarcode.id
             recyclerViewGames.accessibilityTraversalAfter = btnScanBarcode.id
-            tilBorrowerName.accessibilityTraversalAfter = recyclerViewGames.id
-            btnLoanGame.accessibilityTraversalAfter = tilBorrowerName.id
+            binding.tilBorrowerName.accessibilityTraversalAfter = recyclerViewGames.id
+            btnLoanGame.accessibilityTraversalAfter = binding.tilBorrowerName.id
             btnCancel.accessibilityTraversalAfter = btnLoanGame.id
         }
 
@@ -279,13 +280,8 @@ class LoanGameActivity : BaseAdActivity() {
                 binding.root.announceForAccessibility(announcement)
 
                 // Update selected game section for accessibility
-                binding.tvSelectedGame.contentDescription = getString(
-                    R.string.selected_game_description,
-                    game.name,
-                    game.barcode,
-                    game.bookcase,
-                    game.shelf
-                )
+                binding.tvSelectedGame.contentDescription = getString(R.string.selected_game_description) +
+                    ": " + game.name + ", " + game.barcode + ", " + game.bookcase + ", " + game.shelf
             }
         }
 

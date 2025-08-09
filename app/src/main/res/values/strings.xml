@@ -95,7 +95,14 @@
     <string name="select_game">Select Game</string>
     <string name="person_name_hint">Person\'s name</string>
     <string name="loan">Loan</string>
-    
+    <string name="borrower_name_hint">Borrower Name</string>
+    <string name="game_barcode_hint">Game Barcode</string>
+    <string name="scan_game_barcode_description">Scan the barcode of the game to loan</string>
+    <string name="loan_game_action_description">Loan the selected game to the borrower</string>
+    <string name="cancel_loan_description">Cancel the loan process</string>
+    <string name="selected_game_description">Selected game details</string>
+    <string name="game_selected_announcement">Game selected: %1$s</string>
+
     <!-- Return Game -->
     <string name="return_game_title">Return Game</string>
     <string name="return_btn">Return</string>
@@ -406,4 +413,6 @@
     <string name="barcode_format">Barcode: %1$s</string>
     <string name="loaned_to_format">Loaned to %1$s</string>
     <string name="location_format">Location: %1$s-%2$s</string>
+    <string name="selected_game_label">Selected Game</string>
+    <string name="available_games_label">Available Games</string>
 </resources>
