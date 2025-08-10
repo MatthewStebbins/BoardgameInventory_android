@@ -80,12 +80,18 @@ object ApiClient {
         return try {
             val response = getService(context).lookupBarcode(barcode)
 
-            if (response.status == "success") {
-                response.product
-            } else {
-                Log.w(TAG, "API request failed with message: ${response.message}")
-                null
-            }
+            // Try to extract ProductInfo from all possible fields
+            val product = response.product
+            if (product != null) return product
+
+            val products = response.products
+            if (!products.isNullOrEmpty()) return products.firstOrNull()
+
+            val items = response.items
+            if (!items.isNullOrEmpty()) return items.firstOrNull()
+
+            Log.w(TAG, "No product info found in API response. Message: ${response.message}")
+            null
         } catch (e: Exception) {
             Log.e(TAG, "Error during barcode lookup: ${e.message}", e)
             null

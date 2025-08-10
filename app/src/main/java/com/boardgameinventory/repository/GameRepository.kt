@@ -5,6 +5,7 @@ import kotlinx.coroutines.flow.Flow
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
+import com.boardgameinventory.BuildConfig
 import com.boardgameinventory.data.Game
 import com.boardgameinventory.data.GameDao
 import com.boardgameinventory.data.SearchAndFilterCriteria
@@ -71,6 +72,12 @@ class GameRepository(private val gameDao: GameDao, private val context: Context)
         
         // Look up barcode info
         val productInfo = lookupBarcodeInfo(barcode)
+        if (BuildConfig.DEBUG) {
+            android.util.Log.d("GameRepository", "ProductInfo from API: $productInfo")
+            if (productInfo == null) {
+                android.util.Log.w("GameRepository", "No product found for barcode: $barcode")
+            }
+        }
         val name = productInfo?.getDisplayTitle() ?: "Unknown Game"
         val description = productInfo?.getDisplayDescription()
         val imageUrl = productInfo?.getDisplayImage()
