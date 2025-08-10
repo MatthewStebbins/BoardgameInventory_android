@@ -22,7 +22,8 @@ fun TextInputLayout.setupValidation(
 ) {
     val editText = editText ?: return
     var validationRunnable: Runnable? = null
-    
+    val handler = android.os.Handler(android.os.Looper.getMainLooper()) // Initialize Handler
+
     editText.addTextChangedListener { editable ->
         // Clear previous validation
         validationRunnable?.let { handler.removeCallbacks(it) }
