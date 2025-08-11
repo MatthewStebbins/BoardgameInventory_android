@@ -1,5 +1,6 @@
 package com.boardgameinventory.repository
 
+import android.content.Context
 import com.boardgameinventory.data.Game
 import com.boardgameinventory.data.GameDao
 import org.junit.Test
@@ -14,13 +15,14 @@ import org.mockito.Mockito.*
 class GameRepositoryTest {
 
     @Test
-    fun `GameRepository should be instantiable with GameDao`() {
+    fun `GameRepository should be instantiable with GameDao and Context`() {
         // Given
         val mockGameDao = mock(GameDao::class.java)
-        
+        val mockContext = mock(Context::class.java)
+
         // When
-        val repository = GameRepository(mockGameDao)
-        
+        val repository = GameRepository(mockGameDao, mockContext)
+
         // Then
         assertNotNull(repository)
     }
@@ -40,7 +42,7 @@ class GameRepositoryTest {
             dateAdded = 1234567890L,
             dateLoaned = null
         )
-        
+
         assertEquals(1L, game.id)
         assertEquals("Test Game", game.name)
         assertEquals("123456789", game.barcode)
@@ -67,13 +69,13 @@ class GameRepositoryTest {
             dateAdded = 1234567890L,
             dateLoaned = null
         )
-        
+
         val copiedGame = originalGame.copy(
             name = "Updated Game",
             loanedTo = "John Doe",
             dateLoaned = 1234567999L
         )
-        
+
         assertEquals(1L, copiedGame.id) // ID should remain the same
         assertEquals("Updated Game", copiedGame.name) // Name should be updated
         assertEquals("John Doe", copiedGame.loanedTo) // loanedTo should be updated
@@ -81,7 +83,7 @@ class GameRepositoryTest {
         assertEquals("123456789", copiedGame.barcode) // Other fields should remain the same
         assertEquals("A", copiedGame.bookcase)
         assertEquals("Original description", copiedGame.description)
-        
+
         // Original should remain unchanged
         assertEquals("Original Game", originalGame.name)
         assertNull(originalGame.loanedTo)
@@ -102,7 +104,7 @@ class GameRepositoryTest {
             dateAdded = 1234567890L,
             dateLoaned = 1234567999L
         )
-        
+
         val toString = game.toString()
         assertNotNull(toString)
         assertTrue(toString.contains("Awesome Game"))

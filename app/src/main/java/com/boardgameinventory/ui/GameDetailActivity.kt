@@ -3,8 +3,10 @@ package com.boardgameinventory.ui
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
+import android.view.MenuItem
 import android.view.View
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.appcompat.widget.Toolbar
 import androidx.lifecycle.lifecycleScope
 import com.bumptech.glide.Glide
 import com.boardgameinventory.R
@@ -49,6 +51,15 @@ class GameDetailActivity : BaseAdActivity() {
         binding = ActivityGameDetailBinding.inflate(layoutInflater)
         setContentView(binding.root)
         
+        // Setup toolbar
+        val toolbar: Toolbar = findViewById(R.id.toolbar)
+        setSupportActionBar(toolbar)
+        supportActionBar?.apply {
+            setDisplayHomeAsUpEnabled(true)
+            setDisplayShowHomeEnabled(true)
+            title = game?.name ?: getString(R.string.game_detail_title)
+        }
+
         // Get the game from intent
         game = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             intent.getParcelableExtra("game", Game::class.java)
@@ -63,18 +74,10 @@ class GameDetailActivity : BaseAdActivity() {
             return
         }
         
-        setupActionBar()
         displayGameDetails()
         setupClickListeners()
         setupAccessibility() // Add accessibility setup
         setupAdsManually()
-    }
-    
-    private fun setupActionBar() {
-        supportActionBar?.apply {
-            setDisplayHomeAsUpEnabled(true)
-            title = game?.name ?: getString(R.string.game_detail_title)
-        }
     }
     
     private fun displayGameDetails() {
@@ -253,7 +256,17 @@ class GameDetailActivity : BaseAdActivity() {
     }
     
     override fun onSupportNavigateUp(): Boolean {
-        finish()
+        onBackPressedDispatcher.onBackPressed()
         return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            android.R.id.home -> {
+                onBackPressedDispatcher.onBackPressed()
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
+        }
     }
 }

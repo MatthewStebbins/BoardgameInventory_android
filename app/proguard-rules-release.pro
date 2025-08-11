@@ -64,4 +64,3 @@
 # Glide rules
 -keep public class * implements com.bumptech.glide.module.GlideModule
 -keep class com.bumptech.glide.** { *; }
-

@@ -2,6 +2,10 @@ import android.app.Application
 import android.content.Context
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.test.core.app.ApplicationProvider
+import io.mockk.MockKAnnotations
+import io.mockk.impl.annotations.MockK
+import io.mockk.every
+import io.mockk.mockk
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.StandardTestDispatcher
@@ -14,11 +18,13 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.robolectric.RobolectricTestRunner
 import com.boardgameinventory.viewmodel.BulkUploadViewModel
+import com.boardgameinventory.repository.GameRepository
+import com.boardgameinventory.data.AppDatabase
+import com.boardgameinventory.data.GameDao
 
 @OptIn(ExperimentalCoroutinesApi::class)
-@RunWith(RobolectricTestRunner::class)
+@RunWith(org.robolectric.RobolectricTestRunner::class)
 class BulkUploadViewModelTest {
     @get:Rule
     val instantTaskExecutorRule = InstantTaskExecutorRule()
@@ -26,11 +32,26 @@ class BulkUploadViewModelTest {
     private lateinit var viewModel: BulkUploadViewModel
     private val testDispatcher = StandardTestDispatcher()
 
+    @MockK
+    private lateinit var mockRepository: GameRepository
+
+    @MockK
+    private lateinit var mockDatabase: AppDatabase
+
+    @MockK
+    private lateinit var mockGameDao: GameDao
+
     @Before
     fun setup() {
+        MockKAnnotations.init(this, relaxUnitFun = true)
         Dispatchers.setMain(testDispatcher)
         val application = ApplicationProvider.getApplicationContext<Application>()
-        viewModel = BulkUploadViewModel(application)
+        mockGameDao = mockk(relaxed = true)
+        mockDatabase = mockk(relaxed = true) {
+            every { gameDao() } returns mockGameDao
+        }
+        mockRepository = GameRepository(mockGameDao, application)
+        viewModel = BulkUploadViewModel(mockRepository, application)
     }
 
     @After

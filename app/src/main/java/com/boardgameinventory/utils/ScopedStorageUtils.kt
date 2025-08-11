@@ -56,12 +56,27 @@ object ScopedStorageUtils {
      * Best for app-specific data that doesn't need to persist after uninstall
      */
     fun createPrivateFile(context: Context, filename: String): StorageResult<File> {
+        Log.d(TAG, "createPrivateFile called with filename: $filename")
         return try {
+            if (filename.isBlank()) {
+                Log.e(TAG, "Filename is blank")
+                return StorageResult.Error(IllegalArgumentException("Filename cannot be empty"), "Filename is empty")
+            }
+
             val directory = File(context.getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS), BOARDGAME_DIRECTORY)
+            Log.d(TAG, "Directory path: ${directory.absolutePath}")
             if (!directory.exists()) {
-                directory.mkdirs()
+                val created = directory.mkdirs()
+                Log.d(TAG, "Directory created: $created")
             }
             val file = File(directory, filename)
+            Log.d(TAG, "File path: ${file.absolutePath}")
+
+            if (!file.exists()) {
+                val fileCreated = file.createNewFile()
+                Log.d(TAG, "File created: $fileCreated")
+            }
+
             StorageResult.Success(file)
         } catch (e: Exception) {
             Log.e(TAG, "Error creating private file: ${e.message}", e)
@@ -128,27 +143,27 @@ object ScopedStorageUtils {
     /**
      * Write data to a URI using ContentResolver with proper error handling
      */
-    fun writeToUri(context: Context, uri: Uri, data: ByteArray): StorageResult<Boolean> {
-        return try {
-            context.contentResolver.openOutputStream(uri)?.use { outputStream ->
-                outputStream.write(data)
-                outputStream.flush()
-                StorageResult.Success(true)
-            } ?: StorageResult.Error(
-                Exception("Null output stream"),
-                "Failed to open file for writing"
-            )
-        } catch (e: SecurityException) {
-            Log.e(TAG, "Permission denied writing to URI", e)
-            StorageResult.Error(e, "Permission denied: ${e.localizedMessage}")
-        } catch (e: IllegalStateException) {
-            Log.e(TAG, "URI no longer valid", e)
-            StorageResult.Error(e, "File URI no longer valid: ${e.localizedMessage}")
-        } catch (e: Exception) {
-            Log.e(TAG, "Error writing to URI: ${e.message}", e)
-            StorageResult.Error(e, "Failed to write data: ${e.localizedMessage}")
-        }
-    }
+//    fun writeToUri(context: Context, uri: Uri, data: ByteArray): StorageResult<Boolean> {
+//        return try {
+//            context.contentResolver.openOutputStream(uri)?.use { outputStream ->
+//                outputStream.write(data)
+//                outputStream.flush()
+//                StorageResult.Success(true)
+//            } ?: StorageResult.Error(
+//                Exception("Null output stream"),
+//                "Failed to open file for writing"
+//            )
+//        } catch (e: SecurityException) {
+//            Log.e(TAG, "Permission denied writing to URI", e)
+//            StorageResult.Error(e, "Permission denied: ${e.localizedMessage}")
+//        } catch (e: IllegalStateException) {
+//            Log.e(TAG, "URI no longer valid", e)
+//            StorageResult.Error(e, "File URI no longer valid: ${e.localizedMessage}")
+//        } catch (e: Exception) {
+//            Log.e(TAG, "Error writing to URI: ${e.message}", e)
+//            StorageResult.Error(e, "Failed to write data: ${e.localizedMessage}")
+//        }
+//    }
     
     /**
      * Write data to a URI using ContentResolver with OutputStream and proper error handling
@@ -174,27 +189,27 @@ object ScopedStorageUtils {
     /**
      * Read data from a URI using ContentResolver with proper error handling
      */
-    fun readFromUri(context: Context, uri: Uri): StorageResult<ByteArray> {
-        return try {
-            context.contentResolver.openInputStream(uri)?.use { inputStream ->
-                val data = inputStream.readBytes()
-                StorageResult.Success(data)
-            } ?: StorageResult.Error(
-                Exception("Null input stream"),
-                "Failed to open file for reading"
-            )
-        } catch (e: SecurityException) {
-            Log.e(TAG, "Permission denied reading from URI", e)
-            StorageResult.Error(e, "Permission denied: ${e.localizedMessage}")
-        } catch (e: IllegalStateException) {
-            Log.e(TAG, "URI no longer valid", e)
-            StorageResult.Error(e, "File URI no longer valid: ${e.localizedMessage}")
-        } catch (e: Exception) {
-            Log.e(TAG, "Error reading from URI: ${e.message}", e)
-            StorageResult.Error(e, "Failed to read data: ${e.localizedMessage}")
-        }
-    }
-    
+//    fun readFromUri(context: Context, uri: Uri): StorageResult<ByteArray> {
+//        return try {
+//            context.contentResolver.openInputStream(uri)?.use { inputStream ->
+//                val data = inputStream.readBytes()
+//                StorageResult.Success(data)
+//            } ?: StorageResult.Error(
+//                Exception("Null input stream"),
+//                "Failed to open file for reading"
+//            )
+//        } catch (e: SecurityException) {
+//            Log.e(TAG, "Permission denied reading from URI", e)
+//            StorageResult.Error(e, "Permission denied: ${e.localizedMessage}")
+//        } catch (e: IllegalStateException) {
+//            Log.e(TAG, "URI no longer valid", e)
+//            StorageResult.Error(e, "File URI no longer valid: ${e.localizedMessage}")
+//        } catch (e: Exception) {
+//            Log.e(TAG, "Error reading from URI: ${e.message}", e)
+//            StorageResult.Error(e, "Failed to read data: ${e.localizedMessage}")
+//        }
+//    }
+
     /**
      * Read data from a URI using ContentResolver with InputStream and proper error handling
      */
@@ -301,7 +316,7 @@ object ScopedStorageUtils {
         if (!privateFile.exists()) {
             return StorageResult.Error(
                 Exception("Private file doesn't exist"),
-                "Source file doesn't exist: ${privateFile.path}"
+                "Source file doesn't exist: ${privateFile.path.replace('\\', '/')}"
             )
         }
 
@@ -428,13 +443,26 @@ object ScopedStorageUtils {
      * Creates a subdirectory in a user-selected directory
      */
     fun createSubdirectory(context: Context, parentUri: Uri, directoryName: String): StorageResult<Uri> {
+        Log.d(TAG, "createSubdirectory called with parentUri: $parentUri and directoryName: $directoryName")
         return try {
             val parentDir = DocumentFile.fromTreeUri(context, parentUri)
-            val subDir = parentDir?.createDirectory(directoryName)
+            Log.d(TAG, "Parent directory resolved: $parentDir")
+            if (parentDir == null) {
+                Log.e(TAG, "Failed to resolve parent directory from URI: $parentUri")
+                return StorageResult.Error(
+                    IllegalArgumentException("Invalid URI: $parentUri"),
+                    "Invalid URI provided"
+                )
+            }
+
+            val subDir = parentDir.createDirectory(directoryName)
+            Log.d(TAG, "Subdirectory creation result: $subDir")
 
             if (subDir != null) {
+                Log.d(TAG, "Subdirectory created with URI: ${subDir.uri}")
                 StorageResult.Success(subDir.uri)
             } else {
+                Log.e(TAG, "Failed to create subdirectory")
                 StorageResult.Error(
                     Exception("Failed to create subdirectory"),
                     "Couldn't create folder"
