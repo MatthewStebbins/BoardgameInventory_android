@@ -3,6 +3,7 @@ plugins {
     id 'org.jetbrains.kotlin.android'
     id 'kotlin-kapt'
     id 'kotlin-parcelize'
+    id 'jacoco'
 }
 
 android {
@@ -73,6 +74,40 @@ android {
             proguardFile 'proguard-rules-release.pro'
         }
     }
+}
+
+jacoco {
+    toolVersion = "0.8.8"
+}
+
+tasks.withType(Test) {
+    jacoco.includeNoLocationClasses = true
+    jacoco.excludes = ['jdk.internal.*']
+}
+
+task jacocoTestReport(type: JacocoReport) {
+    dependsOn "testDebugUnitTest" // Updated to use the correct test task
+
+    reports {
+        xml.required = true
+        html.required = true
+    }
+
+    def fileFilter = [
+        '**/R.class',
+        '**/R$*.class',
+        '**/BuildConfig.*',
+        '**/Manifest*.*',
+        '**/*Test*.*',
+        'android/**/*.*'
+    ]
+
+    def debugTree = fileTree(dir: "${buildDir}/intermediates/javac/debug", excludes: fileFilter)
+    def mainSrc = "${project.projectDir}/src/main/java"
+
+    sourceDirectories.setFrom(files([mainSrc]))
+    classDirectories.setFrom(files([debugTree]))
+    executionData.setFrom(fileTree(dir: project.buildDir, includes: ["jacoco/testDebugUnitTest.exec", "outputs/code-coverage/connected/*coverage.ec"]))
 }
 
 dependencies {
