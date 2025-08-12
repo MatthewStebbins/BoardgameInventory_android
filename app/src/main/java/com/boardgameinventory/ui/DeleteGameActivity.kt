@@ -14,7 +14,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.boardgameinventory.R
 import com.boardgameinventory.data.Game
 import com.boardgameinventory.databinding.ActivityDeleteGameBinding
-import com.boardgameinventory.utils.BarcodeUtils
 import com.boardgameinventory.utils.Utils
 import com.boardgameinventory.viewmodel.GameListViewModel
 import com.journeyapps.barcodescanner.ScanContract
@@ -49,6 +48,11 @@ class DeleteGameActivity : BaseAdActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityDeleteGameBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        // Set up the toolbar with a back arrow
+        setSupportActionBar(binding.toolbar)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        supportActionBar?.setDisplayShowHomeEnabled(true)
 
         setupActionBar()
         setupRecyclerView()
@@ -232,9 +236,6 @@ class DeleteGameActivity : BaseAdActivity() {
             // Set the class-level adView property
             adView = localAdView
 
-            // Set up the ad container
-            val adContainer = binding.adContainer
-
             // Configure the listener
             localAdView.adListener = object : com.google.android.gms.ads.AdListener() {
                 override fun onAdLoaded() {
@@ -254,7 +255,7 @@ class DeleteGameActivity : BaseAdActivity() {
     }
 
     override fun onSupportNavigateUp(): Boolean {
-        finish()
+        onBackPressedDispatcher.onBackPressed()
         return true
     }
 }

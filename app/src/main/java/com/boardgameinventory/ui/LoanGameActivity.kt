@@ -54,6 +54,11 @@ class LoanGameActivity : BaseAdActivity() {
         binding = ActivityLoanGameBinding.inflate(layoutInflater)
         setContentView(binding.root)
         
+        // Set up the toolbar with a back arrow
+        setSupportActionBar(binding.toolbar)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        supportActionBar?.setDisplayShowHomeEnabled(true)
+
         setupActionBar()
         setupRecyclerView()
         setupClickListeners()
@@ -218,9 +223,6 @@ class LoanGameActivity : BaseAdActivity() {
             // Set the class-level adView property
             adView = localAdView
 
-            // Set up the ad container
-            val adContainer = binding.adContainer
-
             // Configure the listener
             localAdView.adListener = object : com.google.android.gms.ads.AdListener() {
                 override fun onAdLoaded() {
@@ -292,7 +294,7 @@ class LoanGameActivity : BaseAdActivity() {
     }
 
     override fun onSupportNavigateUp(): Boolean {
-        finish()
+        onBackPressedDispatcher.onBackPressed()
         return true
     }
 }

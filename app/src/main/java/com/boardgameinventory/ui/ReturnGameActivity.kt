@@ -48,6 +48,11 @@ class ReturnGameActivity : BaseAdActivity() {
         binding = ActivityReturnGameBinding.inflate(layoutInflater)
         setContentView(binding.root)
         
+        // Set up the toolbar with a back arrow
+        setSupportActionBar(binding.toolbar)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        supportActionBar?.setDisplayShowHomeEnabled(true)
+
         setupActionBar()
         setupRecyclerView()
         setupClickListeners()
@@ -297,7 +302,7 @@ class ReturnGameActivity : BaseAdActivity() {
     }
     
     override fun onSupportNavigateUp(): Boolean {
-        finish()
+        onBackPressedDispatcher.onBackPressed()
         return true
     }
 }
