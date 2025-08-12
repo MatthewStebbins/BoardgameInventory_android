@@ -2,6 +2,7 @@ package com.boardgameinventory.viewmodel
 
 import android.app.Application
 import android.content.Context
+import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -55,55 +56,79 @@ class BulkUploadViewModel(
     fun uploadGames(bookcase: String, shelf: String) {
         viewModelScope.launch {
             _isLoading.value = true
+            Log.d("BulkUploadViewModel", "Starting uploadGames with barcodes: ${_scannedBarcodes.value}")
 
             try {
                 val barcodes = _scannedBarcodes.value ?: emptyList()
-                val successful = mutableListOf<String>()
-                val failed = mutableListOf<String>()
+                val (successful, failed) = processBarcodes(barcodes, bookcase, shelf)
 
-                for (barcode in barcodes) {
-                    try {
-                        // Check if game already exists
-                        val existingGame = repository.getGameByBarcode(barcode)
-
-                        val game = if (existingGame != null) {
-                            // Update existing game location
-                            existingGame.copy(
-                                bookcase = bookcase,
-                                shelf = shelf
-                            )
-                        } else {
-                            // Try to fetch from API
-                            val gameData: ProductInfo? = try {
-                                ApiClient.lookupBarcode(getApplication<Application>().applicationContext, barcode)
-                            } catch (e: Exception) {
-                                null
-                            }
-
-                            Game(
-                                barcode = barcode,
-                                name = gameData?.getDisplayTitle() ?: "Unknown Game",
-                                bookcase = bookcase,
-                                shelf = shelf,
-                                loanedTo = null,
-                                description = gameData?.getDisplayDescription(),
-                                imageUrl = gameData?.getDisplayImage()
-                            )
-                        }
-
-                        repository.insertGame(game)
-                        successful.add(barcode)
-                    } catch (e: Exception) {
-                        failed.add(barcode)
-                    }
-                }
+                Log.d("BulkUploadViewModel", "Upload result - Successful: $successful, Failed: $failed")
 
                 _uploadResult.value = UploadResult(successful.size, failed)
                 _scannedBarcodes.value = emptyList()
+            } catch (e: Exception) {
+                Log.e("BulkUploadViewModel", "Error during uploadGames", e)
             } finally {
                 _isLoading.value = false
             }
         }
+    }
+
+    private suspend fun processBarcodes(
+        barcodes: List<String>,
+        bookcase: String,
+        shelf: String
+    ): Pair<List<String>, List<String>> {
+        val successful = mutableListOf<String>()
+        val failed = mutableListOf<String>()
+
+        for (barcode in barcodes) {
+            try {
+                val game = getOrCreateGame(barcode, bookcase, shelf)
+                repository.insertGame(game)
+                successful.add(barcode)
+            } catch (e: Exception) {
+                failed.add(barcode)
+            }
+        }
+
+        return Pair(successful, failed)
+    }
+
+    private suspend fun getOrCreateGame(
+        barcode: String,
+        bookcase: String,
+        shelf: String
+    ): Game {
+        val existingGame = repository.getGameByBarcode(barcode)
+
+        return if (existingGame != null) {
+            existingGame.copy(bookcase = bookcase, shelf = shelf)
+        } else {
+            fetchGameFromApi(barcode, bookcase, shelf)
+        }
+    }
+
+    private suspend fun fetchGameFromApi(
+        barcode: String,
+        bookcase: String,
+        shelf: String
+    ): Game {
+        val gameData: ProductInfo? = try {
+            ApiClient.lookupBarcode(getApplication<Application>().applicationContext, barcode)
+        } catch (e: Exception) {
+            null
+        }
+
+        return Game(
+            barcode = barcode,
+            name = gameData?.getDisplayTitle() ?: "Unknown Game",
+            bookcase = bookcase,
+            shelf = shelf,
+            loanedTo = null,
+            description = gameData?.getDisplayDescription(),
+            imageUrl = gameData?.getDisplayImage()
+        )
     }
 
     fun clearUploadResult() {

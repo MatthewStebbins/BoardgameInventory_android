@@ -1,14 +1,20 @@
 import android.app.Application
-import android.content.Context
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import androidx.lifecycle.Observer
 import androidx.test.core.app.ApplicationProvider
+import com.boardgameinventory.viewmodel.BulkUploadViewModel.UploadResult
 import io.mockk.MockKAnnotations
+import io.mockk.coEvery
+import io.mockk.coVerify
 import io.mockk.impl.annotations.MockK
 import io.mockk.every
 import io.mockk.mockk
+import io.mockk.slot
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.StandardTestDispatcher
+import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
 import kotlinx.coroutines.test.resetMain
@@ -22,9 +28,12 @@ import com.boardgameinventory.viewmodel.BulkUploadViewModel
 import com.boardgameinventory.repository.GameRepository
 import com.boardgameinventory.data.AppDatabase
 import com.boardgameinventory.data.GameDao
+import com.boardgameinventory.data.Game
+import org.robolectric.annotation.Config
 
 @OptIn(ExperimentalCoroutinesApi::class)
 @RunWith(org.robolectric.RobolectricTestRunner::class)
+@Config(manifest = Config.NONE)
 class BulkUploadViewModelTest {
     @get:Rule
     val instantTaskExecutorRule = InstantTaskExecutorRule()
@@ -52,6 +61,16 @@ class BulkUploadViewModelTest {
         }
         mockRepository = GameRepository(mockGameDao, application)
         viewModel = BulkUploadViewModel(mockRepository, application)
+
+        runBlocking {
+            coEvery { mockRepository.getGameByBarcode(any()) } returns Game(
+                id = 1L,
+                name = "Test Game",
+                barcode = "123",
+                bookcase = "A",
+                shelf = "1"
+            )
+        }
     }
 
     @After
@@ -79,5 +98,22 @@ class BulkUploadViewModelTest {
     fun `clearUploadResult resets uploadResult`() {
         viewModel.clearUploadResult()
         Assert.assertNull(viewModel.uploadResult.value)
+    }
+
+    @Test
+    fun `getGameByBarcode handles suspend function correctly`() = runBlocking {
+        coEvery { mockRepository.getGameByBarcode("123") } returns Game(
+            id = 1L,
+            name = "Test Game",
+            barcode = "123",
+            bookcase = "A",
+            shelf = "1"
+        )
+
+        val result = mockRepository.getGameByBarcode("123")
+
+        Assert.assertNotNull(result)
+        Assert.assertEquals("123", result?.barcode)
+        Assert.assertEquals("Test Game", result?.name)
     }
 }
