@@ -74,18 +74,24 @@ android {
             proguardFile 'proguard-rules-release.pro'
         }
     }
+
+    testOptions {
+        unitTests.includeAndroidResources = true
+        unitTests.all {
+            systemProperty 'robolectric.enabledSdks', '33'
+        }
+    }
+}
+
+tasks.withType(Test) {
+    jvmArgs += ['-noverify']
 }
 
 jacoco {
     toolVersion = "0.8.9"
 }
 
-tasks.withType(Test) {
-    jacoco.includeNoLocationClasses = true
-    jacoco.excludes = ['jdk.internal.*', 'androidx/databinding/DataBinderMapperImpl', 'androidx/databinding/library/baseAdapters/BR']
-}
-
-task jacocoTestReport(type: JacocoReport) {
+tasks.register('jacocoTestReport', JacocoReport) {
     dependsOn "testDebugUnitTest" // Updated to use the correct test task
 
     reports {
@@ -94,12 +100,13 @@ task jacocoTestReport(type: JacocoReport) {
     }
 
     def fileFilter = [
-        '**/R.class',
-        '**/R$*.class',
-        '**/BuildConfig.*',
-        '**/Manifest*.*',
-        '**/*Test*.*',
-        'android/**/*.*'
+            '**/R.class',
+            '**/R$*.class',
+            '**/BuildConfig.*',
+            '**/Manifest*.*',
+            '**/*Test*.*',
+            'android/**/*.*',
+            'org/robolectric/**' // Exclude Robolectric classes
     ]
 
     def debugTree = fileTree(dir: "${buildDir}/intermediates/javac/debug", excludes: fileFilter)

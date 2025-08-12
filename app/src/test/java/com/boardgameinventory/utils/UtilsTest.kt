@@ -6,6 +6,7 @@ import org.junit.Test
 import org.junit.Assert.*
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
+import org.robolectric.annotation.Config
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -13,6 +14,7 @@ import java.util.*
  * Unit tests for the Utils class
  */
 @RunWith(RobolectricTestRunner::class)
+@Config(sdk = [33])
 class UtilsTest {
 
     private val context: Context = ApplicationProvider.getApplicationContext()

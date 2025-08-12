@@ -234,4 +234,14 @@ class MainActivity : BaseAdActivity() {
         super.onDestroy()
         AdManager.destroyAd(adView)
     }
+
+    // Expose appUpdateManager for testing purposes
+    fun getAppUpdateManager(): AppUpdateManager {
+        return appUpdateManager
+    }
+
+    // Setter for injecting a custom AppUpdateManager (used for testing)
+    fun setAppUpdateManagerForTest(updateManager: AppUpdateManager) {
+        this.appUpdateManager = updateManager
+    }
 }

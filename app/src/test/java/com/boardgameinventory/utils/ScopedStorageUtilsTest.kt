@@ -20,7 +20,7 @@ import java.io.OutputStream
  * Unit tests for the ScopedStorageUtils class
  */
 @RunWith(RobolectricTestRunner::class)
-@Config(sdk = [28]) // Specify the SDK version to simulate
+@Config(sdk = [33])
 class ScopedStorageUtilsTest {
 
     private val context: Context = ApplicationProvider.getApplicationContext()

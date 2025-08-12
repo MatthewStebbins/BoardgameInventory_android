@@ -7,12 +7,14 @@ import org.junit.Test
 import org.junit.Assert.*
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
+import org.robolectric.annotation.Config
 
 /**
  * Unit tests for ImportUtils
  * Tests focus on data parsing and validation logic
  */
 @RunWith(RobolectricTestRunner::class)
+@Config(sdk = [33])
 class ImportUtilsTest {
 
     private val context: Context = ApplicationProvider.getApplicationContext()

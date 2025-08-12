@@ -271,6 +271,13 @@ class AppUpdateManager(private val context: Context) : DefaultLifecycleObserver 
             (owner as? Activity)?.let { showUpdateSnackbar(it) }
         }
     }
+
+    /**
+     * Public method to start an immediate update for testing purposes.
+     */
+    fun triggerImmediateUpdateForTest(appUpdateInfo: AppUpdateInfo, activity: Activity) {
+        startImmediateUpdate(appUpdateInfo, activity)
+    }
 }
 
 /**
