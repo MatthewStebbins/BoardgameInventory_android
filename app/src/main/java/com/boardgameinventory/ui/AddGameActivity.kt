@@ -46,7 +46,12 @@ class AddGameActivity : BaseAdActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityAddGameBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        
+
+        // Set up the toolbar with a back arrow
+        setSupportActionBar(binding.toolbar)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        supportActionBar?.setDisplayShowHomeEnabled(true)
+
         setupToolbar()
         setupClickListeners()
         setupTextWatchers()
@@ -255,7 +260,7 @@ class AddGameActivity : BaseAdActivity() {
     }
     
     override fun onSupportNavigateUp(): Boolean {
-        finish()
+        onBackPressed()
         return true
     }
 }

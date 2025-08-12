@@ -66,6 +66,11 @@ class BulkUploadActivity : BaseAdActivity() {
         binding = ActivityBulkUploadBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        // Set up the toolbar with a back arrow
+        setSupportActionBar(binding.toolbar)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        supportActionBar?.setDisplayShowHomeEnabled(true)
+
         viewModel = ViewModelProvider(this)[BulkUploadViewModel::class.java]
         setupAdsManually()
         setupUI()
@@ -279,7 +284,7 @@ class BulkUploadActivity : BaseAdActivity() {
     }
 
     override fun onSupportNavigateUp(): Boolean {
-        finish()
+        onBackPressed()
         return true
     }
 }

@@ -39,6 +39,11 @@ class GameListActivity : BaseAdActivity() {
         binding = ActivityGameListBinding.inflate(layoutInflater)
         setContentView(binding.root)
         
+        // Set up the toolbar with a back arrow
+        setSupportActionBar(binding.toolbar)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        supportActionBar?.setDisplayShowHomeEnabled(true)
+
         deleteMode = intent.getBooleanExtra("deleteMode", false)
         
         setupToolbar()
@@ -76,7 +81,7 @@ class GameListActivity : BaseAdActivity() {
             }
         })
         // The following are commented out due to unresolved references
-        // binding.tvGameCount?.let { it.isFocusable = true; it.accessibilityLiveRegion = android.view.View.ACCESSIBILITY_LIVE_REGION_POLITE }
+        // binding.tvGameCount?.let { it.isFocusable = true; it.accessibilityLiveRegion = android.view.View.ACCESSibility_LIVE_REGION_POLITE }
         // viewModel.totalFilteredGames.observe(this) { count ->
         //     binding.tvGameCount?.contentDescription = getString(R.string.game_count_description, count)
         // }
@@ -306,7 +311,7 @@ class GameListActivity : BaseAdActivity() {
     }
     
     override fun onSupportNavigateUp(): Boolean {
-        finish()
+        onBackPressed()
         return true
     }
     

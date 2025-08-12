@@ -42,7 +42,12 @@ class ExportImportActivity : BaseAdActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityExportImportBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        
+
+        // Set up the toolbar with a back arrow
+        setSupportActionBar(binding.toolbar)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        supportActionBar?.setDisplayShowHomeEnabled(true)
+
         setupActionBar()
         setupAdsManually()
         setupUI()
@@ -266,7 +271,7 @@ class ExportImportActivity : BaseAdActivity() {
     }
 
     override fun onSupportNavigateUp(): Boolean {
-        onBackPressedDispatcher.onBackPressed()
+        onBackPressed()
         return true
     }
 }
