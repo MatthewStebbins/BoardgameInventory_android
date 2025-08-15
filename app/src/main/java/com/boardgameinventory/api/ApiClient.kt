@@ -32,9 +32,11 @@ object ApiClient {
      */
     private fun isApiKeyConfigured(): Boolean {
         if (!::secureApiKeyManager.isInitialized) {
+            println("ApiClient not initialized. Call initialize(context) first.")
             return false
         }
         val apiKey = secureApiKeyManager.getRapidApiKey()
+        println("API Key: $apiKey") // Debugging line to check API key
         return apiKey != "your_api_key_here" && apiKey.isNotBlank()
     }
 

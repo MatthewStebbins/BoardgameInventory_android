@@ -72,4 +72,11 @@ data class ProductInfo(
     fun getDisplayImage(): String? {
         return images?.firstOrNull() ?: imageUrls?.firstOrNull() ?: image
     }
+
+    /**
+     * Get the most appropriate brand from available fields
+     */
+    fun getDisplayBrand(): String? {
+        return brand ?: manufacturer
+    }
 }
