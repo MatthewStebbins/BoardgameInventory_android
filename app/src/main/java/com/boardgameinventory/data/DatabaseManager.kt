@@ -3,9 +3,6 @@ package com.boardgameinventory.data
 import android.content.Context
 import android.content.SharedPreferences
 import android.util.Log
-import androidx.room.Room
-import androidx.room.RoomDatabase
-import androidx.sqlite.db.SupportSQLiteDatabase
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.io.File
@@ -13,6 +10,7 @@ import java.io.FileInputStream
 import java.io.FileOutputStream
 import java.text.SimpleDateFormat
 import java.util.*
+import androidx.core.content.edit
 
 /**
  * Database version and backup manager for the Board Game Inventory app.
@@ -44,15 +42,7 @@ class DatabaseManager(private val context: Context) {
     fun getLastKnownVersion(): Int {
         return prefs.getInt(KEY_LAST_VERSION, 1)
     }
-    
-    /**
-     * Update stored database version
-     */
-    fun updateVersion(version: Int) {
-        prefs.edit().putInt(KEY_LAST_VERSION, version).apply()
-        Log.d(TAG, "Database version updated to $version")
-    }
-    
+
     /**
      * Create a backup of the current database before migration
      */
@@ -84,10 +74,10 @@ class DatabaseManager(private val context: Context) {
             
             // Update backup metadata
             val backupCount = prefs.getInt(KEY_BACKUP_COUNT, 0) + 1
-            prefs.edit()
-                .putInt(KEY_BACKUP_COUNT, backupCount)
-                .putLong(KEY_LAST_BACKUP, System.currentTimeMillis())
-                .apply()
+            prefs.edit {
+                putInt(KEY_BACKUP_COUNT, backupCount)
+                    .putLong(KEY_LAST_BACKUP, System.currentTimeMillis())
+            }
             
             Log.d(TAG, "Database backup created: ${backupFile.name}")
             true
