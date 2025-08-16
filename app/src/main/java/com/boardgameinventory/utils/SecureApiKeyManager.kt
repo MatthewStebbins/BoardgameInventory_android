@@ -1,18 +1,11 @@
 package com.boardgameinventory.utils
 
 import android.content.Context
-import android.security.keystore.KeyGenParameterSpec
-import android.security.keystore.KeyProperties
-import android.util.Base64
 import android.util.Log
 import androidx.security.crypto.EncryptedSharedPreferences
 import androidx.security.crypto.MasterKey
 import com.boardgameinventory.BuildConfig
-import java.security.KeyStore
-import javax.crypto.Cipher
-import javax.crypto.KeyGenerator
-import javax.crypto.SecretKey
-import javax.crypto.spec.GCMParameterSpec
+
 
 /**
  * Securely manages API keys using Android Keystore and EncryptedSharedPreferences
@@ -22,12 +15,6 @@ class SecureApiKeyManager(private val context: Context) {
 
     companion object {
         private const val TAG = "SecureApiKeyManager"
-        private const val KEY_ALIAS = "api_key_encryption_key"
-        private const val ANDROID_KEYSTORE = "AndroidKeyStore"
-        private const val TRANSFORMATION = "AES/GCM/NoPadding"
-        private const val GCM_IV_LENGTH = 12
-        private const val GCM_TAG_LENGTH = 128
-
         private const val ENCRYPTED_PREFS_FILE = "encrypted_api_keys"
         private const val KEY_RAPIDAPI_KEY = "rapidapi_key"
         private const val KEY_RAPIDAPI_HOST = "rapidapi_host"
