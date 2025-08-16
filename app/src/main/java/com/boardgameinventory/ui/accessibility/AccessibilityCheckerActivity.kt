@@ -9,10 +9,8 @@ import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.boardgameinventory.R
 import com.boardgameinventory.databinding.ActivityAccessibilityCheckerBinding
 import com.boardgameinventory.databinding.ItemAccessibilityIssueBinding
 import com.boardgameinventory.utils.AccessibilityUtils
@@ -166,7 +164,7 @@ class AccessibilityCheckerActivity : AppCompatActivity() {
 
     private fun getBackgroundColor(view: View): Int {
         // Try to get the background color of the view
-        val background = view.background
+        view.background
 
         // If there's a direct background color, use it
         if (view.backgroundTintList != null) {
@@ -230,7 +228,7 @@ class AccessibilityCheckerActivity : AppCompatActivity() {
             if (view.id != View.NO_ID) {
                 return resources.getResourceName(view.id).substringAfterLast("/")
             }
-        } catch (e: Exception) {
+        } catch (_: Exception) {
             // Resource ID not found
         }
         return "unknown_id"

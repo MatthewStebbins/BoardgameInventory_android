@@ -21,10 +21,6 @@ class BulkUploadActivity : BaseAdActivity() {
     private lateinit var binding: ActivityBulkUploadBinding
     private lateinit var viewModel: BulkUploadViewModel
     private lateinit var adapter: ScannedBarcodesAdapter
-    
-    // Toggles for orientation lock and torch. Replace with real UI toggles as needed.
-    private var isOrientationLocked: Boolean = false
-    private var isTorchOn: Boolean = false
 
     private val scanLocationBarcodeLauncher = registerForActivityResult(ScanContract()) { result ->
         if (result.contents != null) {
@@ -169,7 +165,7 @@ class BulkUploadActivity : BaseAdActivity() {
     private fun observeViewModel() {
         viewModel.scannedBarcodes.observe(this) { barcodes ->
             adapter.updateBarcodes(barcodes)
-            binding.tvBarcodeCount.text = "Scanned: ${barcodes.size} barcodes"
+            binding.tvBarcodeCount.text = getString(R.string.scanned_barcodes_count, barcodes.size)
         }
 
         viewModel.uploadResult.observe(this) { result ->
@@ -286,8 +282,8 @@ class BulkUploadActivity : BaseAdActivity() {
         }
     }
 
-    override fun onSupportNavigateUp(): Boolean {
-        onBackPressed()
+ override fun onSupportNavigateUp(): Boolean {
+        onBackPressedDispatcher.onBackPressed()
         return true
     }
 }

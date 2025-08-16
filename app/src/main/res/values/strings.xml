@@ -180,6 +180,7 @@
     <string name="scanned_barcodes">Scanned Barcodes:</string>
     <string name="scan_each_game">Scan each game barcode below:</string>
     <string name="done">Done</string>
+    <string name="scanned_barcodes_count">Scanned: %1$d barcodes</string>
     
     <!-- Export/Import -->
     <string name="export_title">Export Games</string>

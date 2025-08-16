@@ -1,9 +1,6 @@
 package com.boardgameinventory.ui
 
 import android.os.Bundle
-import android.util.Log
-import android.view.View
-import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import com.boardgameinventory.BoardGameInventoryApp
 import com.boardgameinventory.ads.ConsentManager
@@ -33,7 +30,6 @@ abstract class BaseAdActivity : AppCompatActivity() {
         adManager = app.adManager
 
         // Setup ads after content view is set
-        // Note: Specific ad setup will be done in the setupAds() method
     }
     
     override fun onResume() {
@@ -50,17 +46,7 @@ abstract class BaseAdActivity : AppCompatActivity() {
         super.onDestroy()
         com.boardgameinventory.utils.AdManager.destroyAd(adView)
     }
-    
-    /**
-     * Setup ads for this activity
-     * This method should be called after setContentView() in activities
-     */
-    protected open fun setupAds() {
-        // The implementation will depend on the specific activity
-        // Each activity should find its own adContainer and adView
-        Log.d(javaClass.simpleName, "Base setupAds() called - override in activity")
-    }
-    
+
     /**
      * Shows the consent form if required
      * Can be called from activities to provide an option for users to review consent
