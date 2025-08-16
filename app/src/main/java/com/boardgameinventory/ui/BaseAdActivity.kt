@@ -6,9 +6,9 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import com.boardgameinventory.BoardGameInventoryApp
-import com.boardgameinventory.ads.AdManager
 import com.boardgameinventory.ads.ConsentManager
 import com.google.android.gms.ads.AdView
+import com.boardgameinventory.utils.TextDarknessManager
 
 /**
  * Base activity class that provides common ad management functionality with consent flows
@@ -22,42 +22,10 @@ abstract class BaseAdActivity : AppCompatActivity() {
     protected lateinit var consentManager: ConsentManager
     protected lateinit var adManager: com.boardgameinventory.ads.AdManager
 
-    /**
-     * Helper function for activities using data binding to setup ads securely
-     * Call this from onCreate() after setContentView()
-     */
-    protected fun setupAdsWithBinding(
-        adContainer: ViewGroup,
-        adView: AdView,
-        activityName: String
-    ) {
-        try {
-            Log.d(activityName, "Setting up ads with consent-based configuration")
-
-            // Store reference to the AdView
-            this.adView = adView
-
-            // Get references to the consent and ad managers from the application instance
-            val app = application as BoardGameInventoryApp
-            consentManager = app.consentManager
-            adManager = app.adManager
-
-            // Only show ads if consent requirements are met
-            if (consentManager.canShowAds()) {
-                // Load banner ad with proper consent settings
-                adManager.loadBannerAd(adContainer, adView)
-            } else {
-                // Hide ad container if consent requirements aren't met
-                adContainer.visibility = View.GONE
-                Log.d(activityName, "Ads not shown - consent requirements not met")
-            }
-        } catch (e: Exception) {
-            Log.e(activityName, "Error setting up ads: ${e.message}", e)
-        }
-    }
-    
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        // Apply text darkness setting globally
+        TextDarknessManager.applyTextDarknessToActivity(this)
 
         // Get references to the consent and ad managers from the application instance
         val app = application as BoardGameInventoryApp

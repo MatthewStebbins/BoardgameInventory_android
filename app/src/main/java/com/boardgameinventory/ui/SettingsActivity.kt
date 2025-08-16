@@ -1,14 +1,15 @@
 package com.boardgameinventory.ui
 
 import android.content.Intent
-import android.graphics.Color
 import android.os.Bundle
 import android.view.View
 import android.widget.Button
 import android.widget.SeekBar
 import androidx.appcompat.widget.Toolbar
+import androidx.core.content.edit
 import androidx.preference.PreferenceManager
 import com.boardgameinventory.R
+import com.boardgameinventory.utils.TextDarknessManager
 
 /**
  * Activity for app settings and information including privacy policy and ad consent
@@ -57,10 +58,9 @@ class SettingsActivity : BaseAdActivity() {
         // Save value on change
         textDarknessSlider.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
             override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
-                val editor = sharedPreferences.edit()
-                editor.putInt("text_darkness", progress)
-                editor.apply()
-                applyTextDarkness(progress)
+                // Updated to use centralized TextDarknessManager
+                TextDarknessManager.setTextDarkness(this@SettingsActivity, progress)
+                TextDarknessManager.applyTextDarknessToActivity(this@SettingsActivity)
             }
 
             override fun onStartTrackingTouch(seekBar: SeekBar?) {}
@@ -96,15 +96,6 @@ class SettingsActivity : BaseAdActivity() {
         } catch (e: Exception) {
             android.util.Log.e("SettingsActivity", "Error in ad setup: ${e.message}", e)
         }
-    }
-
-    private fun applyTextDarkness(darkness: Int) {
-        val adjustedColor = (255 - darkness * 2.55).toInt()
-        // Replaced `toColorInt` with `Color.parseColor`
-        val textColor = Color.parseColor(String.format("#%02X%02X%02X", adjustedColor, adjustedColor, adjustedColor))
-
-        // Fixed `View` and `rootView` references
-        findViewById<View>(android.R.id.content).rootView.setBackgroundColor(textColor)
     }
 
     override fun onResume() {
