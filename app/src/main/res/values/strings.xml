@@ -35,7 +35,7 @@
     <string name="loaned_games">Loaned Games</string>
     <string name="no_games">No games found</string>
     <string name="game_details">Game Details</string>
-    <string name="search_games">Search games...</string>
+    <string name="search_games">Search games…</string>
     <string name="filter_games">Filter games</string>
     <string name="clear_search">Clear search</string>
     <string name="filter_by_location">Location</string>
@@ -174,6 +174,7 @@
     <string name="contrast_fixed_message">Fixed %d contrast issues. The changes are temporary and will be lost when you restart the app.</string>
     <string name="run_contrast_check">Check Contrast Ratios</string>
     <string name="accessibility_test_mode">Accessibility Test Mode</string>
+    <string name="summary_text">Checked %1$d elements across %2$d activities. Found %3$d issues (%4$s%%).</string>
 
     <!-- Bulk Upload -->
     <string name="bulk_upload_title">Bulk Upload Games</string>
