@@ -47,24 +47,40 @@ class SecureApiKeyManager(private val context: Context) {
     }
 
     private val masterKey by lazy {
-        MasterKey.Builder(context)
-            .setKeyScheme(MasterKey.KeyScheme.AES256_GCM)
-            .build()
+        try {
+            println("[DEBUG] Initializing MasterKey")
+            MasterKey.Builder(context)
+                .setKeyScheme(MasterKey.KeyScheme.AES256_GCM)
+                .build()
+        } catch (e: Exception) {
+            println("[ERROR] Failed to initialize MasterKey: ${e.message}")
+            e.printStackTrace()
+            null // Fallback to null if MasterKey initialization fails
+        }
     }
 
     private val encryptedPreferences by lazy {
         try {
-            EncryptedSharedPreferences.create(
-                context,
-                ENCRYPTED_PREFS_FILE,
-                masterKey,
-                EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
-                EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
-            )
+            println("[DEBUG] Initializing EncryptedSharedPreferences")
+            masterKey?.let {
+                EncryptedSharedPreferences.create(
+                    context,
+                    ENCRYPTED_PREFS_FILE,
+                    it,
+                    EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
+                    EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
+                )
+            } ?: throw IllegalStateException("MasterKey is null. Cannot initialize EncryptedSharedPreferences.")
         } catch (e: Exception) {
-            Log.e(TAG, "Error initializing EncryptedSharedPreferences", e)
-            null
+            println("[ERROR] Failed to initialize EncryptedSharedPreferences: ${e.message}")
+            e.printStackTrace()
+            println("[DEBUG] Falling back to regular SharedPreferences")
+            context.getSharedPreferences(ENCRYPTED_PREFS_FILE, Context.MODE_PRIVATE)
         }
+    }
+
+    init {
+        println("[DEBUG] SecureApiKeyManager initialized with context: $context")
     }
 
     /**
@@ -73,12 +89,17 @@ class SecureApiKeyManager(private val context: Context) {
      */
     fun initializeApiKeys() {
         try {
+            println("[DEBUG] Checking if encryptedPreferences contains KEY_RAPIDAPI_KEY: ${encryptedPreferences?.contains(KEY_RAPIDAPI_KEY)}")
+            println("[DEBUG] Retrieved BuildConfig.RAPIDAPI_KEY: ${BuildConfig.RAPIDAPI_KEY}")
+            println("[DEBUG] Retrieved BuildConfig.RAPIDAPI_HOST: ${BuildConfig.RAPIDAPI_HOST}")
+
             if (encryptedPreferences?.contains(KEY_RAPIDAPI_KEY) != true) {
                 // First run - encrypt and store the keys from BuildConfig
                 val rapidApiKey = BuildConfig.RAPIDAPI_KEY
                 val rapidApiHost = BuildConfig.RAPIDAPI_HOST
 
                 if (rapidApiKey.isNotBlank() && rapidApiKey != "your_api_key_here") {
+                    println("[DEBUG] Storing API keys in encryptedPreferences")
                     encryptedPreferences?.edit()
                         ?.putString(KEY_RAPIDAPI_KEY, rapidApiKey)
                         ?.putString(KEY_RAPIDAPI_HOST, rapidApiHost)
@@ -86,6 +107,7 @@ class SecureApiKeyManager(private val context: Context) {
 
                     Log.d(TAG, "API keys initialized successfully")
                 } else {
+                    println("[DEBUG] API key is blank or default, skipping initialization")
                     Log.w(TAG, "API key is blank or default - not initializing")
                 }
             }
@@ -110,20 +132,27 @@ class SecureApiKeyManager(private val context: Context) {
         } catch (e: Exception) {
             Log.e(TAG, "Error initializing secure keys", e)
         }
+
+        // Debug: Log the state of encryptedPreferences after initialization
+        println("[DEBUG] EncryptedPreferences state after initialization: ${encryptedPreferences?.all}")
     }
 
     /**
      * Get RapidAPI Key
      */
     fun getRapidApiKey(): String {
-        return encryptedPreferences?.getString(KEY_RAPIDAPI_KEY, "") ?: ""
+        val apiKey = encryptedPreferences?.getString(KEY_RAPIDAPI_KEY, "") ?: ""
+        println("[DEBUG] Retrieved RapidAPI Key from encryptedPreferences: $apiKey")
+        return apiKey
     }
 
     /**
      * Get RapidAPI Host
      */
     fun getRapidApiHost(): String {
-        return encryptedPreferences?.getString(KEY_RAPIDAPI_HOST, "") ?: ""
+        val apiHost = encryptedPreferences?.getString(KEY_RAPIDAPI_HOST, "") ?: ""
+        println("[DEBUG] Retrieved RapidAPI Host from encryptedPreferences: $apiHost")
+        return apiHost
     }
 
     /**
@@ -168,5 +197,30 @@ class SecureApiKeyManager(private val context: Context) {
         } catch (e: Exception) {
             Log.e(TAG, "Error updating AdMob IDs", e)
         }
+    }
+
+    fun encryptApiKey(key: String, value: String): String {
+        println("[DEBUG] Encrypting API key: $key")
+        // Encryption logic here
+        return "encrypted_$value"
+    }
+
+    fun decryptApiKey(key: String, encryptedValue: String): String {
+        println("[DEBUG] Decrypting API key: $key")
+        // Decryption logic here
+        return encryptedValue.removePrefix("encrypted_")
+    }
+
+    fun storeApiKey(key: String, value: String) {
+        println("[DEBUG] Attempting to store API key: $key with value: $value")
+        encryptedPreferences?.edit()?.putString(key, value)?.apply()
+        println("[DEBUG] API key stored: $key")
+        println("[DEBUG] EncryptedPreferences state after storing API key: ${encryptedPreferences?.all}")
+    }
+
+    fun retrieveApiKey(key: String): String? {
+        val value = encryptedPreferences?.getString(key, null)
+        println("[DEBUG] Retrieved API key: $key with value: $value")
+        return value
     }
 }

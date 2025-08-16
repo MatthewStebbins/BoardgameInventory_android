@@ -56,17 +56,32 @@ object ApiClient {
      * Get or create BarcodeApiService
      */
     private fun getService(context: Context): BarcodeApiService {
-        return barcodeApiService ?: synchronized(this) {
+        if (barcodeApiService == null) {
+            val apiKey = secureApiKeyManager.getRapidApiKey()
+            val apiHost = secureApiKeyManager.getRapidApiHost()
+
+            val client = OkHttpClient.Builder()
+                .addInterceptor { chain ->
+                    val request = chain.request().newBuilder()
+                        .addHeader("X-RapidAPI-Key", apiKey)
+                        .addHeader("X-RapidAPI-Host", apiHost)
+                        .build()
+                    chain.proceed(request)
+                }
+                .addInterceptor(HttpLoggingInterceptor().apply {
+                    level = HttpLoggingInterceptor.Level.BODY
+                })
+                .build()
+
             val retrofit = Retrofit.Builder()
                 .baseUrl(BASE_URL)
-                .client(createHttpClient(context))
+                .client(client)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build()
 
-            val service = retrofit.create(BarcodeApiService::class.java)
-            barcodeApiService = service
-            service
+            barcodeApiService = retrofit.create(BarcodeApiService::class.java)
         }
+        return barcodeApiService!!
     }
 
     /**
