@@ -1,14 +1,12 @@
 package com.boardgameinventory.security
 
 import android.content.Context
-import android.os.Build
+import android.util.Base64
+import androidx.core.content.edit
 import androidx.security.crypto.EncryptedSharedPreferences
 import androidx.security.crypto.MasterKey
-import java.security.SecureRandom
 import javax.crypto.KeyGenerator
 import javax.crypto.SecretKey
-import javax.crypto.spec.SecretKeySpec
-import android.util.Base64
 
 /**
  * Security manager class that handles encryption keys and secure storage.
@@ -21,7 +19,6 @@ class SecurityManager(private val context: Context) {
         private const val DB_KEY_ALIAS = "database_encryption_key"
         private const val KEY_SIZE = 256
         private const val ALGORITHM = "AES"
-        private const val TAG = "SecurityManager"
     }
 
     // Master key for encrypted shared preferences
@@ -61,7 +58,7 @@ class SecurityManager(private val context: Context) {
     private fun generateAndStoreNewKey(): String {
         val key = generateSecureAesKey()
         val keyString = Base64.encodeToString(key.encoded, Base64.NO_WRAP)
-        securePreferences.edit().putString(DB_KEY_ALIAS, keyString).apply()
+        securePreferences.edit { putString(DB_KEY_ALIAS, keyString) }
         return keyString
     }
 
@@ -69,38 +66,10 @@ class SecurityManager(private val context: Context) {
      * Generates a cryptographically secure AES key
      */
     private fun generateSecureAesKey(): SecretKey {
-        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            // Use Android KeyGenerator for API 23+
-            val keyGenerator = KeyGenerator.getInstance(ALGORITHM)
-            keyGenerator.init(KEY_SIZE)
-            keyGenerator.generateKey()
-        } else {
-            // Fallback for older devices
-            val secureRandom = SecureRandom()
-            val keyBytes = ByteArray(KEY_SIZE / 8)
-            secureRandom.nextBytes(keyBytes)
-            SecretKeySpec(keyBytes, ALGORITHM)
-        }
+        // Simplified: Removed fallback for SDK < 23
+        val keyGenerator = KeyGenerator.getInstance(ALGORITHM)
+        keyGenerator.init(KEY_SIZE)
+        return keyGenerator.generateKey()
     }
 
-    /**
-     * Securely stores a string value
-     */
-    fun secureStoreString(key: String, value: String) {
-        securePreferences.edit().putString(key, value).apply()
-    }
-
-    /**
-     * Retrieves a securely stored string value
-     */
-    fun secureRetrieveString(key: String, defaultValue: String? = null): String? {
-        return securePreferences.getString(key, defaultValue)
-    }
-
-    /**
-     * Removes a securely stored value
-     */
-    fun secureRemoveValue(key: String) {
-        securePreferences.edit().remove(key).apply()
-    }
 }
