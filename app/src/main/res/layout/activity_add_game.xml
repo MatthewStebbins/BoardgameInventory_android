@@ -84,21 +84,15 @@
 
                     </com.google.android.material.textfield.TextInputLayout>
 
-                    <com.google.android.material.button.MaterialButton
-                        android:id="@+id/btnScanBarcode"
-                        style="@style/ButtonStyle.Accent"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="@string/scan_barcode"
-                        android:layout_marginHorizontal="16dp" />
-
                     <!-- Location Barcode -->
                     <com.google.android.material.textfield.TextInputLayout
                         android:id="@+id/tilLocationBarcode"
                         style="@style/TextInputStyle"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:hint="@string/location_barcode_hint">
+                        android:hint="@string/location_barcode_hint"
+                        app:endIconMode="custom"
+                        app:endIconDrawable="@drawable/ic_barcode_scan">
 
                         <com.google.android.material.textfield.TextInputEditText
                             android:id="@+id/etLocationBarcode"

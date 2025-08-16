@@ -72,11 +72,9 @@ class AddGameActivity : BaseAdActivity() {
             tilDescription.hint = getString(R.string.description_hint_optional)
 
             // Button descriptions
-            btnScanBarcode.contentDescription = getString(R.string.scan_barcode_description)
             btnSubmit.contentDescription = getString(R.string.save_game_description)
 
             // Set traversal order for logical form navigation with screen readers
-            etGameName.accessibilityTraversalBefore = btnScanBarcode.id
             etBarcode.accessibilityTraversalAfter = etGameName.id
             etBookcase.accessibilityTraversalAfter = etBarcode.id
             etShelf.accessibilityTraversalAfter = etBookcase.id
@@ -151,10 +149,6 @@ class AddGameActivity : BaseAdActivity() {
     }
 
     private fun setupClickListeners() {
-        binding.btnScanBarcode.setOnClickListener {
-            checkCameraPermissionAndScan()
-        }
-
         binding.tilBarcode.setEndIconOnClickListener {
             checkCameraPermissionAndScan()
         }
@@ -165,6 +159,11 @@ class AddGameActivity : BaseAdActivity() {
 
         binding.btnCancel.setOnClickListener {
             finish()
+        }
+
+        // Add end icon click listener for Location Barcode field
+        binding.tilLocationBarcode.setEndIconOnClickListener {
+            checkCameraPermissionAndScan()
         }
     }
 
@@ -260,7 +259,7 @@ class AddGameActivity : BaseAdActivity() {
     }
     
     override fun onSupportNavigateUp(): Boolean {
-        onBackPressed()
+        onBackPressedDispatcher.onBackPressed()
         return true
     }
 }

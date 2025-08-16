@@ -33,7 +33,7 @@ class AddGameViewModel(application: Application) : AndroidViewModel(application)
 
     // Constructor that accepts a repository directly (used by ViewModelFactory)
     constructor(repository: GameRepository) : this(Application()) {
-        // Repository is already set in the primary constructor
+        // Removed unused parameter
     }
 
     fun addGame(barcode: String, bookcase: String, shelf: String) {
@@ -67,9 +67,5 @@ class AddGameViewModel(application: Application) : AndroidViewModel(application)
                 _isLoading.value = false
             }
         }
-    }
-
-    fun updateValidationResults(results: List<Pair<Int, Boolean>>) {
-        _validationResults.value = results
     }
 }
