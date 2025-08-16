@@ -14,28 +14,15 @@ import com.boardgameinventory.api.ProductInfo // Import the ProductInfo class
 
 class GameRepository(private val gameDao: GameDao, private val context: Context) {
 
-    fun getAllGames(): Flow<List<Game>> = gameDao.getAllGames()
-    
     fun getLoanedGames(): Flow<List<Game>> = gameDao.getLoanedGames()
     
     fun getAvailableGames(): Flow<List<Game>> = gameDao.getAvailableGames()
-    
-    suspend fun getGameById(id: Long): Game? = gameDao.getGameById(id)
-    
+
     suspend fun getGameByBarcode(barcode: String): Game? = gameDao.getGameByBarcode(barcode)
-    
-    suspend fun getAllBookcases(): List<String> = gameDao.getAllBookcases()
-    
-    suspend fun getShelvesForBookcase(bookcase: String): List<String> = 
-        gameDao.getShelvesForBookcase(bookcase)
     
     suspend fun insertGame(game: Game): Long = gameDao.insertGame(game)
     
-    suspend fun insertGames(games: List<Game>) = gameDao.insertGames(games)
-    
     suspend fun updateGame(game: Game) = gameDao.updateGame(game)
-    
-    suspend fun deleteGame(game: Game) = gameDao.deleteGame(game)
     
     suspend fun deleteGameById(id: Long) = gameDao.deleteGameById(id)
     

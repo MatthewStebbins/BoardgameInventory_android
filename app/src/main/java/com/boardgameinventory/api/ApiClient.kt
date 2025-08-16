@@ -1,5 +1,6 @@
 package com.boardgameinventory.api
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.util.Log
 import com.boardgameinventory.utils.SecureApiKeyManager
@@ -16,6 +17,7 @@ object ApiClient {
     private const val BASE_URL = "https://barcodes1.p.rapidapi.com/"
     private const val TAG = "ApiClient"
 
+    @SuppressLint("StaticFieldLeak")
     private lateinit var secureApiKeyManager: SecureApiKeyManager
     private var barcodeApiService: BarcodeApiService? = null
 
@@ -38,18 +40,6 @@ object ApiClient {
         val apiKey = secureApiKeyManager.getRapidApiKey()
         println("API Key: $apiKey") // Debugging line to check API key
         return apiKey != "your_api_key_here" && apiKey.isNotBlank()
-    }
-
-    /**
-     * Create OkHttpClient with secure API interceptor
-     */
-    private fun createHttpClient(context: Context): OkHttpClient {
-        return OkHttpClient.Builder()
-            .addInterceptor(SecureApiInterceptor(context))
-            .addInterceptor(HttpLoggingInterceptor().apply {
-                level = HttpLoggingInterceptor.Level.BODY
-            })
-            .build()
     }
 
     /**
