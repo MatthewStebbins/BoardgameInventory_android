@@ -38,14 +38,13 @@ object ApiClient {
             return false
         }
         val apiKey = secureApiKeyManager.getRapidApiKey()
-        println("API Key: $apiKey") // Debugging line to check API key
         return apiKey != "your_api_key_here" && apiKey.isNotBlank()
     }
 
     /**
      * Get or create BarcodeApiService
      */
-    private fun getService(context: Context): BarcodeApiService {
+    private fun getService(): BarcodeApiService { // Removed unused 'context' parameter
         if (barcodeApiService == null) {
             val apiKey = secureApiKeyManager.getRapidApiKey()
             val apiHost = secureApiKeyManager.getRapidApiHost()
@@ -77,7 +76,7 @@ object ApiClient {
     /**
      * Look up product information by barcode
      */
-    suspend fun lookupBarcode(context: Context, barcode: String): ProductInfo? {
+    suspend fun lookupBarcode(barcode: String): ProductInfo? { // Removed unused 'context' parameter
         // Check if API key is properly configured
         if (!isApiKeyConfigured()) {
             Log.w(TAG, "Warning: API key not configured. Barcode lookup will not work.")
@@ -85,7 +84,7 @@ object ApiClient {
         }
 
         return try {
-            val response = getService(context).lookupBarcode(barcode)
+            val response = getService().lookupBarcode(barcode)
 
             // Try to extract ProductInfo from all possible fields
             val product = response.product
