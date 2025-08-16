@@ -102,6 +102,10 @@
 -dontwarn org.slf4j.**
 -dontwarn org.apache.log4j.**
 
+# Exclude the SVGUserAgent class from R8 processing
+-dontwarn org.apache.poi.xslf.draw.SVGUserAgent
+-keep class org.apache.poi.xslf.draw.SVGUserAgent { *; }
+
 # Android support libraries
 -keep class androidx.** { *; }
 -keep interface androidx.** { *; }

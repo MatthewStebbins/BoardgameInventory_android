@@ -8,6 +8,7 @@ import android.widget.SeekBar
 import androidx.appcompat.widget.Toolbar
 import androidx.core.content.edit
 import androidx.preference.PreferenceManager
+import com.boardgameinventory.BuildConfig
 import com.boardgameinventory.R
 import com.boardgameinventory.utils.TextDarknessManager
 
@@ -68,6 +69,9 @@ class SettingsActivity : BaseAdActivity() {
             override fun onStopTrackingTouch(seekBar: SeekBar?) {}
         })
 
+        // Display app version
+        val versionTextView = findViewById<android.widget.TextView>(R.id.version_text_view)
+        versionTextView.text = getString(R.string.version_info, BuildConfig.VERSION_NAME, BuildConfig.VERSION_CODE)
     }
 
     private fun setupAdsManually() {
