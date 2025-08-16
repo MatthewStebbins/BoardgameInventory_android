@@ -12,9 +12,4 @@ interface BarcodeApiService {
         @Query("barcode") barcode: String
     ): BarcodeResponse
 
-    @GET("search")
-    suspend fun searchProducts(
-        @Query("query") query: String,
-        @Query("limit") limit: Int = 10
-    ): SearchResponse
 }

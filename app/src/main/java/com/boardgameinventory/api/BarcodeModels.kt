@@ -15,15 +15,6 @@ data class BarcodeResponse(
     val message: String? = null
 )
 
-data class SearchResponse(
-    @SerializedName("products")
-    val products: List<ProductInfo>?,
-    @SerializedName("status")
-    val status: String = "",
-    @SerializedName("message")
-    val message: String? = null
-)
-
 data class ProductInfo(
     @SerializedName("barcode")
     val barcode: String?,
