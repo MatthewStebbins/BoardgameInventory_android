@@ -305,4 +305,21 @@ class GameRepository(private val gameDao: GameDao, private val context: Context)
             }
         ).flow
     }
+
+    suspend fun syncGameData(gameTitle: String) {
+        if (gameTitle.isNotBlank()) {
+            val productInfo = ApiClient.lookupBarcode(context, gameTitle)
+            productInfo?.let { info ->
+                val game = Game(
+                    name = info.name ?: info.title ?: info.productName ?: "Unknown Game",
+                    barcode = info.barcode ?: "",
+                    bookcase = "Default Bookcase", // Default values can be adjusted
+                    shelf = "Default Shelf",
+                    description = info.description ?: info.desc,
+                    imageUrl = null // No imageUrl property exists in ProductInfo
+                )
+                gameDao.updateGame(game)
+            }
+        }
+    }
 }

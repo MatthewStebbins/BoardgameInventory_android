@@ -26,4 +26,10 @@
         app:showAsAction="never"
         android:titleTextAppearance="@style/DarkMenuText" />
 
+    <item
+        android:id="@+id/action_sync"
+        android:title="Sync"
+        android:icon="@drawable/ic_sync"
+        android:showAsAction="ifRoom" />
+
 </menu>

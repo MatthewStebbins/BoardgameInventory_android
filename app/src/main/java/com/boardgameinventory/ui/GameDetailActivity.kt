@@ -5,7 +5,9 @@ import android.os.Build
 import android.os.Bundle
 import android.view.MenuItem
 import android.view.View
+import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.activity.viewModels
 import androidx.appcompat.widget.Toolbar
 import androidx.lifecycle.lifecycleScope
 import com.bumptech.glide.Glide
@@ -16,6 +18,8 @@ import com.boardgameinventory.databinding.ActivityGameDetailBinding
 import com.boardgameinventory.repository.GameRepository
 import com.boardgameinventory.utils.Utils
 import com.boardgameinventory.utils.TextDarknessManager
+import com.boardgameinventory.viewmodel.GameDetailViewModel
+import com.boardgameinventory.viewmodel.GameDetailViewModelFactory
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -47,6 +51,10 @@ class GameDetailActivity : BaseAdActivity() {
         }
     }
     
+    private val viewModel: GameDetailViewModel by viewModels {
+        GameDetailViewModelFactory(GameRepository(AppDatabase.getDatabase(this).gameDao(), this))
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityGameDetailBinding.inflate(layoutInflater)
@@ -267,6 +275,16 @@ class GameDetailActivity : BaseAdActivity() {
         return when (item.itemId) {
             android.R.id.home -> {
                 onBackPressedDispatcher.onBackPressed()
+                true
+            }
+            R.id.action_sync -> {
+                val gameTitle = viewModel.getGameTitle() // Assuming a ViewModel method exists to get the title
+                if (gameTitle != "Unknown Game") {
+                    viewModel.syncGameData() // Assuming a ViewModel method exists to handle sync
+                    Toast.makeText(this, "Syncing game data...", Toast.LENGTH_SHORT).show()
+                } else {
+                    Toast.makeText(this, "Cannot sync: Unknown Game", Toast.LENGTH_SHORT).show()
+                }
                 true
             }
             else -> super.onOptionsItemSelected(item)
