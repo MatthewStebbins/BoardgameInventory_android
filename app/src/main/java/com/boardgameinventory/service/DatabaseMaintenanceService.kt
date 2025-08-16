@@ -35,15 +35,7 @@ class DatabaseMaintenanceService : Service() {
             intent.action = "BACKUP_DATABASE"
             context.startService(intent)
         }
-        
-        /**
-         * Trigger health check
-         */
-        fun triggerHealthCheck(context: Context) {
-            val intent = Intent(context, DatabaseMaintenanceService::class.java)
-            intent.action = "HEALTH_CHECK"
-            context.startService(intent)
-        }
+
     }
     
     override fun onCreate() {
@@ -108,7 +100,7 @@ class DatabaseMaintenanceService : Service() {
         }
     }
     
-    private suspend fun optimizeDatabase() {
+    private fun optimizeDatabase() {
         try {
             Log.d(TAG, "Starting database optimization")
             // Database optimization logic can be implemented here

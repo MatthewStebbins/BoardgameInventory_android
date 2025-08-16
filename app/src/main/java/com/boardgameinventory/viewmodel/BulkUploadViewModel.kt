@@ -24,7 +24,7 @@ class BulkUploadViewModel(
 
     init {
         val database = AppDatabase.getDatabase(application)
-        repository = GameRepository(database.gameDao(), application.applicationContext)
+        repository = GameRepository(database.gameDao())
     }
 
     // Constructor that accepts a repository directly (used by ViewModelFactory)
@@ -115,7 +115,7 @@ class BulkUploadViewModel(
         shelf: String
     ): Game {
         val gameData: ProductInfo? = try {
-            ApiClient.lookupBarcode(getApplication<Application>().applicationContext, barcode)
+            ApiClient.lookupBarcode(barcode)
         } catch (e: Exception) {
             null
         }

@@ -14,7 +14,7 @@ class ViewModelFactory(private val context: Context) : ViewModelProvider.Factory
 
     private val repository by lazy {
         val gameDao = AppDatabase.getDatabase(context).gameDao()
-        GameRepository(gameDao, context)
+        GameRepository(gameDao)
     }
 
     @Suppress("UNCHECKED_CAST")

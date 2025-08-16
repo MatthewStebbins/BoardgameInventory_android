@@ -52,7 +52,7 @@ class GameDetailActivity : BaseAdActivity() {
     }
     
     private val viewModel: GameDetailViewModel by viewModels {
-        GameDetailViewModelFactory(GameRepository(AppDatabase.getDatabase(this).gameDao(), this))
+        GameDetailViewModelFactory(GameRepository(AppDatabase.getDatabase(this).gameDao()))
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -178,7 +178,7 @@ class GameDetailActivity : BaseAdActivity() {
             lifecycleScope.launch {
                 try {
                     // Create a ViewModel instance for game operations
-                    val gameRepository = GameRepository(AppDatabase.getDatabase(this@GameDetailActivity).gameDao(), this@GameDetailActivity)
+                    val gameRepository = GameRepository(AppDatabase.getDatabase(this@GameDetailActivity).gameDao())
                     
                     // Return the game by clearing the loanedTo field
                     gameRepository.returnGame(currentGame.id)

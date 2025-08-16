@@ -57,7 +57,7 @@ class GameListViewModel : AndroidViewModel {
     // Primary constructor with application parameter
     constructor(application: Application) : super(application) {
         val database = AppDatabase.getDatabase(application)
-        repository = GameRepository(database.gameDao(), application.applicationContext)
+        repository = GameRepository(database.gameDao())
 
         // Initialize game data
         availableGames = repository.getAvailableGames().asLiveData()

@@ -33,7 +33,7 @@ class ExportImportViewModel(application: Application) : AndroidViewModel(applica
     
     init {
         val database = AppDatabase.getDatabase(application)
-        repository = GameRepository(database.gameDao(), application.applicationContext)
+        repository = GameRepository(database.gameDao())
     }
 
     // Constructor that accepts a repository directly (used by ViewModelFactory)
