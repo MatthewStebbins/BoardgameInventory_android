@@ -8,6 +8,7 @@ import com.boardgameinventory.R
 import com.boardgameinventory.databinding.ActivityDeveloperSettingsBinding
 import com.boardgameinventory.utils.ContrastChecker
 import com.boardgameinventory.utils.DeveloperMode
+import com.boardgameinventory.utils.TextDarknessManager
 
 /**
  * Developer Settings Activity
@@ -32,6 +33,8 @@ class DeveloperSettingsActivity : BaseAdActivity() {
 
         binding = ActivityDeveloperSettingsBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        // Apply text darkness setting
+        TextDarknessManager.applyTextDarknessToActivity(this)
 
         // Security check: Verify developer mode access
         if (!DeveloperMode.isDeveloperModeActive(this)) {

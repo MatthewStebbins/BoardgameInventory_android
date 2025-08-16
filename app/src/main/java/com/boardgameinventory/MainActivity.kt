@@ -1,10 +1,12 @@
 package com.boardgameinventory
 
 import android.content.Intent
+import android.content.SharedPreferences
 import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
 import androidx.lifecycle.lifecycleScope
+import androidx.preference.PreferenceManager
 import com.boardgameinventory.databinding.ActivityMainBinding
 import com.boardgameinventory.ui.*
 import com.boardgameinventory.ui.ExportImportActivity
@@ -12,6 +14,7 @@ import com.boardgameinventory.update.AppUpdateManager
 import com.boardgameinventory.update.UpdateState
 import com.boardgameinventory.utils.AdManager
 import com.boardgameinventory.utils.DeveloperMode
+import com.boardgameinventory.utils.TextDarknessManager
 import com.boardgameinventory.viewmodel.MainViewModel
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.gms.ads.AdView
@@ -26,11 +29,26 @@ class MainActivity : BaseAdActivity() {
     // Update manager for handling in-app updates
     private lateinit var appUpdateManager: AppUpdateManager
 
+    private lateinit var sharedPreferences: SharedPreferences
+    private val preferenceChangeListener = SharedPreferences.OnSharedPreferenceChangeListener { _, key ->
+        if (key == "text_darkness") {
+            // Reapply text darkness when the setting changes
+            TextDarknessManager.applyTextDarknessToActivity(this)
+        }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        
+
+        // Initialize SharedPreferences and register the listener
+        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this)
+        sharedPreferences.registerOnSharedPreferenceChangeListener(preferenceChangeListener)
+
+        // Apply text darkness setting
+        TextDarknessManager.applyTextDarknessToActivity(this)
+
         // Get the update manager from the application
         appUpdateManager = (application as BoardGameInventoryApp).updateManager
 
@@ -233,6 +251,8 @@ class MainActivity : BaseAdActivity() {
     override fun onDestroy() {
         super.onDestroy()
         AdManager.destroyAd(adView)
+        // Unregister the preference change listener to avoid memory leaks
+        sharedPreferences.unregisterOnSharedPreferenceChangeListener(preferenceChangeListener)
     }
 
     // Expose appUpdateManager for testing purposes

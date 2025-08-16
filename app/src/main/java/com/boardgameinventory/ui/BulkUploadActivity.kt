@@ -13,6 +13,7 @@ import com.boardgameinventory.R
 import com.boardgameinventory.databinding.ActivityBulkUploadBinding
 import com.boardgameinventory.utils.BarcodeUtils
 import com.boardgameinventory.utils.PermissionUtils
+import com.boardgameinventory.utils.TextDarknessManager
 import com.boardgameinventory.viewmodel.BulkUploadViewModel
 import com.journeyapps.barcodescanner.ScanContract
 
@@ -65,6 +66,8 @@ class BulkUploadActivity : BaseAdActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityBulkUploadBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        // Apply text darkness setting
+        TextDarknessManager.applyTextDarknessToActivity(this)
 
         // Set up the toolbar with a back arrow
         setSupportActionBar(binding.toolbar)

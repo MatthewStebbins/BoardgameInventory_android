@@ -11,6 +11,7 @@ import com.boardgameinventory.databinding.ActivityAddGameBinding
 import com.boardgameinventory.utils.Utils
 import com.boardgameinventory.utils.BarcodeUtils
 import com.boardgameinventory.utils.PermissionUtils
+import com.boardgameinventory.utils.TextDarknessManager
 import com.boardgameinventory.viewmodel.AddGameViewModel
 import com.boardgameinventory.validation.GameInputValidation
 import com.boardgameinventory.validation.ValidationUtils
@@ -46,6 +47,8 @@ class AddGameActivity : BaseAdActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityAddGameBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        // Apply text darkness setting
+        TextDarknessManager.applyTextDarknessToActivity(this)
 
         // Set up the toolbar with a back arrow
         setSupportActionBar(binding.toolbar)

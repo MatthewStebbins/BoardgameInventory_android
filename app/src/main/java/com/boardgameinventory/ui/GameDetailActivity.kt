@@ -15,6 +15,7 @@ import com.boardgameinventory.data.Game
 import com.boardgameinventory.databinding.ActivityGameDetailBinding
 import com.boardgameinventory.repository.GameRepository
 import com.boardgameinventory.utils.Utils
+import com.boardgameinventory.utils.TextDarknessManager
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -50,7 +51,9 @@ class GameDetailActivity : BaseAdActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityGameDetailBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        
+        // Apply text darkness setting
+        TextDarknessManager.applyTextDarknessToActivity(this)
+
         // Setup toolbar
         val toolbar: Toolbar = findViewById(R.id.toolbar)
         setSupportActionBar(toolbar)

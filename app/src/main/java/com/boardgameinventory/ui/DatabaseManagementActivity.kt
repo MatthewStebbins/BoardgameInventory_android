@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.boardgameinventory.R
 import com.boardgameinventory.databinding.ActivityDatabaseManagementBinding
 import com.boardgameinventory.utils.DeveloperMode
+import com.boardgameinventory.utils.TextDarknessManager
 import com.boardgameinventory.viewmodel.DatabaseManagementViewModel
 import com.boardgameinventory.viewmodel.OperationType
 import java.text.SimpleDateFormat
@@ -35,6 +36,8 @@ class DatabaseManagementActivity : BaseAdActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityDatabaseManagementBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        // Apply text darkness setting
+        TextDarknessManager.applyTextDarknessToActivity(this)
 
         setupToolbar()
         setupRecyclerView()

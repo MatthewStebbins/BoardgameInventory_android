@@ -27,12 +27,12 @@ object TextDarknessManager {
         val adjustedColor = (255 - darkness * 2.55).toInt()
         val textColor = String.format("#%02X%02X%02X", adjustedColor, adjustedColor, adjustedColor).toColorInt()
 
-        // Update text color for all TextViews in the view hierarchy
+        // Update text color for all TextViews in the view hierarchy, excluding Buttons
         if (view is ViewGroup) {
             for (i in 0 until view.childCount) {
                 applyTextDarknessToView(view.getChildAt(i), darkness)
             }
-        } else if (view is android.widget.TextView) {
+        } else if (view is android.widget.TextView && view !is android.widget.Button) {
             view.setTextColor(textColor)
         }
     }

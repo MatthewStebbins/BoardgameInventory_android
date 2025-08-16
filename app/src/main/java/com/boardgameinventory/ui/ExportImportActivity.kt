@@ -13,6 +13,7 @@ import com.boardgameinventory.R
 import com.boardgameinventory.databinding.ActivityExportImportBinding
 import com.boardgameinventory.utils.ExportUtils
 import com.boardgameinventory.utils.ImportUtils
+import com.boardgameinventory.utils.TextDarknessManager
 import com.boardgameinventory.viewmodel.ExportImportViewModel
 import kotlinx.coroutines.launch
 
@@ -42,6 +43,8 @@ class ExportImportActivity : BaseAdActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityExportImportBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        // Apply text darkness setting
+        TextDarknessManager.applyTextDarknessToActivity(this)
 
         // Set up the toolbar with a back arrow
         setSupportActionBar(binding.toolbar)

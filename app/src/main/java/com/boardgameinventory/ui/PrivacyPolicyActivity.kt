@@ -11,6 +11,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.boardgameinventory.R
 import com.boardgameinventory.databinding.ActivityPrivacyPolicyBinding
+import com.boardgameinventory.utils.TextDarknessManager
 import com.google.android.material.elevation.SurfaceColors
 
 /**
@@ -27,6 +28,8 @@ class PrivacyPolicyActivity : AppCompatActivity() {
         // Use view binding
         binding = ActivityPrivacyPolicyBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        // Apply text darkness setting
+        TextDarknessManager.applyTextDarknessToActivity(this)
 
         // Setup toolbar with themed colors
         setSupportActionBar(binding.toolbar)

@@ -18,6 +18,7 @@ import com.boardgameinventory.data.Game
 import com.boardgameinventory.databinding.ActivityLoanGameBinding
 import com.boardgameinventory.utils.Utils
 import com.boardgameinventory.utils.BarcodeUtils
+import com.boardgameinventory.utils.TextDarknessManager
 import com.boardgameinventory.viewmodel.GameListViewModel
 import com.boardgameinventory.validation.GameInputValidation
 import com.boardgameinventory.validation.ValidationUtils
@@ -53,7 +54,9 @@ class LoanGameActivity : BaseAdActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityLoanGameBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        
+        // Apply text darkness setting
+        TextDarknessManager.applyTextDarknessToActivity(this)
+
         // Set up the toolbar with a back arrow
         setSupportActionBar(binding.toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)

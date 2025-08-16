@@ -18,6 +18,7 @@ import com.boardgameinventory.data.Game
 import com.boardgameinventory.databinding.ActivityEditGameBinding
 import com.boardgameinventory.utils.Utils
 import com.boardgameinventory.utils.BarcodeUtils
+import com.boardgameinventory.utils.TextDarknessManager
 import com.boardgameinventory.viewmodel.EditGameViewModel
 import com.boardgameinventory.validation.GameInputValidation
 import com.boardgameinventory.validation.ValidationUtils
@@ -53,7 +54,9 @@ class EditGameActivity : BaseAdActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityEditGameBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        
+        // Apply text darkness setting
+        TextDarknessManager.applyTextDarknessToActivity(this)
+
         // Get the game from intent
         originalGame = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             intent.getParcelableExtra("game", Game::class.java)

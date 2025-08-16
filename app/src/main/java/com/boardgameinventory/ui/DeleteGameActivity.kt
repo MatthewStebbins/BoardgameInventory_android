@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.boardgameinventory.R
 import com.boardgameinventory.data.Game
 import com.boardgameinventory.databinding.ActivityDeleteGameBinding
+import com.boardgameinventory.utils.TextDarknessManager
 import com.boardgameinventory.utils.Utils
 import com.boardgameinventory.viewmodel.GameListViewModel
 import com.journeyapps.barcodescanner.ScanContract
@@ -48,6 +49,8 @@ class DeleteGameActivity : BaseAdActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityDeleteGameBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        // Apply text darkness setting
+        TextDarknessManager.applyTextDarknessToActivity(this)
 
         // Set up the toolbar with a back arrow
         setSupportActionBar(binding.toolbar)

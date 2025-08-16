@@ -16,6 +16,7 @@ import com.boardgameinventory.data.Game
 import com.boardgameinventory.databinding.ActivityReturnGameBinding
 import com.boardgameinventory.utils.Utils
 import com.boardgameinventory.utils.BarcodeUtils
+import com.boardgameinventory.utils.TextDarknessManager
 import com.boardgameinventory.viewmodel.GameListViewModel
 import com.journeyapps.barcodescanner.ScanContract
 import kotlinx.coroutines.launch
@@ -47,7 +48,9 @@ class ReturnGameActivity : BaseAdActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityReturnGameBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        
+        // Apply text darkness setting
+        TextDarknessManager.applyTextDarknessToActivity(this)
+
         // Set up the toolbar with a back arrow
         setSupportActionBar(binding.toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)

@@ -20,6 +20,7 @@ import com.boardgameinventory.data.SearchAndFilterCriteria
 import com.boardgameinventory.data.SortCriteria
 import com.boardgameinventory.databinding.ActivityGameListBinding
 import com.boardgameinventory.databinding.DialogFilterBinding
+import com.boardgameinventory.utils.TextDarknessManager
 import com.boardgameinventory.viewmodel.GameListViewModel
 import com.google.android.material.chip.Chip
 import com.google.android.material.tabs.TabLayoutMediator
@@ -38,7 +39,9 @@ class GameListActivity : BaseAdActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityGameListBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        
+        // Apply text darkness setting
+        TextDarknessManager.applyTextDarknessToActivity(this)
+
         // Set up the toolbar with a back arrow
         setSupportActionBar(binding.toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
