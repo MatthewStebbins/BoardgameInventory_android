@@ -16,6 +16,7 @@ import com.boardgameinventory.ads.ConsentManager
 import com.boardgameinventory.api.ApiClient
 import com.boardgameinventory.update.AppUpdateManager
 import com.boardgameinventory.utils.SecureApiKeyManager
+import com.boardgameinventory.utils.TextDarknessUtil
 import com.google.android.gms.ads.MobileAds
 import com.google.android.gms.ads.initialization.AdapterStatus
 
@@ -69,6 +70,12 @@ class BoardGameInventoryApp : Application() {
 
         // Initialize AdMob
         initializeAdMob()
+
+        // Apply text darkness globally during app initialization
+        val textDarkness = TextDarknessUtil.getTextDarkness(this)
+        // Replaced invalid `android.R.layout.content` with a valid root view reference
+        val rootView = android.view.View(this)
+        TextDarknessUtil.applyTextDarknessToView(rootView, textDarkness)
     }
 
     private fun initializeApiKeys() {

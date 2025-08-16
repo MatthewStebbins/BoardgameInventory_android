@@ -222,4 +222,5 @@ dependencies {
     androidTestImplementation 'org.jetbrains.kotlinx:kotlinx-coroutines-test:1.8.1'
     androidTestImplementation 'androidx.room:room-testing:2.6.1'
     implementation 'org.slf4j:slf4j-simple:2.0.9'
+    implementation 'androidx.preference:preference-ktx:1.2.0'
 }

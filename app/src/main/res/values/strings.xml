@@ -424,4 +424,9 @@
     <string name="ad_consent_button_decline">Decline</string>
     <string name="ad_consent_button_learn_more">Learn More</string>
     <string name="ad_consent_form_unavailable">Ad preferences are currently unavailable. Please try again later.</string>
+
+    <!-- New Strings -->
+    <string name="text_darkness">Text Darkness</string>
+    <string name="ad_consent">Ad Consent</string>
+    <string name="app_version">Version: 1.0</string>
 </resources>

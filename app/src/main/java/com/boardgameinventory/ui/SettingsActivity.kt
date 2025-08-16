@@ -1,11 +1,13 @@
 package com.boardgameinventory.ui
 
 import android.content.Intent
+import android.graphics.Color
 import android.os.Bundle
+import android.view.View
 import android.widget.Button
-import androidx.appcompat.app.AppCompatActivity
+import android.widget.SeekBar
 import androidx.appcompat.widget.Toolbar
-import com.boardgameinventory.BoardGameInventoryApp
+import androidx.preference.PreferenceManager
 import com.boardgameinventory.R
 
 /**
@@ -41,17 +43,31 @@ class SettingsActivity : BaseAdActivity() {
             showConsentForm()
         }
 
-        // Set app version dynamically
-        val appVersionTextView = findViewById<android.widget.TextView>(R.id.app_version)
-        val versionName = try {
-            packageManager.getPackageInfo(packageName, 0).versionName
-        } catch (e: Exception) {
-            "?"
-        }
-        appVersionTextView.text = getString(R.string.version_format, versionName)
-
         // Manually setup ads
         setupAdsManually()
+
+        // Text darkness slider
+        val textDarknessSlider = findViewById<SeekBar>(R.id.text_darkness_slider)
+        val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this)
+
+        // Load saved value
+        val savedDarkness = sharedPreferences.getInt("text_darkness", 50)
+        textDarknessSlider.progress = savedDarkness
+
+        // Save value on change
+        textDarknessSlider.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
+            override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
+                val editor = sharedPreferences.edit()
+                editor.putInt("text_darkness", progress)
+                editor.apply()
+                applyTextDarkness(progress)
+            }
+
+            override fun onStartTrackingTouch(seekBar: SeekBar?) {}
+
+            override fun onStopTrackingTouch(seekBar: SeekBar?) {}
+        })
+
     }
 
     private fun setupAdsManually() {
@@ -63,9 +79,6 @@ class SettingsActivity : BaseAdActivity() {
             adView = localAdView
 
             if (localAdView != null) {
-                // Set up the ad container
-                val adContainer = findViewById<android.view.ViewGroup>(R.id.adContainer)
-
                 // Configure the listener
                 localAdView.adListener = object : com.google.android.gms.ads.AdListener() {
                     override fun onAdLoaded() {
@@ -83,6 +96,20 @@ class SettingsActivity : BaseAdActivity() {
         } catch (e: Exception) {
             android.util.Log.e("SettingsActivity", "Error in ad setup: ${e.message}", e)
         }
+    }
+
+    private fun applyTextDarkness(darkness: Int) {
+        val adjustedColor = (255 - darkness * 2.55).toInt()
+        // Replaced `toColorInt` with `Color.parseColor`
+        val textColor = Color.parseColor(String.format("#%02X%02X%02X", adjustedColor, adjustedColor, adjustedColor))
+
+        // Fixed `View` and `rootView` references
+        findViewById<View>(android.R.id.content).rootView.setBackgroundColor(textColor)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        //applyTextDarkness()
     }
 
     override fun onSupportNavigateUp(): Boolean {
