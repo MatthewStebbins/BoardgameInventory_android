@@ -1,5 +1,6 @@
 package com.boardgameinventory.ads
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
 import android.util.Log
@@ -12,7 +13,6 @@ import com.google.android.ump.*
 import com.google.android.ump.ConsentDebugSettings.DebugGeography
 import com.google.android.ump.ConsentInformation.ConsentStatus
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
 
 /**
  * Consent manager for handling GDPR, CCPA, and other privacy regulations
@@ -36,6 +36,7 @@ class ConsentManager(private val context: Context) : DefaultLifecycleObserver {
         )
 
         // Singleton instance
+        @SuppressLint("StaticFieldLeak")
         @Volatile
         private var INSTANCE: ConsentManager? = null
 
@@ -54,11 +55,9 @@ class ConsentManager(private val context: Context) : DefaultLifecycleObserver {
 
     // State flow to observe consent status changes
     private val _consentStatusFlow = MutableStateFlow(ConsentStatus.UNKNOWN)
-    val consentStatusFlow = _consentStatusFlow.asStateFlow()
 
     // State flow to observe if consent is required
     private val _consentRequired = MutableStateFlow(true)
-    val consentRequired = _consentRequired.asStateFlow()
 
     /**
      * Initialize the consent manager
@@ -207,20 +206,6 @@ class ConsentManager(private val context: Context) : DefaultLifecycleObserver {
         if (RESET_ON_LAUNCH) {
             resetConsent()
         }
-    }
-
-    /**
-     * Check if personalized ads are allowed based on user consent
-     */
-    fun canShowPersonalizedAds(): Boolean {
-        return consentInformation.consentStatus == ConsentStatus.OBTAINED
-    }
-
-    /**
-     * Check if any ads can be shown (either personalized or non-personalized)
-     */
-    fun canShowAds(): Boolean {
-        return consentInformation.consentStatus != ConsentStatus.REQUIRED
     }
 
     // Lifecycle methods

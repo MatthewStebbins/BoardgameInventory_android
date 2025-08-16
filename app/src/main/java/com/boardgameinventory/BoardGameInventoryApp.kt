@@ -107,7 +107,7 @@ class BoardGameInventoryApp : Application() {
             consentManager = ConsentManager.getInstance(this)
 
             // Create ad manager instance
-            adManager = AdManager.getInstance(this)
+            adManager = AdManager.getInstance()
 
             // Add lifecycle observers to process lifecycle owner to manage lifecycle events
             ProcessLifecycleOwner.get().lifecycle.addObserver(consentManager)
