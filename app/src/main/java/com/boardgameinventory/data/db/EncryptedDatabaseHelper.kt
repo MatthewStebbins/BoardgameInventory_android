@@ -41,7 +41,7 @@ object EncryptedDatabaseHelper {
 
             return Room.databaseBuilder(context, databaseClass, databaseName)
                 .openHelperFactory(factory)
-                .fallbackToDestructiveMigration() // You might want to implement proper migrations
+                .fallbackToDestructiveMigration(false) // You might want to implement proper migrations
                 .addCallback(object : RoomDatabase.Callback() {
                     override fun onCreate(db: SupportSQLiteDatabase) {
                         super.onCreate(db)
@@ -60,7 +60,7 @@ object EncryptedDatabaseHelper {
             Log.e(TAG, "Failed to create encrypted database: ${e.message}", e)
 
             return Room.databaseBuilder(context, databaseClass, databaseName)
-                .fallbackToDestructiveMigration()
+                .fallbackToDestructiveMigration(false)
                 .build()
         }
     }
