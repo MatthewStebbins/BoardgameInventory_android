@@ -7,7 +7,6 @@ import android.text.TextWatcher
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.ArrayAdapter
-import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
@@ -34,7 +33,7 @@ class GameListActivity : BaseAdActivity() {
     private lateinit var binding: ActivityGameListBinding
     private val viewModel: GameListViewModel by lazy {
         val factory = ViewModelFactory(applicationContext)
-        ViewModelProvider(this, factory).get(GameListViewModel::class.java)
+        ViewModelProvider(this, factory)[GameListViewModel::class.java]
     }
     private var deleteMode = false
     private val dateFormat = SimpleDateFormat("MMM dd, yyyy", Locale.getDefault())

@@ -41,7 +41,7 @@ class GameListFragment : Fragment() {
     
     private val viewModel: GameListViewModel by lazy {
         val factory = ViewModelFactory(requireContext().applicationContext)
-        ViewModelProvider(this, factory).get(GameListViewModel::class.java)
+        ViewModelProvider(this, factory)[GameListViewModel::class.java]
     }
     private lateinit var adapter: GamePagingAdapter
     private lateinit var loadStateAdapter: GameLoadStateAdapter

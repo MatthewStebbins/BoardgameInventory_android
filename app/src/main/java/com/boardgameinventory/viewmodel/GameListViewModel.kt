@@ -16,7 +16,6 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalCoroutinesApi::class)
@@ -26,11 +25,10 @@ class GameListViewModel(private val repository: GameRepository) : ViewModel() {
     private val _searchAndFilterCriteria = MutableStateFlow(SearchAndFilterCriteria())
     val searchAndFilterCriteria: StateFlow<SearchAndFilterCriteria> = _searchAndFilterCriteria.asStateFlow()
 
-    // Paginated games
-    val pagedAvailableGames: Flow<PagingData<Game>>
-    val pagedLoanedGames: Flow<PagingData<Game>>
-    val pagedFilteredAvailableGames: Flow<PagingData<Game>>
-    val pagedFilteredLoanedGames: Flow<PagingData<Game>>
+    // Paginated game
+    // Initialize paged games using repository
+    val pagedAvailableGames: Flow<PagingData<Game>> = repository.getAvailableGamesPaged().cachedIn(viewModelScope)
+    val pagedLoanedGames: Flow<PagingData<Game>> = repository.getLoanedGamesPaged().cachedIn(viewModelScope)
 
     // Filter options
     private val _availableBookcases = MutableStateFlow<List<String>>(emptyList())
@@ -39,35 +37,16 @@ class GameListViewModel(private val repository: GameRepository) : ViewModel() {
     private val _availableLocations = MutableStateFlow<List<String>>(emptyList())
 
     // Legacy support - non-paginated games (for backwards compatibility)
-    val availableGames: LiveData<List<Game>>
-    val loanedGames: LiveData<List<Game>>
-    val filteredAvailableGames: LiveData<List<Game>>
-    val filteredLoanedGames: LiveData<List<Game>>
+
+    // Initialize legacy support games
+    val availableGames: LiveData<List<Game>> = repository.getAvailableGames().asLiveData()
+    val loanedGames: LiveData<List<Game>> = repository.getLoanedGames().asLiveData()
 
     // Selected game and validation error (for LoanGameActivity)
     val selectedGame = MutableLiveData<Game?>()
     val validationError = MutableLiveData<String>()
 
     init {
-        // Initialize paged games using repository
-        pagedAvailableGames = repository.getAvailableGamesPaged().cachedIn(viewModelScope)
-        pagedLoanedGames = repository.getLoanedGamesPaged().cachedIn(viewModelScope)
-        pagedFilteredAvailableGames = _searchAndFilterCriteria.flatMapLatest { criteria ->
-            repository.searchAndFilterAvailableGamesPaged(criteria)
-        }.cachedIn(viewModelScope)
-        pagedFilteredLoanedGames = _searchAndFilterCriteria.flatMapLatest { criteria ->
-            repository.searchAndFilterLoanedGamesPaged(criteria)
-        }.cachedIn(viewModelScope)
-
-        // Initialize legacy support games
-        availableGames = repository.getAvailableGames().asLiveData()
-        loanedGames = repository.getLoanedGames().asLiveData()
-        filteredAvailableGames = _searchAndFilterCriteria.flatMapLatest { criteria ->
-            repository.searchAndFilterAvailableGames(criteria)
-        }.asLiveData()
-        filteredLoanedGames = _searchAndFilterCriteria.flatMapLatest { criteria ->
-            repository.searchAndFilterLoanedGames(criteria)
-        }.asLiveData()
 
         loadFilterOptions()
     }
