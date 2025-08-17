@@ -431,4 +431,6 @@
     <string name="text_darkness">Text Darkness</string>
     <string name="ad_consent">Ad Consent</string>
     <string name="processing">Processing…</string>
+    <string name="remove_barcode">Remove barcode</string>
+    <string name="sample_image_description">Sample image description</string>
 </resources>
