@@ -30,6 +30,6 @@
         android:id="@+id/action_sync"
         android:title="Sync"
         android:icon="@drawable/ic_sync"
-        android:showAsAction="ifRoom" />
+        app:showAsAction="ifRoom" />
 
 </menu>
