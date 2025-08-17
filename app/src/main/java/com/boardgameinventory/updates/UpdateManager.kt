@@ -16,8 +16,7 @@ import com.google.android.play.core.install.model.UpdateAvailability
 import com.google.android.play.core.ktx.isFlexibleUpdateAllowed
 import com.google.android.play.core.ktx.isImmediateUpdateAllowed
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
+import java.lang.ref.WeakReference
 
 /**
  * Manager class for handling in-app updates using the Play Core library.
@@ -28,11 +27,8 @@ class UpdateManager(private val activity: Activity) : DefaultLifecycleObserver {
         private const val TAG = "UpdateManager"
         private const val UPDATE_REQUEST_CODE = 500
 
-        // Update check interval in milliseconds (1 day)
-        private const val UPDATE_CHECK_INTERVAL = 24 * 60 * 60 * 1000L
-
         @Volatile
-        private var instance: UpdateManager? = null
+        private var instance: WeakReference<UpdateManager>? = null
 
         /**
          * Gets or creates the singleton instance of UpdateManager
@@ -40,8 +36,8 @@ class UpdateManager(private val activity: Activity) : DefaultLifecycleObserver {
          * @return UpdateManager instance
          */
         fun getInstance(activity: Activity): UpdateManager {
-            return instance ?: synchronized(this) {
-                instance ?: UpdateManager(activity).also { instance = it }
+            return instance?.get() ?: synchronized(this) {
+                instance?.get() ?: UpdateManager(activity).also { instance = WeakReference(it) }
             }
         }
     }
@@ -51,10 +47,10 @@ class UpdateManager(private val activity: Activity) : DefaultLifecycleObserver {
 
     // State flows to observe update status
     private val _updateState = MutableStateFlow<UpdateState>(UpdateState.Idle)
-    val updateState: StateFlow<UpdateState> = _updateState.asStateFlow()
 
     // Install state listener
     private val installStateUpdatedListener = InstallStateUpdatedListener { state ->
+        @Suppress("DEPRECATION")
         when (state.installStatus()) {
             InstallStatus.DOWNLOADING -> {
                 // Calculate download progress
@@ -81,6 +77,26 @@ class UpdateManager(private val activity: Activity) : DefaultLifecycleObserver {
                 _updateState.value = UpdateState.Failed("Update installation failed")
                 // Clear update state on failure
                 clearUpdateState()
+            }
+
+            InstallStatus.CANCELED -> {
+                TODO()
+            }
+
+            InstallStatus.INSTALLING -> {
+                TODO()
+            }
+
+            InstallStatus.PENDING -> {
+                TODO()
+            }
+
+            InstallStatus.REQUIRES_UI_INTENT -> {
+                TODO()
+            }
+
+            InstallStatus.UNKNOWN -> {
+                TODO()
             }
         }
     }
@@ -117,14 +133,6 @@ class UpdateManager(private val activity: Activity) : DefaultLifecycleObserver {
     }
 
     /**
-     * Clean up when activity is stopped
-     */
-    override fun onStop(owner: LifecycleOwner) {
-        super.onStop(owner)
-        // Don't unregister listener here to ensure we track updates even when in background
-    }
-
-    /**
      * Clean up resources when activity is destroyed
      */
     override fun onDestroy(owner: LifecycleOwner) {
@@ -135,9 +143,8 @@ class UpdateManager(private val activity: Activity) : DefaultLifecycleObserver {
 
     /**
      * Check if an update is available and start the update flow accordingly
-     * @param forceCheck Force update check even if last check was recent
      */
-    fun checkForUpdates(forceCheck: Boolean = false) {
+    fun checkForUpdates() {
         _updateState.value = UpdateState.Checking
 
         appUpdateManager.appUpdateInfo.addOnSuccessListener { appUpdateInfo ->
@@ -146,12 +153,16 @@ class UpdateManager(private val activity: Activity) : DefaultLifecycleObserver {
                     // Update is available - decide which type of update to use
                     val updateType = selectUpdateType(appUpdateInfo)
 
-                    if (updateType == AppUpdateType.IMMEDIATE) {
-                        startImmediateUpdate(appUpdateInfo)
-                    } else if (updateType == AppUpdateType.FLEXIBLE) {
-                        startFlexibleUpdate(appUpdateInfo)
-                    } else {
-                        _updateState.value = UpdateState.NotAvailable
+                    when (updateType) {
+                        AppUpdateType.IMMEDIATE -> {
+                            startImmediateUpdate(appUpdateInfo)
+                        }
+                        AppUpdateType.FLEXIBLE -> {
+                            startFlexibleUpdate(appUpdateInfo)
+                        }
+                        else -> {
+                            _updateState.value = UpdateState.NotAvailable
+                        }
                     }
                 }
                 UpdateAvailability.UPDATE_NOT_AVAILABLE -> {
@@ -231,22 +242,6 @@ class UpdateManager(private val activity: Activity) : DefaultLifecycleObserver {
     }
 
     /**
-     * Process the result from update flow
-     * @param requestCode The request code from onActivityResult
-     * @param resultCode The result code from onActivityResult
-     */
-    fun onActivityResult(requestCode: Int, resultCode: Int) {
-        if (requestCode == UPDATE_REQUEST_CODE) {
-            if (resultCode != Activity.RESULT_OK) {
-                _updateState.value = UpdateState.Canceled
-                Log.d(TAG, "Update flow canceled! Result code: $resultCode")
-            } else {
-                Log.d(TAG, "Update flow accepted by user")
-            }
-        }
-    }
-
-    /**
      * Clear any update state
      */
     private fun clearUpdateState() {
@@ -254,13 +249,6 @@ class UpdateManager(private val activity: Activity) : DefaultLifecycleObserver {
         _updateState.value = UpdateState.Idle
     }
 
-    /**
-     * Complete the update installation process
-     * Used after an update has been downloaded in flexible update flow
-     */
-    fun completeUpdate() {
-        appUpdateManager.completeUpdate()
-    }
 }
 
 /**
@@ -274,6 +262,5 @@ sealed class UpdateState {
     data class Downloading(val progress: Int) : UpdateState()
     object Downloaded : UpdateState()
     object Completed : UpdateState()
-    object Canceled : UpdateState()
     data class Failed(val reason: String) : UpdateState()
 }

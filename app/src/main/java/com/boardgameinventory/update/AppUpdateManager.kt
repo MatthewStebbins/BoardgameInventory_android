@@ -26,11 +26,10 @@ import java.util.concurrent.atomic.AtomicBoolean
  * Manages in-app updates using the Play Core library.
  * Implements DefaultLifecycleObserver to automatically manage update state with activity lifecycle.
  */
-class AppUpdateManager(private val context: Context) : DefaultLifecycleObserver {
+class AppUpdateManager(context: Context) : DefaultLifecycleObserver {
     companion object {
         private const val TAG = "AppUpdateManager"
         const val APP_UPDATE_REQUEST_CODE = 500
-        private const val UPDATE_STALENESS_DAYS = 3 // Number of days before considering an update stale
     }
 
     private val updateManager = AppUpdateManagerFactory.create(context)
