@@ -12,9 +12,7 @@ import com.boardgameinventory.api.ProductInfo
 import com.boardgameinventory.data.AppDatabase
 import com.boardgameinventory.data.Game
 import com.boardgameinventory.repository.GameRepository
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 class BulkUploadViewModel(
     application: Application
@@ -27,8 +25,8 @@ class BulkUploadViewModel(
         repository = GameRepository(database.gameDao())
     }
 
-    // Constructor that accepts a repository directly (used by ViewModelFactory)
-    constructor(repository: GameRepository, context: Context) : this(context.applicationContext as Application) {
+    // Constructor
+    constructor(context: Context) : this(context.applicationContext as Application) {
         // Repository is already set in the primary constructor
     }
 
@@ -87,7 +85,7 @@ class BulkUploadViewModel(
                 val game = getOrCreateGame(barcode, bookcase, shelf)
                 repository.insertGame(game)
                 successful.add(barcode)
-            } catch (e: Exception) {
+            } catch (_: Exception) {
                 failed.add(barcode)
             }
         }
@@ -102,11 +100,8 @@ class BulkUploadViewModel(
     ): Game {
         val existingGame = repository.getGameByBarcode(barcode)
 
-        return if (existingGame != null) {
-            existingGame.copy(bookcase = bookcase, shelf = shelf)
-        } else {
-            fetchGameFromApi(barcode, bookcase, shelf)
-        }
+        return existingGame?.copy(bookcase = bookcase, shelf = shelf)
+            ?: fetchGameFromApi(barcode, bookcase, shelf)
     }
 
     private suspend fun fetchGameFromApi(
@@ -116,7 +111,7 @@ class BulkUploadViewModel(
     ): Game {
         val gameData: ProductInfo? = try {
             ApiClient.lookupBarcode(barcode)
-        } catch (e: Exception) {
+        } catch (_: Exception) {
             null
         }
 

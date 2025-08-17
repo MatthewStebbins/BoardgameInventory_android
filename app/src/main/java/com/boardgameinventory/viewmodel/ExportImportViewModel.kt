@@ -36,8 +36,8 @@ class ExportImportViewModel(application: Application) : AndroidViewModel(applica
         repository = GameRepository(database.gameDao())
     }
 
-    // Constructor that accepts a repository directly (used by ViewModelFactory)
-    constructor(repository: GameRepository, context: Context) : this(context.applicationContext as Application) {
+    // Constructor
+    constructor(context: Context) : this(context.applicationContext as Application) {
         // Repository is already set in the primary constructor
     }
 
@@ -216,7 +216,7 @@ class ExportImportViewModel(application: Application) : AndroidViewModel(applica
                     repository.insertGame(game)
                     importedCount++
                 }
-            } catch (e: Exception) {
+            } catch (_: Exception) {
                 // Continue with next game if one fails
             }
         }

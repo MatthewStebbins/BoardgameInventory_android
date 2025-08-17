@@ -29,19 +29,19 @@ class ViewModelFactory(private val context: Context) : ViewModelProvider.Factory
                 viewModel as T
             }
             modelClass.isAssignableFrom(AddGameViewModel::class.java) -> {
-                val viewModel = AddGameViewModel(repository)
+                val viewModel = AddGameViewModel()
                 viewModel as T
             }
             modelClass.isAssignableFrom(EditGameViewModel::class.java) -> {
-                val viewModel = EditGameViewModel(repository)
+                val viewModel = EditGameViewModel()
                 viewModel as T
             }
             modelClass.isAssignableFrom(BulkUploadViewModel::class.java) -> {
-                val viewModel = BulkUploadViewModel(repository, context)
+                val viewModel = BulkUploadViewModel(context)
                 viewModel as T
             }
             modelClass.isAssignableFrom(ExportImportViewModel::class.java) -> {
-                val viewModel = ExportImportViewModel(repository, context)
+                val viewModel = ExportImportViewModel(context)
                 viewModel as T
             }
             modelClass.isAssignableFrom(DatabaseManagementViewModel::class.java) -> {

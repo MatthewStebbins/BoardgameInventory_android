@@ -31,8 +31,8 @@ class AddGameViewModel(application: Application) : AndroidViewModel(application)
         repository = GameRepository(database.gameDao())
     }
 
-    // Constructor that accepts a repository directly (used by ViewModelFactory)
-    constructor(repository: GameRepository) : this(Application()) {
+    // Constructor
+    constructor() : this(Application()) {
         // Removed unused parameter
     }
 

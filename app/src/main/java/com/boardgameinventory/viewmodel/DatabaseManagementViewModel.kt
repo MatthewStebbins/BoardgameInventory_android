@@ -187,27 +187,7 @@ class DatabaseManagementViewModel(application: Application) : AndroidViewModel(a
             )
         }
     }
-    
-    /**
-     * Trigger immediate backup via service
-     */
-    fun triggerImmediateBackup() {
-        try {
-            DatabaseMaintenanceService.triggerBackup(getApplication())
-            _operationResult.value = OperationResult(
-                success = true,
-                message = "Backup service started",
-                type = OperationType.TRIGGER_BACKUP
-            )
-        } catch (e: Exception) {
-            _operationResult.value = OperationResult(
-                success = false,
-                message = "Failed to start backup: ${e.message}",
-                type = OperationType.TRIGGER_BACKUP
-            )
-        }
-    }
-    
+
     /**
      * Clear operation result (for UI state management)
      */

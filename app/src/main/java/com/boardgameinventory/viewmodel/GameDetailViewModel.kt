@@ -9,10 +9,6 @@ class GameDetailViewModel(private val repository: GameRepository) : ViewModel() 
 
     private var gameTitle: String = "Unknown Game"
 
-    fun setGameTitle(title: String) {
-        gameTitle = title
-    }
-
     fun getGameTitle(): String {
         return gameTitle
     }
@@ -21,7 +17,7 @@ class GameDetailViewModel(private val repository: GameRepository) : ViewModel() 
         viewModelScope.launch {
             try {
                 repository.syncGameData(gameTitle)
-            } catch (e: Exception) {
+            } catch (_: Exception) {
                 // Handle sync error
             }
         }
