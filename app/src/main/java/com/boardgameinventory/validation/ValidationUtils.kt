@@ -228,7 +228,7 @@ object ValidationUtils {
                 (trimmedUrl.startsWith("http://") || trimmedUrl.startsWith("https://")) && 
                 trimmedUrl.length > 7 && trimmedUrl.contains(".")
             }
-        } catch (e: Exception) {
+        } catch (_: Exception) {
             // Fallback for unit tests where Android classes aren't available
             val trimmedUrl = url.trim()
             (trimmedUrl.startsWith("http://") || trimmedUrl.startsWith("https://")) && 

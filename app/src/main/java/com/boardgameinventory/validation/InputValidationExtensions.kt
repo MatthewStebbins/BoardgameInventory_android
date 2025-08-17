@@ -1,10 +1,7 @@
 package com.boardgameinventory.validation
 
 import android.content.Context
-import android.text.Editable
-import android.text.TextWatcher
 import androidx.core.widget.addTextChangedListener
-import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
 import com.boardgameinventory.validation.ValidationUtils.ValidationResult
 
@@ -47,7 +44,7 @@ fun TextInputLayout.setupValidation(
             }
         }
         
-        handler.postDelayed(validationRunnable!!, debounceDelayMs)
+        handler.postDelayed(validationRunnable, debounceDelayMs)
     }
 }
 
@@ -75,21 +72,6 @@ fun TextInputLayout.validateInput(
     }
     
     return result
-}
-
-/**
- * Gets the trimmed text from TextInputLayout
- */
-fun TextInputLayout.getTrimmedText(): String {
-    return editText?.text?.toString()?.trim() ?: ""
-}
-
-/**
- * Clears validation errors
- */
-fun TextInputLayout.clearValidationError() {
-    error = null
-    isErrorEnabled = false
 }
 
 /**
@@ -149,18 +131,6 @@ object GameInputValidation {
             context,
             ValidationUtils::validateDescription
         )
-    }
-    
-    fun setupLoanedToValidation(textInputLayout: TextInputLayout, context: Context) {
-        textInputLayout.setupCharacterCounterWithValidation(
-            ValidationUtils.MAX_LOANED_TO_LENGTH,
-            context,
-            ValidationUtils::validateLoanedTo
-        )
-    }
-    
-    fun setupImageUrlValidation(textInputLayout: TextInputLayout, context: Context) {
-        textInputLayout.setupValidation(context, ValidationUtils::validateImageUrl)
     }
 
     fun validateGameName(name: String): Boolean {
