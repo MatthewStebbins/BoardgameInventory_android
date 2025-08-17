@@ -79,7 +79,7 @@ class GameListActivity : BaseAdActivity() {
                 //     1 -> getString(R.string.loaned_games_tab_selected)
                 //     else -> getString(R.string.all_games_tab_selected)
                 // }
-                // binding.root.announceForAccessibility(tabDescription)
+
             }
         })
         // The following are commented out due to unresolved references

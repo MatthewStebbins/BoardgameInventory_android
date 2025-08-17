@@ -265,40 +265,20 @@ class ReturnGameActivity : BaseAdActivity() {
      */
     private fun setupAccessibility() {
         binding.apply {
-            // The following are commented out due to unresolved references
-            // tilGameBarcode.hint = getString(R.string.game_barcode_hint)
-            // tilLocationBarcode.hint = getString(R.string.location_barcode_optional_hint)
-            // btnScanBarcode.contentDescription = getString(R.string.scan_barcode_for_return_description)
-            // btnReturnGame.contentDescription = getString(R.string.confirm_return_game_description)
-            // btnCancel.contentDescription = getString(R.string.cancel_return_description)
-            // tvLoanedGamesLabel.accessibilityHeading = true
-            // tvSelectedGameLabel.accessibilityHeading = true
-            // Make the game list announce changes
             recyclerViewGames.accessibilityLiveRegion = View.ACCESSIBILITY_LIVE_REGION_POLITE
-            // Set logical traversal order for screen readers
-            // tilGameBarcode.accessibilityTraversalBefore = btnScanBarcode.id
-            // btnScanBarcode.accessibilityTraversalAfter = tilGameBarcode.id
             recyclerViewGames.accessibilityTraversalAfter = btnScanBarcode.id
-            // tvSelectedGameLabel.accessibilityTraversalAfter = recyclerViewGames.id
-            // tvSelectedGame.accessibilityTraversalAfter = tvSelectedGameLabel.id
-            // tilLocationBarcode.accessibilityTraversalAfter = tvSelectedGame.id
-            // btnReturnGame.accessibilityTraversalAfter = tilLocationBarcode.id
-            // btnCancel.accessibilityTraversalAfter = btnReturnGame.id
             // Set special handling for no games state
             tvNoGames.accessibilityLiveRegion = View.ACCESSIBILITY_LIVE_REGION_ASSERTIVE
         }
         // Announce game selection for accessibility
         selectedGame?.let { game ->
             // val announcement = getString(R.string.game_selected_for_return_announcement, game.name, game.loanedTo ?: getString(R.string.unknown_borrower))
-            // binding.root.announceForAccessibility(announcement)
             // binding.tvSelectedGame.contentDescription = getString(R.string.selected_game_for_return_description, game.name, game.loanedTo ?: getString(R.string.unknown_borrower), game.barcode)
         }
         // Set up observers for accessibility announcements
         gameViewModel.loanedGames.observe(this) { games ->
             // if (games.isEmpty()) {
-            //     binding.root.announceForAccessibility(getString(R.string.no_games_loaned_announcement))
             // } else {
-            //     binding.root.announceForAccessibility(getString(R.string.loaned_games_count_announcement, games.size))
             // }
         }
     }
