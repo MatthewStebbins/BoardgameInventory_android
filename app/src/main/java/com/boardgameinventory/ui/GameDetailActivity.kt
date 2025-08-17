@@ -51,9 +51,9 @@ class GameDetailActivity : BaseAdActivity() {
         }
     }
     
-    private val viewModel: GameDetailViewModel by viewModels {
-        GameDetailViewModelFactory(GameRepository(AppDatabase.getDatabase(this).gameDao()))
-    }
+private val viewModel: GameDetailViewModel by viewModels {
+    GameDetailViewModelFactory(GameRepository(AppDatabase.getDatabase(this).gameDao()))
+}
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

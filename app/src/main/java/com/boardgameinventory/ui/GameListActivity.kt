@@ -9,8 +9,6 @@ import android.view.MenuItem
 import android.widget.ArrayAdapter
 import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
-import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.lifecycleScope
@@ -22,11 +20,12 @@ import com.boardgameinventory.databinding.ActivityGameListBinding
 import com.boardgameinventory.databinding.DialogFilterBinding
 import com.boardgameinventory.utils.TextDarknessManager
 import com.boardgameinventory.viewmodel.GameListViewModel
-import com.google.android.material.chip.Chip
 import com.google.android.material.tabs.TabLayoutMediator
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
-import java.util.*
+import java.util.Calendar
+import java.util.Date
+import java.util.Locale
 
 class GameListActivity : BaseAdActivity() {
     
@@ -314,7 +313,7 @@ class GameListActivity : BaseAdActivity() {
     }
     
     override fun onSupportNavigateUp(): Boolean {
-        onBackPressed()
+        onBackPressedDispatcher.onBackPressed()
         return true
     }
     
