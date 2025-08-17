@@ -59,7 +59,6 @@
 -keep class com.google.gson.** { *; }
 -keepattributes Signature
 -keepattributes *Annotation*
--keep class sun.misc.Unsafe { *; }
 
 # Glide rules
 -keep public class * implements com.bumptech.glide.module.GlideModule

@@ -195,6 +195,24 @@ interface GameDao {
         sortBy: String
     ): PagingSource<Int, Game>
     
+    @Query("SELECT * FROM games WHERE loanedTo IS NULL ORDER BY name ASC")
+    fun getAvailableGamesPagingSource(): PagingSource<Int, Game>
+
+    @Query("SELECT * FROM games WHERE loanedTo IS NOT NULL ORDER BY dateLoaned DESC")
+    fun getLoanedGamesPagingSource(): PagingSource<Int, Game>
+
+    @Query("SELECT * FROM games WHERE loanedTo IS NULL AND (:searchQuery IS NULL OR name LIKE '%' || :searchQuery || '%') ORDER BY name ASC")
+    fun getFilteredAvailableGamesPagingSource(searchQuery: String?): PagingSource<Int, Game>
+
+    @Query("SELECT * FROM games WHERE loanedTo IS NOT NULL AND (:searchQuery IS NULL OR name LIKE '%' || :searchQuery || '%') ORDER BY dateLoaned DESC")
+    fun getFilteredLoanedGamesPagingSource(searchQuery: String?): PagingSource<Int, Game>
+
+    @Query("SELECT * FROM games WHERE loanedTo IS NULL AND (:searchQuery IS NULL OR name LIKE '%' || :searchQuery || '%') ORDER BY name ASC")
+    fun getFilteredAvailableGames(searchQuery: String?): Flow<List<Game>>
+
+    @Query("SELECT * FROM games WHERE loanedTo IS NOT NULL AND (:searchQuery IS NULL OR name LIKE '%' || :searchQuery || '%') ORDER BY dateLoaned DESC")
+    fun getFilteredLoanedGames(searchQuery: String?): Flow<List<Game>>
+
     // Health check queries
     @Query("SELECT COUNT(*) FROM games WHERE name IS NULL OR name = ''")
     suspend fun getGamesWithEmptyNames(): Int

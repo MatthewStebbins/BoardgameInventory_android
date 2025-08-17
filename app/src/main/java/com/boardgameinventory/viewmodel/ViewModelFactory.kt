@@ -21,7 +21,7 @@ class ViewModelFactory(private val context: Context) : ViewModelProvider.Factory
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         return when {
             modelClass.isAssignableFrom(MainViewModel::class.java) -> {
-                val viewModel = MainViewModel(repository)
+                val viewModel = MainViewModel(context.applicationContext as Application)
                 viewModel as T
             }
             modelClass.isAssignableFrom(GameListViewModel::class.java) -> {
@@ -53,15 +53,8 @@ class ViewModelFactory(private val context: Context) : ViewModelProvider.Factory
     }
 
     companion object {
-        @Volatile
-        private var INSTANCE: ViewModelFactory? = null
-
-        fun getInstance(context: Context): ViewModelFactory {
-            return INSTANCE ?: synchronized(this) {
-                val instance = ViewModelFactory(context.applicationContext)
-                INSTANCE = instance
-                instance
-            }
+        fun getInstance(application: Application): ViewModelFactory {
+            return ViewModelFactory(application)
         }
     }
 }

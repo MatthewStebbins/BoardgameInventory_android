@@ -1,14 +1,12 @@
 package com.boardgameinventory.viewmodel
 
-import android.app.Application
-import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
-import com.boardgameinventory.data.AppDatabase
 import com.boardgameinventory.data.Game
 import com.boardgameinventory.data.SearchAndFilterCriteria
 import com.boardgameinventory.data.SortCriteria
@@ -18,14 +16,11 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalCoroutinesApi::class)
-class GameListViewModel : AndroidViewModel {
-
-    private val repository: GameRepository
+class GameListViewModel(private val repository: GameRepository) : ViewModel() {
 
     // Search and filter state
     private val _searchAndFilterCriteria = MutableStateFlow(SearchAndFilterCriteria())
@@ -42,7 +37,6 @@ class GameListViewModel : AndroidViewModel {
     val availableBookcases: StateFlow<List<String>> = _availableBookcases.asStateFlow()
 
     private val _availableLocations = MutableStateFlow<List<String>>(emptyList())
-    val availableLocations: StateFlow<List<String>> = _availableLocations.asStateFlow()
 
     // Legacy support - non-paginated games (for backwards compatibility)
     val availableGames: LiveData<List<Game>>
@@ -54,90 +48,28 @@ class GameListViewModel : AndroidViewModel {
     val selectedGame = MutableLiveData<Game?>()
     val validationError = MutableLiveData<String>()
 
-    // Primary constructor with application parameter
-    constructor(application: Application) : super(application) {
-        val database = AppDatabase.getDatabase(application)
-        repository = GameRepository(database.gameDao())
-
-        // Initialize game data
-        availableGames = repository.getAvailableGames().asLiveData()
-        loanedGames = repository.getLoanedGames().asLiveData()
-
+    init {
+        // Initialize paged games using repository
         pagedAvailableGames = repository.getAvailableGamesPaged().cachedIn(viewModelScope)
         pagedLoanedGames = repository.getLoanedGamesPaged().cachedIn(viewModelScope)
-
-        filteredAvailableGames = _searchAndFilterCriteria.flatMapLatest { criteria ->
-            repository.searchAndFilterAvailableGames(criteria)
-        }.asLiveData()
-
-        filteredLoanedGames = _searchAndFilterCriteria.flatMapLatest { criteria ->
-            repository.searchAndFilterLoanedGames(criteria)
-        }.asLiveData()
-
         pagedFilteredAvailableGames = _searchAndFilterCriteria.flatMapLatest { criteria ->
             repository.searchAndFilterAvailableGamesPaged(criteria)
         }.cachedIn(viewModelScope)
-
         pagedFilteredLoanedGames = _searchAndFilterCriteria.flatMapLatest { criteria ->
             repository.searchAndFilterLoanedGamesPaged(criteria)
         }.cachedIn(viewModelScope)
 
-        loadFilterOptions()
-    }
-
-    // Secondary constructor with repository parameter for ViewModelFactory
-    constructor(repository: GameRepository) : super(Application()) {
-        this.repository = repository
-
-        // Initialize game data
+        // Initialize legacy support games
         availableGames = repository.getAvailableGames().asLiveData()
         loanedGames = repository.getLoanedGames().asLiveData()
-
-        pagedAvailableGames = repository.getAvailableGamesPaged().cachedIn(viewModelScope)
-        pagedLoanedGames = repository.getLoanedGamesPaged().cachedIn(viewModelScope)
-
         filteredAvailableGames = _searchAndFilterCriteria.flatMapLatest { criteria ->
             repository.searchAndFilterAvailableGames(criteria)
         }.asLiveData()
-
         filteredLoanedGames = _searchAndFilterCriteria.flatMapLatest { criteria ->
             repository.searchAndFilterLoanedGames(criteria)
         }.asLiveData()
 
-        pagedFilteredAvailableGames = _searchAndFilterCriteria.flatMapLatest { criteria ->
-            repository.searchAndFilterAvailableGamesPaged(criteria)
-        }.cachedIn(viewModelScope)
-
-        pagedFilteredLoanedGames = _searchAndFilterCriteria.flatMapLatest { criteria ->
-            repository.searchAndFilterLoanedGamesPaged(criteria)
-        }.cachedIn(viewModelScope)
-
         loadFilterOptions()
-    }
-
-    /**
-     * Get paginated games by type
-     * @param type "available", "loaned", or "all"
-     * @param useFilter whether to apply current search/filter criteria
-     */
-    fun getPagedGames(type: String, useFilter: Boolean = false): Flow<PagingData<Game>> {
-        return if (useFilter) {
-            when (type) {
-                "available" -> pagedFilteredAvailableGames
-                "loaned" -> pagedFilteredLoanedGames
-                else -> _searchAndFilterCriteria
-                    .flatMapLatest { criteria ->
-                        repository.searchAndFilterGamesPaged(criteria)
-                    }
-                    .cachedIn(viewModelScope)
-            }
-        } else {
-            when (type) {
-                "available" -> pagedAvailableGames
-                "loaned" -> pagedLoanedGames
-                else -> repository.getAllGamesPaged().cachedIn(viewModelScope)
-            }
-        }
     }
 
     fun updateSearchQuery(query: String) {
@@ -163,14 +95,6 @@ class GameListViewModel : AndroidViewModel {
 
     fun clearFilters() {
         _searchAndFilterCriteria.value = SearchAndFilterCriteria()
-    }
-
-    fun getFilteredGames(type: String): Flow<List<Game>> {
-        return when (type) {
-            "available" -> repository.searchAndFilterAvailableGames(_searchAndFilterCriteria.value)
-            "loaned" -> repository.searchAndFilterLoanedGames(_searchAndFilterCriteria.value)
-            else -> repository.searchAndFilterGames(_searchAndFilterCriteria.value)
-        }
     }
 
     private fun loadFilterOptions() {

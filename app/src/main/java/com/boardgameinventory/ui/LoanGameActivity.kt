@@ -9,6 +9,7 @@ import androidx.activity.viewModels
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.boardgameinventory.R
@@ -20,6 +21,7 @@ import com.boardgameinventory.utils.Utils
 import com.boardgameinventory.validation.ValidationUtils
 import com.boardgameinventory.validation.setupValidation
 import com.boardgameinventory.viewmodel.GameListViewModel
+import com.boardgameinventory.viewmodel.ViewModelFactory
 import com.journeyapps.barcodescanner.ScanContract
 import kotlinx.coroutines.launch
 
@@ -27,7 +29,10 @@ class LoanGameActivity : BaseAdActivity() {
     
     private lateinit var binding: ActivityLoanGameBinding
     private lateinit var adapter: GameAdapter
-    private val gameViewModel: GameListViewModel by viewModels()
+    private val gameViewModel: GameListViewModel by lazy {
+        val factory = ViewModelFactory(applicationContext)
+        ViewModelProvider(this, factory).get(GameListViewModel::class.java)
+    }
     private var selectedGame: Game? = null
     
     private val scanLauncher = registerForActivityResult(ScanContract()) { result ->

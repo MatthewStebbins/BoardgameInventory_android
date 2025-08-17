@@ -4,12 +4,9 @@ import android.app.Application
 import android.app.NotificationChannel
 import android.app.NotificationChannelGroup
 import android.app.NotificationManager
-import android.content.Context
 import android.content.pm.PackageManager
 import android.graphics.Color
-import android.os.Build
 import android.util.Log
-import androidx.annotation.RequiresApi
 import androidx.lifecycle.ProcessLifecycleOwner
 import com.boardgameinventory.ads.AdManager
 import com.boardgameinventory.ads.ConsentManager
@@ -127,20 +124,17 @@ class BoardGameInventoryApp : Application() {
      * This is required for apps targeting Android 8.0+
      */
     private fun createNotificationChannels() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            createNotificationChannelGroups()
-            createLoanNotificationChannel()
-            createUpdateNotificationChannel()
-            createImportExportNotificationChannel()
-            createSyncNotificationChannel()
+        createNotificationChannelGroups()
+        createLoanNotificationChannel()
+        createUpdateNotificationChannel()
+        createImportExportNotificationChannel()
+        createSyncNotificationChannel()
 
-            Log.d(TAG, "Notification channels created successfully")
-        }
+        Log.d(TAG, "Notification channels created successfully")
     }
 
-    @RequiresApi(Build.VERSION_CODES.O)
     private fun createNotificationChannelGroups() {
-        val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        val notificationManager = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
 
         // Create channel groups for better organization
         val gameManagementGroup = NotificationChannelGroup(
@@ -156,7 +150,6 @@ class BoardGameInventoryApp : Application() {
         notificationManager.createNotificationChannelGroups(listOf(gameManagementGroup, dataOperationsGroup))
     }
 
-    @RequiresApi(Build.VERSION_CODES.O)
     private fun createLoanNotificationChannel() {
         val channelName = getString(R.string.channel_loans_name)
         val channelDescription = getString(R.string.channel_loans_description)
@@ -170,11 +163,10 @@ class BoardGameInventoryApp : Application() {
             lightColor = Color.YELLOW
         }
 
-        val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        val notificationManager = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
         notificationManager.createNotificationChannel(channel)
     }
 
-    @RequiresApi(Build.VERSION_CODES.O)
     private fun createUpdateNotificationChannel() {
         val channelName = getString(R.string.channel_updates_name)
         val channelDescription = getString(R.string.channel_updates_description)
@@ -188,11 +180,10 @@ class BoardGameInventoryApp : Application() {
             lightColor = Color.BLUE
         }
 
-        val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        val notificationManager = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
         notificationManager.createNotificationChannel(channel)
     }
 
-    @RequiresApi(Build.VERSION_CODES.O)
     private fun createImportExportNotificationChannel() {
         val channelName = getString(R.string.channel_imports_name)
         val channelDescription = getString(R.string.channel_imports_description)
@@ -205,11 +196,10 @@ class BoardGameInventoryApp : Application() {
             enableLights(false)
         }
 
-        val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        val notificationManager = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
         notificationManager.createNotificationChannel(channel)
     }
 
-    @RequiresApi(Build.VERSION_CODES.O)
     private fun createSyncNotificationChannel() {
         val channelName = getString(R.string.channel_sync_name)
         val channelDescription = getString(R.string.channel_sync_description)
@@ -222,7 +212,7 @@ class BoardGameInventoryApp : Application() {
             enableLights(false)
         }
 
-        val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        val notificationManager = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
         notificationManager.createNotificationChannel(channel)
     }
 

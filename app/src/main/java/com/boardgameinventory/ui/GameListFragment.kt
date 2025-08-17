@@ -7,13 +7,14 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.boardgameinventory.data.Game
 import com.boardgameinventory.databinding.FragmentGameListBinding
 import com.boardgameinventory.utils.Utils
 import com.boardgameinventory.viewmodel.GameListViewModel
+import com.boardgameinventory.viewmodel.ViewModelFactory
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.flow.collectLatest
 
@@ -38,7 +39,10 @@ class GameListFragment : Fragment() {
     private var _binding: FragmentGameListBinding? = null
     private val binding get() = _binding!!
     
-    private val viewModel: GameListViewModel by viewModels()
+    private val viewModel: GameListViewModel by lazy {
+        val factory = ViewModelFactory(requireContext().applicationContext)
+        ViewModelProvider(this, factory).get(GameListViewModel::class.java)
+    }
     private lateinit var adapter: GamePagingAdapter
     private lateinit var loadStateAdapter: GameLoadStateAdapter
     private var listType: String = TYPE_AVAILABLE

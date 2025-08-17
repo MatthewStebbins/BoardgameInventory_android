@@ -9,8 +9,7 @@
             "default": true
         }
     ],
-    
-    // Kotlin Language Server - Fixed Configuration
+
     "kotlin.languageServer.enabled": true,
     "kotlin.languageServer.path": "",
     "kotlin.compiler.jvm.target": "17",
@@ -22,8 +21,7 @@
     "kotlin.externalSources.autoConvertToKotlin": true,
     "kotlin.languageServer.transport": "stdio",
     "kotlin.completion.snippets.enabled": true,
-    
-    // Android & Gradle
+
     "android.project.maxModules": 50,
     "gradle.nestedProjects": true,
     "java.import.gradle.jvmArguments": "-Dfile.encoding=UTF-8 -Xmx4G -Dorg.gradle.daemon=true",
@@ -34,8 +32,7 @@
     "java.project.importOnFirstTimeStartup": "automatic",
     "java.project.importHint": true,
     "java.autobuild.enabled": true,
-    
-    // Java Language Server
+
     "java.jdt.ls.vmargs": "-XX:+UseG1GC -XX:GCTimeRatio=4 -XX:AdaptiveSizePolicyWeight=90 -Dsun.zip.disableMemoryMapping=true -Xmx4G -Xms1G -Djava.home=C:\\Users\\Wouph\\Documents\\BoardgameInventory_Android\\jdk-17.0.12 -Dfile.encoding=UTF-8",
     "java.eclipse.downloadSources": true,
     "java.maven.downloadSources": true,
@@ -54,16 +51,13 @@
         "build",
         ".gradle"
     ],
-    
-    // Environment
+
     "java.environment.external": {
         "JAVA_HOME": "C:\\Users\\Wouph\\Documents\\BoardgameInventory_Android\\jdk-17.0.12"
     },
-    
-    // Extension Management
+
     "extensions.ignoreRecommendations": false,
-    
-    // File Management for Android
+
     "files.exclude": {
         "**/build/": true,
         "**/.gradle/": true,

@@ -11,6 +11,7 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.boardgameinventory.R
@@ -20,6 +21,7 @@ import com.boardgameinventory.databinding.ActivityGameListBinding
 import com.boardgameinventory.databinding.DialogFilterBinding
 import com.boardgameinventory.utils.TextDarknessManager
 import com.boardgameinventory.viewmodel.GameListViewModel
+import com.boardgameinventory.viewmodel.ViewModelFactory
 import com.google.android.material.tabs.TabLayoutMediator
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
@@ -30,7 +32,10 @@ import java.util.Locale
 class GameListActivity : BaseAdActivity() {
     
     private lateinit var binding: ActivityGameListBinding
-    private val viewModel: GameListViewModel by viewModels()
+    private val viewModel: GameListViewModel by lazy {
+        val factory = ViewModelFactory(applicationContext)
+        ViewModelProvider(this, factory).get(GameListViewModel::class.java)
+    }
     private var deleteMode = false
     private val dateFormat = SimpleDateFormat("MMM dd, yyyy", Locale.getDefault())
     

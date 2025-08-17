@@ -10,6 +10,7 @@ import com.boardgameinventory.data.GameDao
 import com.boardgameinventory.data.SearchAndFilterCriteria
 import com.boardgameinventory.api.ApiClient
 import com.boardgameinventory.api.ProductInfo // Import the ProductInfo class
+import androidx.paging.PagingSource
 
 class GameRepository(private val gameDao: GameDao) { // Removed unused 'context' parameter
 
@@ -291,6 +292,32 @@ class GameRepository(private val gameDao: GameDao) { // Removed unused 'context'
             }
         ).flow
     }
+
+    fun getAvailableGamesPaging(): Flow<PagingData<Game>> = Pager(
+        config = PagingConfig(pageSize = 20, enablePlaceholders = false),
+        pagingSourceFactory = { gameDao.getAvailableGamesPagingSource() }
+    ).flow
+
+    fun getLoanedGamesPaging(): Flow<PagingData<Game>> = Pager(
+        config = PagingConfig(pageSize = 20, enablePlaceholders = false),
+        pagingSourceFactory = { gameDao.getLoanedGamesPagingSource() }
+    ).flow
+
+    fun getFilteredAvailableGamesPaging(criteria: SearchAndFilterCriteria): Flow<PagingData<Game>> = Pager(
+        config = PagingConfig(pageSize = 20, enablePlaceholders = false),
+        pagingSourceFactory = { gameDao.getFilteredAvailableGamesPagingSource(criteria.searchQuery) }
+    ).flow
+
+    fun getFilteredLoanedGamesPaging(criteria: SearchAndFilterCriteria): Flow<PagingData<Game>> = Pager(
+        config = PagingConfig(pageSize = 20, enablePlaceholders = false),
+        pagingSourceFactory = { gameDao.getFilteredLoanedGamesPagingSource(criteria.searchQuery) }
+    ).flow
+
+    fun getFilteredAvailableGames(criteria: SearchAndFilterCriteria): Flow<List<Game>> =
+        gameDao.getFilteredAvailableGames(criteria.searchQuery)
+
+    fun getFilteredLoanedGames(criteria: SearchAndFilterCriteria): Flow<List<Game>> =
+        gameDao.getFilteredLoanedGames(criteria.searchQuery)
 
     suspend fun syncGameData(gameTitle: String) {
         if (gameTitle.isNotBlank()) {

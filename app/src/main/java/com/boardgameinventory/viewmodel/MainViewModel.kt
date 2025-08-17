@@ -18,23 +18,16 @@ data class GameStats(
 /**
  * Main ViewModel supporting secure API key access
  */
-class MainViewModel : AndroidViewModel {
+class MainViewModel(application: Application) : AndroidViewModel(application) {
 
-    private val repository: GameRepository
+    private val repository: GameRepository = GameRepository(
+        AppDatabase.getDatabase(application).gameDao()
+    )
 
     private val _gameStats = MutableStateFlow(GameStats())
     val gameStats: StateFlow<GameStats> = _gameStats
 
-    // Primary constructor with application
-    constructor(application: Application) : super(application) {
-        val database = AppDatabase.getDatabase(application)
-        repository = GameRepository(database.gameDao())
-        refreshStats()
-    }
-
-    // Secondary constructor with repository for ViewModelFactory
-    constructor(repository: GameRepository) : super(Application()) {
-        this.repository = repository
+    init {
         refreshStats()
     }
 
