@@ -5,7 +5,6 @@ import android.content.pm.PackageManager
 import android.os.Bundle
 import android.view.View
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
@@ -29,7 +28,7 @@ class DeleteGameActivity : BaseAdActivity() {
     private lateinit var adapter: GameAdapter
     private val gameViewModel: GameListViewModel by lazy {
         val factory = ViewModelFactory(applicationContext)
-        ViewModelProvider(this, factory).get(GameListViewModel::class.java)
+        ViewModelProvider(this, factory)[GameListViewModel::class.java]
     }
     private var selectedGame: Game? = null
     private var games = mutableListOf<Game>()

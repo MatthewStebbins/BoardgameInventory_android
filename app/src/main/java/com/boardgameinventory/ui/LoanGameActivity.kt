@@ -5,7 +5,6 @@ import android.content.pm.PackageManager
 import android.os.Bundle
 import android.view.View
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.activity.viewModels
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
@@ -31,7 +30,7 @@ class LoanGameActivity : BaseAdActivity() {
     private lateinit var adapter: GameAdapter
     private val gameViewModel: GameListViewModel by lazy {
         val factory = ViewModelFactory(applicationContext)
-        ViewModelProvider(this, factory).get(GameListViewModel::class.java)
+        ViewModelProvider(this, factory)[GameListViewModel::class.java]
     }
     private var selectedGame: Game? = null
     
