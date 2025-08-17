@@ -6,7 +6,6 @@ import android.os.Bundle
 import android.view.View
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
-import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
@@ -14,9 +13,9 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.boardgameinventory.R
 import com.boardgameinventory.data.Game
 import com.boardgameinventory.databinding.ActivityReturnGameBinding
-import com.boardgameinventory.utils.Utils
 import com.boardgameinventory.utils.BarcodeUtils
 import com.boardgameinventory.utils.TextDarknessManager
+import com.boardgameinventory.utils.Utils
 import com.boardgameinventory.viewmodel.GameListViewModel
 import com.journeyapps.barcodescanner.ScanContract
 import kotlinx.coroutines.launch

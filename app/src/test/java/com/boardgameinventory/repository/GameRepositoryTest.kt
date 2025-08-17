@@ -21,7 +21,7 @@ class GameRepositoryTest {
         val mockContext = mock(Context::class.java)
 
         // When
-        val repository = GameRepository(mockGameDao, mockContext)
+        val repository = GameRepository(mockGameDao)
 
         // Then
         assertNotNull(repository)

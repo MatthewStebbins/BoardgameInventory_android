@@ -32,13 +32,17 @@ class GamePagingAdapter(
     }
     
     fun setDeleteMode(deleteMode: Boolean) {
-        this.deleteMode = deleteMode
-        notifyDataSetChanged()
+        if (this.deleteMode != deleteMode) {
+            this.deleteMode = deleteMode
+            notifyItemRangeChanged(0, itemCount)
+        }
     }
-    
+
     fun setShowLoanedTo(showLoanedTo: Boolean) {
-        this.showLoanedTo = showLoanedTo
-        notifyDataSetChanged()
+        if (this.showLoanedTo != showLoanedTo) {
+            this.showLoanedTo = showLoanedTo
+            notifyItemRangeChanged(0, itemCount)
+        }
     }
     
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): GameViewHolder {

@@ -48,7 +48,7 @@ class PrivacyPolicyActivity : AppCompatActivity() {
     
     private fun setupWebView() {
         // Show loading indicator if available
-        binding.progressIndicator?.visibility = View.VISIBLE
+        binding.progressIndicator.visibility = View.VISIBLE
 
         binding.privacyPolicyWebview.apply {
             // Create custom WebViewClient for error handling and loading behavior
@@ -56,7 +56,7 @@ class PrivacyPolicyActivity : AppCompatActivity() {
                 override fun onPageFinished(view: WebView, url: String) {
                     super.onPageFinished(view, url)
                     // Hide progress indicator when loading is complete
-                    binding.progressIndicator?.visibility = View.GONE
+                    binding.progressIndicator.visibility = View.GONE
                 }
                 
                 override fun onReceivedError(view: WebView?, request: WebResourceRequest?, error: WebResourceError?) {
@@ -67,7 +67,7 @@ class PrivacyPolicyActivity : AppCompatActivity() {
                         "Error loading privacy policy. Please try again.",
                         Toast.LENGTH_SHORT
                     ).show()
-                    binding.progressIndicator?.visibility = View.GONE
+                    binding.progressIndicator.visibility = View.GONE
                 }
             }
             

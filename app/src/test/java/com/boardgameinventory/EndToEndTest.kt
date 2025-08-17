@@ -30,7 +30,7 @@ class EndToEndTest {
         println("[DEBUG] Starting test setup at: ${System.currentTimeMillis()}")
         val context = InstrumentationRegistry.getInstrumentation().targetContext
         database = AppDatabase.getTestDatabase(context)
-        gameRepository = GameRepository(database.gameDao(), context) // Initialize GameRepository
+        gameRepository = GameRepository(database.gameDao()) // Initialize GameRepository
 
         apiService = Retrofit.Builder()
             .baseUrl("https://barcodes1.p.rapidapi.com/")
