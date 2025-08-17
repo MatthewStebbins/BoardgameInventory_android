@@ -6,14 +6,10 @@ import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
-import android.os.Build
 import android.provider.Settings
 import androidx.activity.result.ActivityResultLauncher
-import androidx.activity.result.contract.ActivityResultContracts
-import androidx.appcompat.app.AlertDialog
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import androidx.fragment.app.Fragment
 import com.boardgameinventory.R
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 
@@ -30,36 +26,6 @@ object PermissionUtils {
         CAMERA,
         STORAGE,
         INTERNET
-    }
-
-    /**
-     * Check if a specific permission is granted
-     */
-    fun hasPermission(context: Context, permissionType: PermissionType): Boolean {
-        return when (permissionType) {
-            PermissionType.CAMERA -> hasCameraPermission(context)
-            PermissionType.STORAGE -> StoragePermissionUtils.hasStoragePermissions(context)
-            PermissionType.INTERNET -> hasInternetPermission(context)
-        }
-    }
-
-    /**
-     * Check if camera permission is granted
-     */
-    fun hasCameraPermission(context: Context): Boolean {
-        return ContextCompat.checkSelfPermission(
-            context,
-            Manifest.permission.CAMERA
-        ) == PackageManager.PERMISSION_GRANTED
-    }
-
-    /**
-     * Check if internet permission is granted
-     * (Note: INTERNET is a normal permission, not dangerous, so it's always granted if declared in manifest)
-     */
-    fun hasInternetPermission(context: Context): Boolean {
-        // INTERNET is not a dangerous permission, so it's automatically granted if declared in manifest
-        return true
     }
 
     /**
@@ -88,13 +54,6 @@ object PermissionUtils {
      *         // Some permissions denied
      *     }
      * }
-     *
-     * Then call:
-     * PermissionUtils.requestPermissions(this, PermissionType.CAMERA, requestPermissionLauncher) { allGranted ->
-     *     if (allGranted) {
-     *         // Do something requiring permission
-     *     }
-     * }
      */
     fun requestPermissions(
         activity: Activity,
@@ -121,45 +80,6 @@ object PermissionUtils {
             // Show explanation before requesting permission
             showPermissionRationaleDialog(
                 activity,
-                permissionType,
-                onPositive = { launcher.launch(permissions) },
-                onNegative = { onResult(false) }
-            )
-        } else {
-            // Request permissions directly
-            launcher.launch(permissions)
-        }
-    }
-
-    /**
-     * Alternative method for requesting permissions in fragments
-     */
-    fun requestPermissions(
-        fragment: Fragment,
-        permissionType: PermissionType,
-        launcher: ActivityResultLauncher<Array<String>>,
-        onResult: (Boolean) -> Unit
-    ) {
-        val permissions = getPermissionsFor(permissionType)
-        val context = fragment.requireContext()
-
-        // If no permissions needed or all already granted
-        if (permissions.isEmpty() || permissions.all {
-                ContextCompat.checkSelfPermission(context, it) == PackageManager.PERMISSION_GRANTED
-            }) {
-            onResult(true)
-            return
-        }
-
-        // Check if we should show rationale for any permission
-        val shouldShowRationale = permissions.any {
-            fragment.shouldShowRequestPermissionRationale(it)
-        }
-
-        if (shouldShowRationale) {
-            // Show explanation before requesting permission
-            showPermissionRationaleDialog(
-                context,
                 permissionType,
                 onPositive = { launcher.launch(permissions) },
                 onNegative = { onResult(false) }
