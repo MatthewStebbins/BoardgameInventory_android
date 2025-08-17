@@ -44,8 +44,5 @@ object Utils {
         val sdf = SimpleDateFormat("MMM dd, yyyy HH:mm", Locale.getDefault())
         return sdf.format(Date(timestamp))
     }
-    
-    fun isValidBarcode(barcode: String): Boolean {
-        return barcode.isNotBlank() && barcode.all { it.isDigit() || it.isLetter() }
-    }
+
 }

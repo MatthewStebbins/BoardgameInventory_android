@@ -7,17 +7,10 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.preference.PreferenceManager
-import androidx.core.content.edit
 
 object TextDarknessUtil {
 
     private const val TEXT_DARKNESS_KEY = "text_darkness"
-
-    fun saveTextDarkness(context: Context, darkness: Int) {
-        PreferenceManager.getDefaultSharedPreferences(context).edit {
-            putInt(TEXT_DARKNESS_KEY, darkness)
-        }
-    }
 
     fun getTextDarkness(context: Context): Int {
         val sharedPreferences: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
