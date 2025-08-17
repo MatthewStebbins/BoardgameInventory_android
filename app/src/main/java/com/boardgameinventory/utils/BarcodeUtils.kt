@@ -89,24 +89,5 @@ object BarcodeUtils {
             torchOn = torchOn
         )
     }
-    
-    /**
-     * High-speed scanning preset for bulk operations.
-     * Optimized for rapid consecutive scans during bulk upload.
-     */
-    fun createBulkScanOptions(
-        orientationLocked: Boolean = false,
-        torchOn: Boolean = false
-    ): ScanOptions {
-        return createPhoneOrientationScanOptions(
-            prompt = "📱 Bulk Scan Mode - Rotate for comfort\n\nScan next game barcode",
-            enableBeep = true,
-            saveImage = false,
-            orientationLocked = orientationLocked,
-            torchOn = torchOn
-        ).apply {
-            setTimeout(15000)
-            setBarcodeImageEnabled(false)
-        }
-    }
+
 }

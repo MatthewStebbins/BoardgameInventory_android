@@ -7,6 +7,7 @@ import android.os.Handler
 import android.os.Looper
 import android.widget.Toast
 import com.boardgameinventory.BuildConfig
+import androidx.core.content.edit
 
 /**
  * Developer Mode Utility
@@ -19,9 +20,7 @@ object DeveloperMode {
     private const val PREF_NAME = "developer_mode_prefs"
     private const val KEY_DEVELOPER_MODE_ENABLED = "developer_mode_enabled"
     private const val KEY_LAST_ACCESS_TIME = "last_access_time"
-    private const val KEY_TAP_COUNT = "tap_count"
-    private const val KEY_FIRST_TAP_TIME = "first_tap_time"
-    
+
     private const val REQUIRED_TAPS = 7
     private const val TAP_TIMEOUT_MS = 10000L // 10 seconds
     private const val DEVELOPER_MODE_DURATION_MS = 30 * 60 * 1000L // 30 minutes
@@ -109,10 +108,10 @@ object DeveloperMode {
      */
     private fun enableDeveloperMode(context: Context) {
         val prefs = getPrefs(context)
-        prefs.edit()
-            .putBoolean(KEY_DEVELOPER_MODE_ENABLED, true)
-            .putLong(KEY_LAST_ACCESS_TIME, System.currentTimeMillis())
-            .apply()
+        prefs.edit {
+            putBoolean(KEY_DEVELOPER_MODE_ENABLED, true)
+                .putLong(KEY_LAST_ACCESS_TIME, System.currentTimeMillis())
+        }
         
         Toast.makeText(
             context, 
@@ -126,10 +125,10 @@ object DeveloperMode {
      */
     fun disableDeveloperMode(context: Context) {
         val prefs = getPrefs(context)
-        prefs.edit()
-            .putBoolean(KEY_DEVELOPER_MODE_ENABLED, false)
-            .putLong(KEY_LAST_ACCESS_TIME, 0L)
-            .apply()
+        prefs.edit {
+            putBoolean(KEY_DEVELOPER_MODE_ENABLED, false)
+                .putLong(KEY_LAST_ACCESS_TIME, 0L)
+        }
     }
     
     /**
@@ -138,9 +137,9 @@ object DeveloperMode {
     fun updateLastAccess(context: Context) {
         if (isDeveloperModeActive(context)) {
             val prefs = getPrefs(context)
-            prefs.edit()
-                .putLong(KEY_LAST_ACCESS_TIME, System.currentTimeMillis())
-                .apply()
+            prefs.edit {
+                putLong(KEY_LAST_ACCESS_TIME, System.currentTimeMillis())
+            }
         }
     }
     
@@ -161,7 +160,7 @@ object DeveloperMode {
             if (isEnabled && lastAccessTime > 0) {
                 val remainingTime = DEVELOPER_MODE_DURATION_MS - (System.currentTimeMillis() - lastAccessTime)
                 val remainingMinutes = (remainingTime / 60000).toInt()
-                appendLine("Time remaining: ${remainingMinutes} minutes")
+                appendLine("Time remaining: $remainingMinutes minutes")
             }
             
             appendLine("Device: ${Build.MANUFACTURER} ${Build.MODEL}")

@@ -11,6 +11,7 @@ import androidx.core.content.ContextCompat
 import com.boardgameinventory.R
 import kotlin.math.max
 import kotlin.math.min
+import kotlin.math.pow
 
 /**
  * Utility class to check text contrast ratios for accessibility.
@@ -224,6 +225,6 @@ object ContrastChecker {
      * Extension function for Float to calculate power
      */
     private fun Float.pow(exponent: Float): Float {
-        return Math.pow(this.toDouble(), exponent.toDouble()).toFloat()
+        return this.toDouble().pow(exponent.toDouble()).toFloat()
     }
 }

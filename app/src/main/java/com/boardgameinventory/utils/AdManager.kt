@@ -1,15 +1,12 @@
 package com.boardgameinventory.utils
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.util.Log
-import android.view.View
 import com.google.android.gms.ads.AdRequest
-import com.google.android.gms.ads.AdSize
 import com.google.android.gms.ads.AdView
-import com.google.android.gms.ads.LoadAdError
 import com.google.android.gms.ads.MobileAds
 import com.google.android.gms.ads.RequestConfiguration
-import com.google.android.gms.ads.AdListener
 import com.boardgameinventory.BuildConfig
 
 /**
@@ -19,18 +16,14 @@ import com.boardgameinventory.BuildConfig
 object AdManager {
     
     private const val TAG = "AdManager"
-    
-    // Test ad unit ID for development (replace with real ID for production)
-    private const val TEST_BANNER_AD_UNIT_ID = "ca-app-pub-3940256099942544/9214589741" // Alternative test ID
-    private const val FALLBACK_TEST_BANNER_AD_UNIT_ID = "ca-app-pub-3940256099942544/6300978111" // Original test ID
-    private const val PRODUCTION_BANNER_AD_UNIT_ID = "ca-app-pub-YOUR_ACTUAL_ID/YOUR_BANNER_ID"
-    
+
     private var isInitialized = false
     
     /**
      * Initialize AdMob SDK
      * Call this once in Application or MainActivity
      */
+    @SuppressLint("HardwareIds")
     fun initialize(context: Context) {
         Log.d(TAG, "=== AdManager.initialize() called ===")
         if (isInitialized) {
@@ -63,7 +56,7 @@ object AdManager {
                 
                 // Get the actual device ID for this emulator
                 val androidId = android.provider.Settings.Secure.getString(
-                    context.contentResolver, 
+                    context.contentResolver,
                     android.provider.Settings.Secure.ANDROID_ID
                 )
                 Log.d(TAG, "Current device Android ID: $androidId")
@@ -94,37 +87,7 @@ object AdManager {
             Log.e(TAG, "Error during AdMob initialization: ${e.message}", e)
         }
     }
-    
-    /**
-     * Create and configure a banner ad view
-     */
-    fun createBannerAd(context: Context): AdView {
-        val adView = AdView(context)
-        adView.setAdSize(AdSize.BANNER)
-        val adUnitId = if (BuildConfig.DEBUG) {
-            TEST_BANNER_AD_UNIT_ID
-        } else {
-            PRODUCTION_BANNER_AD_UNIT_ID
-        }
-        adView.adUnitId = adUnitId
 
-        // Set ad listener for debugging and error handling
-        adView.adListener = object : AdListener() {
-            override fun onAdFailedToLoad(adError: LoadAdError) {
-                Log.e(TAG, "Ad failed to load: ${adError.message}")
-                // Hide the ad container if ad fails to load
-                adView.visibility = View.GONE
-            }
-            
-            override fun onAdLoaded() {
-                Log.d(TAG, "Ad loaded successfully")
-                adView.visibility = View.VISIBLE
-            }
-        }
-        
-        return adView
-    }
-    
     /**
      * Load an ad into the provided AdView
      */
@@ -209,35 +172,7 @@ object AdManager {
         Log.d(TAG, "Network connected: $isConnected")
         return isConnected
     }
-    
-    /**
-     * Create a smart banner ad that adapts to screen size
-     */
-    fun createSmartBannerAd(context: Context): AdView {
-        val adView = AdView(context)
-        adView.setAdSize(AdSize.BANNER)
-        val adUnitId = if (BuildConfig.DEBUG) {
-            TEST_BANNER_AD_UNIT_ID
-        } else {
-            PRODUCTION_BANNER_AD_UNIT_ID
-        }
-        adView.adUnitId = adUnitId
 
-        adView.adListener = object : AdListener() {
-            override fun onAdFailedToLoad(adError: LoadAdError) {
-                Log.e(TAG, "Smart banner ad failed to load: ${adError.message}")
-                adView.visibility = View.GONE
-            }
-            
-            override fun onAdLoaded() {
-                Log.d(TAG, "Smart banner ad loaded successfully")
-                adView.visibility = View.VISIBLE
-            }
-        }
-        
-        return adView
-    }
-    
     /**
      * Pause ad when activity is paused
      */
@@ -258,23 +193,5 @@ object AdManager {
     fun destroyAd(adView: AdView?) {
         adView?.destroy()
     }
-    
-    /**
-     * Check if ads should be shown (can be used for premium features)
-     */
-    fun shouldShowAds(): Boolean {
-        // In a real app, this might check for premium subscription
-        return true
-    }
-    
-    /**
-     * Get appropriate ad unit ID based on build type
-     */
-    fun getBannerAdUnitId(): String {
-        return if (BuildConfig.DEBUG) {
-            TEST_BANNER_AD_UNIT_ID
-        } else {
-            PRODUCTION_BANNER_AD_UNIT_ID
-        }
-    }
+
 }
