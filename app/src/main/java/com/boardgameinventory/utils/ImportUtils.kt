@@ -1,9 +1,7 @@
 package com.boardgameinventory.utils
 
 import android.content.Context
-import android.content.Intent
 import android.net.Uri
-import androidx.activity.result.ActivityResultLauncher
 import com.boardgameinventory.data.Game
 import com.opencsv.CSVReader
 import org.apache.poi.ss.usermodel.WorkbookFactory
@@ -93,23 +91,7 @@ object ImportUtils {
     fun isExcelFile(filename: String): Boolean {
         return filename.endsWith(".xlsx", true) || filename.endsWith(".xls", true)
     }
-    
-    fun importFromCSV(context: Context, launcher: androidx.activity.result.ActivityResultLauncher<Intent>) {
-        val intent = Intent(Intent.ACTION_OPEN_DOCUMENT).apply {
-            addCategory(Intent.CATEGORY_OPENABLE)
-            type = "text/csv"
-        }
-        launcher.launch(intent)
-    }
-    
-    fun importFromExcel(context: Context, launcher: androidx.activity.result.ActivityResultLauncher<Intent>) {
-        val intent = Intent(Intent.ACTION_OPEN_DOCUMENT).apply {
-            addCategory(Intent.CATEGORY_OPENABLE)
-            type = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-        }
-        launcher.launch(intent)
-    }
-    
+
     fun parseCSVFromUri(context: Context, uri: Uri): List<Game> {
         val games = mutableListOf<Game>()
         

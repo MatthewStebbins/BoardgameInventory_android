@@ -1,10 +1,7 @@
 package com.boardgameinventory.utils
 
 import android.content.Context
-import android.content.Intent
 import android.net.Uri
-import androidx.activity.result.ActivityResultLauncher
-import androidx.core.content.FileProvider
 import com.boardgameinventory.data.Game
 import com.opencsv.CSVWriter
 import org.apache.poi.ss.usermodel.Workbook
@@ -12,25 +9,7 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook
 import java.io.*
 
 object ExportUtils {
-    
-    fun exportToCSV(context: Context, games: List<Game>, launcher: androidx.activity.result.ActivityResultLauncher<Intent>) {
-        val intent = Intent(Intent.ACTION_CREATE_DOCUMENT).apply {
-            addCategory(Intent.CATEGORY_OPENABLE)
-            type = "text/csv"
-            putExtra(Intent.EXTRA_TITLE, "games_export_${System.currentTimeMillis()}.csv")
-        }
-        launcher.launch(intent)
-    }
-    
-    fun exportToExcel(context: Context, games: List<Game>, launcher: androidx.activity.result.ActivityResultLauncher<Intent>) {
-        val intent = Intent(Intent.ACTION_CREATE_DOCUMENT).apply {
-            addCategory(Intent.CATEGORY_OPENABLE)
-            type = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-            putExtra(Intent.EXTRA_TITLE, "games_export_${System.currentTimeMillis()}.xlsx")
-        }
-        launcher.launch(intent)
-    }
-    
+
     fun writeCSVToUri(context: Context, uri: Uri, games: List<Game>): Boolean {
         return try {
             context.contentResolver.openOutputStream(uri)?.use { outputStream ->
