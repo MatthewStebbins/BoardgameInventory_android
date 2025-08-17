@@ -43,6 +43,7 @@ android {
         freeCompilerArgs += [
             '-Xjvm-default=all'
         ]
+        freeCompilerArgs = ['-XXLanguage:+PropertyParamAnnotationDefaultTargetMode']
     }
 
     buildFeatures {
