@@ -7,25 +7,23 @@ import android.os.Bundle
 import android.view.View
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
-import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.widget.addTextChangedListener
 import androidx.lifecycle.lifecycleScope
-import com.bumptech.glide.Glide
 import com.boardgameinventory.R
 import com.boardgameinventory.data.Game
 import com.boardgameinventory.databinding.ActivityEditGameBinding
-import com.boardgameinventory.utils.Utils
 import com.boardgameinventory.utils.BarcodeUtils
 import com.boardgameinventory.utils.TextDarknessManager
-import com.boardgameinventory.viewmodel.EditGameViewModel
+import com.boardgameinventory.utils.Utils
 import com.boardgameinventory.validation.GameInputValidation
 import com.boardgameinventory.validation.ValidationUtils
-import com.boardgameinventory.validation.validateMultipleInputs
 import com.boardgameinventory.validation.areAllInputsValid
+import com.boardgameinventory.validation.validateMultipleInputs
+import com.boardgameinventory.viewmodel.EditGameViewModel
+import com.bumptech.glide.Glide
 import com.journeyapps.barcodescanner.ScanContract
-import com.journeyapps.barcodescanner.ScanOptions
 import kotlinx.coroutines.launch
 
 class EditGameActivity : BaseAdActivity() {
@@ -238,7 +236,7 @@ class EditGameActivity : BaseAdActivity() {
             adView = localAdView
 
             // Set up the ad container
-            val adContainer = binding.adContainer
+            binding.adContainer
 
             // Configure the listener
             localAdView.adListener = object : com.google.android.gms.ads.AdListener() {

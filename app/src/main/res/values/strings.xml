@@ -430,4 +430,5 @@
     <!-- New Strings -->
     <string name="text_darkness">Text Darkness</string>
     <string name="ad_consent">Ad Consent</string>
+    <string name="processing">Processing...</string>
 </resources>

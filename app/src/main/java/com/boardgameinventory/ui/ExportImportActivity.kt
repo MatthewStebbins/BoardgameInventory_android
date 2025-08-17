@@ -1,6 +1,5 @@
 package com.boardgameinventory.ui
 
-import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.view.View
@@ -11,8 +10,6 @@ import androidx.appcompat.app.AlertDialog
 import androidx.lifecycle.lifecycleScope
 import com.boardgameinventory.R
 import com.boardgameinventory.databinding.ActivityExportImportBinding
-import com.boardgameinventory.utils.ExportUtils
-import com.boardgameinventory.utils.ImportUtils
 import com.boardgameinventory.utils.TextDarknessManager
 import com.boardgameinventory.viewmodel.ExportImportViewModel
 import kotlinx.coroutines.launch
@@ -217,8 +214,8 @@ class ExportImportActivity : BaseAdActivity() {
         
         // Update status text
         if (isLoading) {
-            binding.tvExportStatus.text = "Processing..."
-            binding.tvImportStatus.text = "Processing..."
+            binding.tvExportStatus.text = getString(R.string.processing)
+            binding.tvImportStatus.text = getString(R.string.processing)
         }
     }
     
@@ -253,7 +250,7 @@ class ExportImportActivity : BaseAdActivity() {
             adView = localAdView
 
             // Set up the ad container
-            val adContainer = binding.adContainer
+            binding.adContainer
 
             // Configure the listener
             localAdView.adListener = object : com.google.android.gms.ads.AdListener() {
@@ -273,8 +270,8 @@ class ExportImportActivity : BaseAdActivity() {
         }
     }
 
-    override fun onSupportNavigateUp(): Boolean {
-        onBackPressed()
-        return true
-    }
+override fun onSupportNavigateUp(): Boolean {
+            onBackPressedDispatcher.onBackPressed()
+            return true
+        }
 }

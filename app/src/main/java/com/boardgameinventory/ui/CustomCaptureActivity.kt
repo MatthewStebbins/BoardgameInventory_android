@@ -1,10 +1,8 @@
 package com.boardgameinventory.ui
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.LayoutInflater
-import android.view.View
-import android.widget.ImageView
-import androidx.appcompat.app.AppCompatActivity
 import com.boardgameinventory.R
 import com.google.android.material.button.MaterialButton
 import com.journeyapps.barcodescanner.CaptureActivity
@@ -25,6 +23,7 @@ class CustomCaptureActivity : CaptureActivity() {
         // ZXing will call initializeContent() after this, so overlay setup is done there
     }
 
+    @SuppressLint("InflateParams")
     override fun initializeContent(): DecoratedBarcodeView {
         val barcodeView = super.initializeContent()
         // Inflate and add the overlay

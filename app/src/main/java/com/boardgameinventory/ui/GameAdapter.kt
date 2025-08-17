@@ -26,15 +26,12 @@ class GameAdapter(
     
     private var deleteMode = false
     private var showLoanedTo = false
-    
-    fun setDeleteMode(enabled: Boolean) {
-        deleteMode = enabled
-        notifyDataSetChanged()
-    }
-    
+
     fun setShowLoanedTo(show: Boolean) {
-        showLoanedTo = show
-        notifyDataSetChanged()
+        if (showLoanedTo != show) {
+            showLoanedTo = show
+            notifyItemRangeChanged(0, itemCount)
+        }
     }
     
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): GameViewHolder {

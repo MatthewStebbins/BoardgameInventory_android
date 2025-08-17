@@ -5,9 +5,7 @@ import android.view.MenuItem
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
-import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.boardgameinventory.R
 import com.boardgameinventory.databinding.ActivityDatabaseManagementBinding
 import com.boardgameinventory.utils.DeveloperMode
 import com.boardgameinventory.utils.TextDarknessManager
@@ -203,38 +201,7 @@ class DatabaseManagementActivity : BaseAdActivity() {
             .setPositiveButton("OK", null)
             .show()
     }
-    
-    /**
-     * Show unauthorized access dialog and close activity
-     */
-    private fun showUnauthorizedDialog() {
-        AlertDialog.Builder(this)
-            .setTitle("Access Denied")
-            .setMessage("Developer mode required to access database management.\n\nTo enable developer mode, find the app version number and tap it 7 times quickly.")
-            .setPositiveButton("OK") { _, _ ->
-                finish()
-            }
-            .setCancelable(false)
-            .show()
-    }
-    
-    /**
-     * Show developer info dialog
-     */
-    private fun showDeveloperInfo() {
-        val info = DeveloperMode.getDeveloperInfo(this)
-        
-        AlertDialog.Builder(this)
-            .setTitle("Developer Information")
-            .setMessage(info)
-            .setPositiveButton("OK", null)
-            .setNegativeButton("Disable Developer Mode") { _, _ ->
-                DeveloperMode.disableDeveloperMode(this)
-                finish()
-            }
-            .show()
-    }
-    
+
     override fun onResume() {
         super.onResume()
         
