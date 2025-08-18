@@ -17,6 +17,7 @@ import com.boardgameinventory.validation.GameInputValidation
 import com.boardgameinventory.validation.ValidationUtils
 import com.boardgameinventory.validation.validateMultipleInputs
 import com.boardgameinventory.validation.areAllInputsValid
+import com.google.android.material.textfield.TextInputLayout
 import com.journeyapps.barcodescanner.ScanContract
 import kotlinx.coroutines.launch
 
@@ -89,7 +90,6 @@ class AddGameActivity : BaseAdActivity() {
                     val isValid = GameInputValidation.validateGameName(etGameName.text.toString())
                     if (!isValid) {
                         tilGameName.error = getString(R.string.game_name_error)
-                        root.announceForAccessibility(getString(R.string.game_name_error))
                     } else {
                         tilGameName.error = null
                     }
@@ -103,16 +103,18 @@ class AddGameActivity : BaseAdActivity() {
                 results.forEach { result ->
                     val fieldId = result.first
                     val isValid = result.second
-                    if (!isValid) {
-                        val errorMessage = when (fieldId) {
-                            R.id.etGameName -> getString(R.string.game_name_error)
-                            R.id.etBarcode -> getString(R.string.barcode_error)
-                            R.id.etBookcase -> getString(R.string.bookcase_error)
-                            R.id.etShelf -> getString(R.string.shelf_error)
-                            else -> getString(R.string.field_required_error)
-                        }
-                        binding.root.announceForAccessibility(errorMessage)
-                        return@forEach
+                    val errorMessage = when (fieldId) {
+                        R.id.etGameName -> getString(R.string.game_name_error)
+                        R.id.etBarcode -> getString(R.string.barcode_error)
+                        R.id.etBookcase -> getString(R.string.bookcase_error)
+                        R.id.etShelf -> getString(R.string.shelf_error)
+                        else -> getString(R.string.field_required_error)
+                    }
+                    val field = findViewById<View>(fieldId)
+                    if (!isValid && field is TextInputLayout) {
+                        field.error = errorMessage
+                    } else if (field is TextInputLayout) {
+                        field.error = null
                     }
                 }
             }
