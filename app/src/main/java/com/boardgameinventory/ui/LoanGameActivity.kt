@@ -279,19 +279,21 @@ class LoanGameActivity : BaseAdActivity() {
         // Observe game selection for accessibility announcements
         gameViewModel.selectedGame.observe(this) { game ->
             if (game != null) {
-                val announcement = getString(R.string.game_selected_announcement, game.name)
-                binding.root.announceForAccessibility(announcement)
-
                 // Update selected game section for accessibility
                 binding.tvSelectedGame.contentDescription = getString(R.string.selected_game_description) +
                     ": " + game.name + ", " + game.barcode + ", " + game.bookcase + ", " + game.shelf
+
+                // Set the live region to notify accessibility services of the update
+                binding.tvSelectedGame.accessibilityLiveRegion = View.ACCESSIBILITY_LIVE_REGION_POLITE
             }
         }
 
         // Observe validation errors
         gameViewModel.validationError.observe(this) { error ->
             if (error.isNotEmpty()) {
-                binding.root.announceForAccessibility(error)
+                binding.tilBorrowerName.error = error
+            } else {
+                binding.tilBorrowerName.error = null
             }
         }
     }
