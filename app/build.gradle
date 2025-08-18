@@ -186,13 +186,13 @@ dependencies {
     implementation 'androidx.security:security-crypto:1.1.0-alpha06'
 
     // Certificate pinning and TLS
-    implementation 'com.squareup.okhttp3:okhttp-tls:4.12.0'
+    implementation 'com.squareup.okhttp3:okhttp-tls:5.1.0'
 
     // User Messaging Platform for ad consent
-    implementation 'com.google.android.ump:user-messaging-platform:2.1.0'
+    implementation 'com.google.android.ump:user-messaging-platform:3.2.0'
 
     // AdMob for displaying ads
-    implementation 'com.google.android.gms:play-services-ads:22.6.0'
+    implementation 'com.google.android.gms:play-services-ads:24.5.0'
 
     // Play Core library for in-app updates
     implementation 'com.google.android.play:app-update-ktx:2.1.0'
