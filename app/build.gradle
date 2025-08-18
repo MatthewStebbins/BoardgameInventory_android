@@ -37,7 +37,7 @@ android {
         sourceCompatibility JavaVersion.VERSION_17
         targetCompatibility JavaVersion.VERSION_17
     }
-    
+
     kotlinOptions {
         jvmTarget = '17'
         freeCompilerArgs += [
@@ -128,12 +128,12 @@ tasks.register('jacocoTestReport', JacocoReport) {
             'org/robolectric/**' // Exclude Robolectric classes
     ]
 
-    def debugTree = fileTree(dir: "${buildDir}/intermediates/javac/debug", excludes: fileFilter)
+    def debugTree = fileTree(dir: layout.buildDirectory.dir("intermediates/javac/debug").get().asFile, excludes: fileFilter)
     def mainSrc = "${project.projectDir}/src/main/java"
 
     sourceDirectories.setFrom(files([mainSrc]))
     classDirectories.setFrom(files([debugTree]))
-    executionData.setFrom(fileTree(dir: project.buildDir, includes: ["jacoco/testDebugUnitTest.exec", "outputs/code-coverage/connected/*coverage.ec"]))
+    executionData.setFrom(fileTree(dir: layout.buildDirectory.get().asFile, includes: ["jacoco/testDebugUnitTest.exec", "outputs/code-coverage/connected/*coverage.ec"]))
 }
 
 dependencies {
