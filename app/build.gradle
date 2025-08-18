@@ -43,7 +43,6 @@ android {
         freeCompilerArgs += [
             '-Xjvm-default=all'
         ]
-        freeCompilerArgs = ['-XXLanguage:+PropertyParamAnnotationDefaultTargetMode']
     }
 
     buildFeatures {
@@ -176,9 +175,9 @@ dependencies {
     implementation 'com.google.zxing:core:3.5.3'
     
     // CSV/Excel handling
-    implementation 'com.opencsv:opencsv:5.8'
-    implementation 'org.apache.poi:poi:5.2.3'
-    implementation 'org.apache.poi:poi-ooxml:5.2.3'
+    implementation 'com.opencsv:opencsv:5.12.0'
+    implementation 'org.apache.poi:poi:5.4.1'
+    implementation 'org.apache.poi:poi-ooxml:5.4.1'
 
     // Database encryption with SQLCipher
     implementation 'net.zetetic:android-database-sqlcipher:4.5.4'

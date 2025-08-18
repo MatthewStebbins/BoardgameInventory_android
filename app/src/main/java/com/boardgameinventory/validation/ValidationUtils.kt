@@ -27,7 +27,7 @@ object ValidationUtils {
      */
     data class ValidationResult(
         val isValid: Boolean,
-        @StringRes val errorMessageRes: Int? = null,
+        @param:StringRes val errorMessageRes: Int? = null,
         val errorMessage: String? = null
     ) {
         companion object {
