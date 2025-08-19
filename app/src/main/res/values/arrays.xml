@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <string-array name="text_darkness_options">
-        <item>Default</item>
-        <item>Darker</item>
-        <item>Darkest</item>
-    </string-array>
-</resources>
-
