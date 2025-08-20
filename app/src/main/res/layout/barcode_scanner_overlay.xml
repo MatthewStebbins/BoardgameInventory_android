@@ -30,18 +30,6 @@
         android:contentDescription="@string/toggle_torch"
         app:icon="@drawable/ic_flashlight_on" />
 
-    <!-- Back arrow button -->
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/btn_back"
-        style="@style/Widget.Material3.Button.IconButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="start|top"
-        android:layout_margin="16dp"
-        android:backgroundTint="@color/material_dynamic_primary90"
-        android:contentDescription="@string/back_button"
-        app:icon="@drawable/ic_arrow_back" />
-
     <!-- Optionally, add more overlay UI here (e.g., prompt text, custom viewfinder) -->
 
 </FrameLayout>
