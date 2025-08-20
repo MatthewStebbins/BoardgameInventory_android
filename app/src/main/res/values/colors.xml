@@ -19,14 +19,11 @@
 
     <!-- Action colors -->
     <color name="danger">#E57373</color>
-    <color name="success">#66BB6A</color>
     <color name="warning">#FFA726</color>
 
     <!-- Border and divider -->
     <color name="border">#E0E4EA</color>
-    <color name="divider">#E0E0E0</color>
 
     <!-- System colors -->
-    <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
 </resources>
