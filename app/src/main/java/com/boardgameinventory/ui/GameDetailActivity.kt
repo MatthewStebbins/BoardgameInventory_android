@@ -215,9 +215,7 @@ private val viewModel: GameDetailViewModel by viewModels {
                     btnLoanReturn.contentDescription = getString(R.string.loan_game_description_with_name, game.name)
                 }
                 // Set heading for game name using accessibilityPaneTitle for best compatibility
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-                    tvGameName.accessibilityPaneTitle = game.name
-                }
+                tvGameName.accessibilityPaneTitle = game.name
                 // Group related information for better screen reader experience
                 val locationInfo = getString(R.string.location_group_description,
                     game.bookcase,
