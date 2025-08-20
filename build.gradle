@@ -5,6 +5,9 @@ plugins {
     id 'com.google.devtools.ksp' version '2.2.0-2.0.2' apply false
     id 'com.github.ben-manes.versions' version '0.52.0'
 }
+ext {
+    defaultVersionCode = 4
+}
 
 tasks.register('clean', Delete) {
     delete rootProject.layout.buildDirectory
