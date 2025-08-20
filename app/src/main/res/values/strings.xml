@@ -433,4 +433,5 @@
     <string name="processing">Processing…</string>
     <string name="remove_barcode">Remove barcode</string>
     <string name="sample_image_description">Sample image description</string>
+    <string name="bulk_upload_games">Bulk Upload Games</string>
 </resources>

@@ -7,34 +7,40 @@
     <!-- Scanner viewfinder will be behind this overlay -->
 
     <!-- Top bar with controls -->
-    <LinearLayout
-        android:id="@+id/overlay_top_bar"
-        android:layout_width="match_parent"
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btn_toggle_orientation"
+        style="@style/Widget.Material3.Button.IconButton"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:gravity="end"
-        android:padding="16dp"
-        android:background="@android:color/transparent">
+        android:layout_gravity="center|top"
+        android:layout_margin="16dp"
+        android:backgroundTint="@color/material_dynamic_primary90"
+        android:contentDescription="@string/toggle_orientation"
+        app:icon="@drawable/ic_screen_rotation" />
 
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/btn_toggle_orientation"
-            style="@style/Widget.Material3.Button.IconButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:backgroundTint="@color/material_dynamic_primary90"
-            android:contentDescription="@string/toggle_orientation"
-            app:icon="@drawable/ic_screen_rotation" />
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btn_toggle_torch"
+        style="@style/Widget.Material3.Button.IconButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="end|top"
+        android:layout_margin="16dp"
+        android:layout_marginStart="12dp"
+        android:backgroundTint="@color/material_dynamic_primary90"
+        android:contentDescription="@string/toggle_torch"
+        app:icon="@drawable/ic_flashlight_on" />
 
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/btn_toggle_torch"
-            style="@style/Widget.Material3.Button.IconButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="12dp"
-            android:backgroundTint="@color/material_dynamic_primary90"
-            android:contentDescription="@string/toggle_torch"
-            app:icon="@drawable/ic_flashlight_on" />
-    </LinearLayout>
+    <!-- Back arrow button -->
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btn_back"
+        style="@style/Widget.Material3.Button.IconButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="start|top"
+        android:layout_margin="16dp"
+        android:backgroundTint="@color/material_dynamic_primary90"
+        android:contentDescription="@string/back_button"
+        app:icon="@drawable/ic_arrow_back" />
 
     <!-- Optionally, add more overlay UI here (e.g., prompt text, custom viewfinder) -->
 
