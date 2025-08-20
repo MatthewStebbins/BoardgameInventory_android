@@ -223,4 +223,19 @@ dependencies {
     androidTestImplementation 'androidx.room:room-testing:2.7.2'
     implementation 'org.slf4j:slf4j-simple:2.0.17'
     implementation 'androidx.preference:preference-ktx:1.2.1'
+
+    // Add BND tools library for aQute.bnd.annotation
+    implementation('biz.aQute.bnd:biz.aQute.bndlib:6.3.1') {
+        exclude group: 'biz.aQute.bnd', module: 'biz.aQute.bnd.util'
+    }
+
+    // Add FindBugs annotations library
+    implementation('com.google.code.findbugs:annotations:3.0.1') {
+        exclude group: 'com.google.code.findbugs', module: 'jsr305'
+    }
 }
+
+configurations.all {
+        exclude group: 'com.google.code.findbugs', module: 'jsr305'
+        exclude group: 'net.jcip', module: 'jcip-annotations'
+    }

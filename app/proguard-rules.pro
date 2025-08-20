@@ -138,3 +138,12 @@
     public static **[] values();
     public static ** valueOf(java.lang.String);
 }
+
+# Keep aQute.bnd.annotation classes
+-keep class aQute.bnd.annotation.** { *; }
+
+# Keep edu.umd.cs.findbugs.annotations classes
+-keep class edu.umd.cs.findbugs.annotations.** { *; }
+
+# Keep org.apache.logging.log4j classes
+-keep class org.apache.logging.log4j.** { *; }
