@@ -17,6 +17,7 @@ import com.boardgameinventory.validation.GameInputValidation
 import com.boardgameinventory.validation.ValidationUtils
 import com.boardgameinventory.validation.validateMultipleInputs
 import com.boardgameinventory.validation.areAllInputsValid
+import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
 import com.journeyapps.barcodescanner.ScanContract
 import kotlinx.coroutines.launch
@@ -43,7 +44,9 @@ class AddGameActivity : BaseAdActivity() {
             Utils.showToast(this, getString(R.string.camera_permission_required))
         }
     }
-    
+
+    private var activeField: TextInputEditText? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityAddGameBinding.inflate(layoutInflater)
@@ -61,7 +64,7 @@ class AddGameActivity : BaseAdActivity() {
         setupTextWatchers()
         setupAccessibility() // Add accessibility setup
         observeViewModel()
-        setupAdsManually()
+        setupEndIconClickListeners()
     }
     
     /**
@@ -150,6 +153,18 @@ class AddGameActivity : BaseAdActivity() {
         supportActionBar?.apply {
             setDisplayHomeAsUpEnabled(true)
             title = getString(R.string.add_game_title)
+        }
+    }
+
+    private fun setupEndIconClickListeners() {
+        binding.tilBarcode.setEndIconOnClickListener {
+            activeField = binding.etBarcode
+            checkCameraPermissionAndScan()
+        }
+
+        binding.tilLocationBarcode.setEndIconOnClickListener {
+            activeField = binding.etLocationBarcode
+            checkCameraPermissionAndScan()
         }
     }
 

@@ -147,3 +147,4 @@
 
 # Keep org.apache.logging.log4j classes
 -keep class org.apache.logging.log4j.** { *; }
+

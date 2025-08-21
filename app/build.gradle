@@ -14,7 +14,7 @@ android {
         applicationId = "com.boardgameinventory"
         minSdk = 28
         targetSdk = 36
-        versionCode = defaultVersionCode
+        versionCode = 5
         versionName = "1.1.01"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
