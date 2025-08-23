@@ -29,7 +29,7 @@ class AddGameActivity : BaseAdActivity() {
     
     private val scanLauncher = registerForActivityResult(ScanContract()) { result ->
         if (result.contents != null) {
-            binding.etBarcode.setText(result.contents)
+            activeField?.setText(result.contents)
         }
     }
     
@@ -51,6 +51,7 @@ class AddGameActivity : BaseAdActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityAddGameBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        activeField = binding.etBarcode
         // Apply text darkness setting
         TextDarknessManager.applyTextDarknessToActivity(this)
 
